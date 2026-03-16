@@ -4,6 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Diagnóstico de Madurez en IA — ML Studio</title>
+  <!-- Meta tags para compartir en WhatsApp y redes -->
+  <meta name="description" content="Descubre tu nivel de madurez en IA — diagnóstico personalizado en 8 minutos. ML Studio." />
+  <meta property="og:title" content="Diagnóstico de IA — ML Studio" />
+  <meta property="og:description" content="No mide si usas IA — mide qué tan bien la estás aprovechando. Complétalo en 8 minutos." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_CO" />
+  <meta name="theme-color" content="#1a1aff" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
@@ -136,14 +143,29 @@
     .results-title{font-family:'DM Serif Display',serif;font-size:clamp(28px,4vw,44px);line-height:1.15;margin-bottom:10px;letter-spacing:-.5px}
     .results-subtitle{font-size:15px;color:var(--ink-soft);font-weight:300}
 
+    /* GAUGE */
+    .gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+    .gauge-svg{overflow:visible}
+    .gauge-track{fill:none;stroke:rgba(255,255,255,.12);stroke-linecap:round}
+    .gauge-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1) .3s,stroke .4s ease}
+    .gauge-num{font-family:'DM Serif Display',serif;font-size:36px;fill:#fff;text-anchor:middle;font-weight:400;letter-spacing:-1px}
+    .gauge-denom{font-size:13px;fill:rgba(255,255,255,.4);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:300}
+    .gauge-label{font-size:10px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:600}
+
     /* SCORE HERO */
-    .score-hero{background:var(--ink);border-radius:var(--radius);padding:32px 36px;margin-bottom:16px;display:flex;align-items:center;gap:36px;flex-wrap:wrap}
-    .score-number{font-family:'DM Serif Display',serif;font-size:72px;color:#fff;line-height:1;letter-spacing:-2px;flex-shrink:0}
-    .score-number span{font-size:28px;color:rgba(255,255,255,.4);font-family:'DM Sans',sans-serif;font-weight:300}
-    .score-context{flex:1;min-width:200px}
+    .score-hero{background:var(--ink);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+    .score-context{flex:1;min-width:180px}
     .score-context-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
     .score-context-text{font-size:17px;color:#fff;font-weight:400;line-height:1.4}
     .score-context-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:4px}
+
+    /* GUIA BUTTON — texto adaptable */
+    .guia-text-mobile{display:none}
+    .guia-text-desktop{display:inline}
+    @media(max-width:640px){
+      .guia-text-mobile{display:inline}
+      .guia-text-desktop{display:none}
+    }
 
     /* PROFILE STRIP */
     .profile-strip{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
@@ -256,10 +278,46 @@
     .resource-faq-a{font-size:14px;color:var(--ink-soft);line-height:1.65}
     @media(max-width:640px){.resource-compare{grid-template-columns:1fr}}
 
-    /* FOOTER */
+    /* RECOVERY BANNER */
+    .recovery-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--ink);color:#fff;padding:14px 24px;align-items:center;gap:14px;flex-wrap:wrap}
+    .recovery-text{font-size:14px;flex:1;min-width:200px}
+    .recovery-text strong{color:#fff}
+    .recovery-code{font-family:monospace;font-size:16px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px;letter-spacing:.1em}
+    .recovery-actions{display:flex;gap:8px}
+
+    /* CODIGO ACCESO en resultados */
+    .codigo-card{background:var(--ink);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .codigo-left{flex:1;min-width:180px}
+    .codigo-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px}
+    .codigo-value{font-family:monospace;font-size:42px;font-weight:700;color:#fff;letter-spacing:.15em;line-height:1}
+    .codigo-right{flex:1;min-width:200px}
+    .codigo-desc{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:14px}
+    .codigo-desc strong{color:#fff}
+    .wa-btn{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:var(--t)}
+    .wa-btn:hover{background:#1da851;transform:translateY(-1px)}
+    .wa-btn svg{width:18px;height:18px;fill:currentColor}
+
+    /* BOTÓN GUÍA */
+    .guia-btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent-bg);color:var(--accent);border:1.5px solid rgba(26,26,255,.2);border-radius:var(--radius);padding:16px 22px;font-size:14px;font-weight:600;cursor:pointer;transition:var(--t);text-decoration:none;width:100%;justify-content:space-between;margin-bottom:16px}
+    .guia-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .guia-btn-left{display:flex;align-items:center;gap:12px}
+    .guia-btn-icon{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;display:grid;place-items:center;flex-shrink:0;transition:var(--t)}
+    .guia-btn:hover .guia-btn-icon{background:#fff;color:var(--accent)}
+    .guia-btn-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2}
+    .guia-btn-title{font-size:14px;font-weight:600;display:block}
+    .guia-btn-sub{font-size:12px;font-weight:400;opacity:.7;display:block;margin-top:1px}
+    .guia-btn-arrow svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;opacity:.6}
     .site-footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);margin-top:8px}
     .site-footer-text{font-size:12px;color:var(--ink-muted);letter-spacing:.04em}
     .site-footer-text strong{color:var(--ink-soft);font-weight:600}
+
+    /* LOADER INICIAL */
+    .page-loader{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s ease,visibility .4s ease}
+    .page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+    .loader-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:loaderPulse 1.2s ease-in-out infinite}
+    .loader-dot:nth-child(2){animation-delay:.2s;margin:0 6px}
+    .loader-dot:nth-child(3){animation-delay:.4s}
+    @keyframes loaderPulse{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
 
     /* TOAST */
     .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:var(--radius-sm);font-size:14px;font-weight:500;z-index:200;transition:transform .3s cubic-bezier(.4,0,.2,1);white-space:nowrap;box-shadow:var(--shadow-lg)}
@@ -280,7 +338,22 @@
   </style>
 </head>
 <body>
+<!-- LOADER INICIAL -->
+<div class="page-loader" id="page-loader">
+  <div class="loader-dot"></div>
+  <div class="loader-dot"></div>
+  <div class="loader-dot"></div>
+</div>
 <div class="app-shell">
+
+  <!-- RECOVERY BANNER -->
+  <div class="recovery-banner" id="recovery-banner">
+    <div class="recovery-text">Tienes un diagnóstico guardado — código <span class="recovery-code" id="recovery-code"></span></div>
+    <div class="recovery-actions">
+      <button class="btn btn-ghost" style="color:#fff;border-color:rgba(255,255,255,.3);padding:8px 16px;font-size:13px" onclick="recoverDiagnosis()">Ver mis resultados</button>
+      <button class="btn btn-ghost" style="color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.2);padding:8px 16px;font-size:13px" onclick="dismissRecovery()">Descartar</button>
+    </div>
+  </div>
 
   <!-- TOPBAR -->
   <header class="topbar">
@@ -310,7 +383,7 @@
         </div>
         <div class="meta-item">
           <div class="meta-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
-          11 preguntas
+          12 preguntas
         </div>
         <div class="meta-item">
           <div class="meta-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -492,7 +565,24 @@
           oninput="updateCharCounter('open-2','counter-2',600)"></textarea>
         <div class="char-counter" id="counter-2">0 / 600</div>
         <div class="error-msg" id="err-11">Escribe una respuesta para continuar.</div>
-        <div class="step-nav"><button class="btn btn-ghost" onclick="prevStep()">Atrás</button><button class="btn btn-primary btn-lg" onclick="submitDiagnostic()">Ver mi diagnóstico <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></button></div>
+        <div class="step-nav"><button class="btn btn-ghost" onclick="prevStep()">Atrás</button><button class="btn btn-primary btn-lg" onclick="nextStep()">Continuar <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></div>
+      </div>
+
+      <!-- S12 — GPT preferido (MULTI) -->
+      <div class="step" id="step-12">
+        <h2 class="step-question">¿Cuáles GPTs de la empresa usas en tu trabajo?</h2>
+        <p class="step-hint">Última pregunta. Selecciona todos los que uses, aunque sea ocasionalmente.</p>
+        <div class="step-multi-hint">Puedes seleccionar varias opciones</div>
+        <div class="options-list" id="opts-12">
+          <div class="option-card" onclick="toggleMulti(12,'GPT Jurídico',this)"><div class="option-checkbox"><div class="option-checkbox-mark"><svg viewBox="0 0 12 12"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div></div><span class="option-label">GPT Jurídico — contratos, documentos legales</span></div>
+          <div class="option-card" onclick="toggleMulti(12,'GPT Financiero',this)"><div class="option-checkbox"><div class="option-checkbox-mark"><svg viewBox="0 0 12 12"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div></div><span class="option-label">GPT Financiero — costos, reportes, análisis</span></div>
+          <div class="option-card" onclick="toggleMulti(12,'GPT Administrativo',this)"><div class="option-checkbox"><div class="option-checkbox-mark"><svg viewBox="0 0 12 12"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div></div><span class="option-label">GPT Administrativo — procesos, comunicaciones internas</span></div>
+          <div class="option-card" onclick="toggleMulti(12,'GPT de mi marca',this)"><div class="option-checkbox"><div class="option-checkbox-mark"><svg viewBox="0 0 12 12"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div></div><span class="option-label">GPT de mi marca — contenido, identidad, comunicación</span></div>
+          <div class="option-card" onclick="toggleMulti(12,'ChatGPT general',this)"><div class="option-checkbox"><div class="option-checkbox-mark"><svg viewBox="0 0 12 12"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div></div><span class="option-label">Uso principalmente ChatGPT general</span></div>
+          <div class="option-card" onclick="toggleMulti(12,'No sé cuál usar',this)"><div class="option-checkbox"><div class="option-checkbox-mark"><svg viewBox="0 0 12 12"><polyline points="1.5 6 4.5 9 10.5 3"/></svg></div></div><span class="option-label">No sé cuál usar para mis tareas</span></div>
+        </div>
+        <div class="error-msg" id="err-12">Selecciona al menos una opción para continuar.</div>
+        <div class="step-nav"><button class="btn btn-ghost" onclick="prevStep()">Atrás</button><button class="btn btn-primary btn-lg" id="btn-12" onclick="submitDiagnostic()">Ver mi diagnóstico <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></button></div>
       </div>
 
     </div>
@@ -515,12 +605,54 @@
         <p class="results-subtitle" id="results-subtitle"></p>
       </div>
 
+      <!-- CÓDIGO DE ACCESO — compacto -->
+      <div style="background:var(--ink);border-radius:var(--radius);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:160px">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Tu código personal</div>
+          <div id="codigo-display" style="font-family:monospace;font-size:22px;font-weight:700;color:#fff;letter-spacing:.12em;line-height:1"></div>
+        </div>
+        <div style="flex:2;min-width:180px">
+          <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:10px"><strong style="color:#fff">Guarda este código.</strong> Es tuyo y confidencial — solo compártelo con tu asesor. Con él recuperas estos resultados desde cualquier dispositivo.</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="copiarCodigo()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t)">
+              <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copiar código
+            </button>
+            <button class="wa-btn" onclick="openWhatsApp()" style="padding:7px 14px;font-size:12px">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
+              Compartir con asesor
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div class="score-hero">
-        <div class="score-number" id="score-number">—<span> / 50</span></div>
+        <!-- Info primero (arriba en móvil, izquierda en desktop) -->
         <div class="score-context">
           <div class="score-context-label">Score de madurez en IA</div>
           <div class="score-context-text" id="score-context-text">—</div>
           <div class="score-context-sub" id="score-context-sub"></div>
+        </div>
+        <!-- Gauge semicircular animado -->
+        <!-- Centro del arco: (85, 88) radio: 68
+             Arco sube desde y=88 hasta la cima y=20.
+             Números en la apertura inferior: score y=82, denom y=98.
+             Base del arco (y=88) queda entre score y denom → centro visual ≈ y=90.
+             Arc length = π * 68 ≈ 214 -->
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" id="gauge-svg" width="170" height="115" viewBox="0 0 170 115">
+            <!-- Track (semicírculo completo) -->
+            <path class="gauge-track" d="M17,88 A68,68 0 0,1 153,88" stroke-width="12"/>
+            <!-- Fill animado -->
+            <path class="gauge-fill" id="gauge-fill" d="M17,88 A68,68 0 0,1 153,88" stroke-width="12" stroke="#5b7ef5" stroke-dasharray="214" stroke-dashoffset="214"/>
+            <!-- Número score — en la apertura del arco -->
+            <text class="gauge-num" id="gauge-num" x="85" y="82">—</text>
+            <!-- Denominador -->
+            <text class="gauge-denom" x="85" y="100">/ 50</text>
+            <!-- Etiquetas de extremos -->
+            <text class="gauge-label" x="14" y="112">0</text>
+            <text class="gauge-label" x="156" y="112">50</text>
+          </svg>
         </div>
       </div>
 
@@ -568,224 +700,101 @@
         <div class="fac-alerts" id="fac-details"></div>
       </div>
 
-      <!-- RESOURCES -->
-      <div class="result-section resources-section">
-        <div class="result-section-title">
-          Recursos para tu sesión
-          <span class="section-tag tag-blue">Material de apoyo</span>
-        </div>
-        <div class="resources-intro">Antes de la sesión, revisa estas guías rápidas. Cada una te da el contexto necesario para aprovechar mejor el tiempo con tu asesor.</div>
+      <!-- LO QUE DEBERÍAS SABER -->
+      <div class="result-section">
+        <div class="result-section-title">Lo que deberías saber <span class="section-tag tag-blue">Hay más de lo que crees</span></div>
+        <p style="font-size:13px;color:var(--ink-muted);margin-bottom:18px;line-height:1.6">La mayoría de personas usa el 20% de lo que ChatGPT puede hacer. Esto es el otro 80%.</p>
 
-        <!-- R1: Proyectos -->
         <div class="resource-card" id="rc-1">
           <button class="resource-trigger" onclick="toggleResource('rc-1')">
-            <div class="resource-trigger-left">
-              <div class="resource-num">1</div>
-              <div>
-                <div class="resource-trigger-title">Qué es un Proyecto en ChatGPT y para qué sirve</div>
-                <div class="resource-trigger-sub">La herramienta que elimina el problema de repetir contexto</div>
-              </div>
-            </div>
+            <div class="resource-trigger-left"><div class="resource-num">1</div><div><div class="resource-trigger-title">Qué es un Proyecto en ChatGPT y por qué cambia todo</div><div class="resource-trigger-sub">La herramienta que elimina el problema de repetir contexto</div></div></div>
             <div class="resource-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
           </button>
-          <div class="resource-body">
-            <div class="resource-body-inner">
-              <p class="resource-p">Un <strong>Proyecto</strong> en ChatGPT es un espacio de trabajo que recuerda quién eres, en qué trabajas y cómo quieres que te responda — sin que tengas que repetirlo cada vez que abres una conversación nueva.</p>
-              <p class="resource-p">Sin un Proyecto, cada vez que abres un chat nuevo ChatGPT empieza completamente en blanco. No sabe que trabajas en ML Studio, no sabe en qué área estás, no sabe el contexto de lo que estás haciendo. Por eso siempre sientes que toca "presentarte de nuevo".</p>
-              <div class="resource-box">
-                <div class="resource-box-label">Sin Proyecto — lo que pasa hoy</div>
-                <div class="resource-box-content">Abres ChatGPT → escribes el contexto de tu empresa → explicas tu cargo → describes la situación → haces la pregunta. Repites esto cada vez.</div>
-              </div>
-              <div class="resource-box">
-                <div class="resource-box-label">Con Proyecto — lo que puede pasar</div>
-                <div class="resource-box-content">Abres ChatGPT → haces directamente la pregunta. El contexto ya está guardado. ChatGPT ya sabe quién eres y qué necesitas.</div>
-              </div>
-              <p class="resource-p"><strong>¿Cómo se crea un Proyecto?</strong></p>
-              <div class="resource-steps">
-                <div class="resource-step"><div class="resource-step-num">1</div><div class="resource-step-text">En ChatGPT, busca el panel izquierdo y haz clic en <strong>"Proyectos"</strong> o el ícono correspondiente.</div></div>
-                <div class="resource-step"><div class="resource-step-num">2</div><div class="resource-step-text">Crea un proyecto nuevo y dale un nombre claro. Ejemplo: <strong>"Trabajo — ML Studio Dotaciones"</strong>.</div></div>
-                <div class="resource-step"><div class="resource-step-num">3</div><div class="resource-step-text">En la configuración del proyecto, escribe las instrucciones de contexto: quién eres, en qué área trabajas, qué tipo de tareas haces habitualmente.</div></div>
-                <div class="resource-step"><div class="resource-step-num">4</div><div class="resource-step-text">Desde ese momento, todas las conversaciones dentro del proyecto tendrán ese contexto activo automáticamente.</div></div>
-              </div>
-              <div class="resource-example">
-                <strong>Ejemplo de instrucción de contexto</strong>
-                "Trabajo en ML Studio, empresa de confección en Colombia. Estoy en el área de producción. Me ayudas con seguimiento de pedidos, comunicación con proveedores y reportes de planta. Sé directo, usa lenguaje operativo, no necesito explicaciones largas."
-              </div>
-              <div class="resource-tip">
-                <div class="resource-tip-label">Para tener en cuenta</div>
-                Los Proyectos también permiten adjuntar archivos que el GPT consulta en cada conversación. Si tienes una lista de precios, un catálogo o un procedimiento estándar, puedes cargarlo ahí una sola vez.
-              </div>
+          <div class="resource-body"><div class="resource-body-inner">
+            <p class="resource-p">Un <strong>Proyecto</strong> en ChatGPT es un espacio de trabajo que recuerda quién eres, en qué trabajas y cómo quieres que te responda — sin que tengas que repetirlo cada vez que abres una conversación nueva.</p>
+            <div class="resource-box"><div class="resource-box-label">Sin Proyecto — lo que pasa hoy</div><div class="resource-box-content">Abres ChatGPT → escribes el contexto de tu empresa → explicas tu cargo → describes la situación → haces la pregunta. Repites esto cada vez.</div></div>
+            <div class="resource-box"><div class="resource-box-label">Con Proyecto — lo que puede pasar</div><div class="resource-box-content">Abres ChatGPT → haces directamente la pregunta. El contexto ya está guardado. ChatGPT ya sabe quién eres y qué necesitas.</div></div>
+            <div class="resource-steps">
+              <div class="resource-step"><div class="resource-step-num">1</div><div class="resource-step-text">En ChatGPT, busca el panel izquierdo y haz clic en <strong>"Proyectos"</strong>.</div></div>
+              <div class="resource-step"><div class="resource-step-num">2</div><div class="resource-step-text">Crea uno nuevo y dale un nombre claro. Ej: <strong>"Trabajo — ML Studio"</strong>.</div></div>
+              <div class="resource-step"><div class="resource-step-num">3</div><div class="resource-step-text">Escribe las instrucciones de contexto: quién eres, área, tipo de tareas habituales.</div></div>
+              <div class="resource-step"><div class="resource-step-num">4</div><div class="resource-step-text">Desde ese momento todas las conversaciones dentro del proyecto tienen ese contexto activo.</div></div>
             </div>
-          </div>
+            <div class="resource-example"><strong>Ejemplo de instrucción de contexto</strong>"Trabajo en ML Studio, empresa de confección en Colombia. Estoy en el área de producción. Me ayudas con seguimiento de pedidos, comunicación con proveedores y reportes de planta. Sé directo, usa lenguaje operativo, no necesito explicaciones largas."</div>
+            <div class="resource-tip"><div class="resource-tip-label">Para tener en cuenta</div>Los Proyectos también permiten adjuntar archivos que el GPT consulta en cada conversación. Si tienes un catálogo, una lista de precios o un procedimiento, lo cargas una sola vez.</div>
+          </div></div>
         </div>
 
-        <!-- R2: Prompt -->
         <div class="resource-card" id="rc-2">
           <button class="resource-trigger" onclick="toggleResource('rc-2')">
-            <div class="resource-trigger-left">
-              <div class="resource-num">2</div>
-              <div>
-                <div class="resource-trigger-title">Cómo hacer un buen prompt</div>
-                <div class="resource-trigger-sub">La diferencia entre una respuesta útil y una que no sirve</div>
-              </div>
-            </div>
+            <div class="resource-trigger-left"><div class="resource-num">2</div><div><div class="resource-trigger-title">Cómo hacer un buen prompt</div><div class="resource-trigger-sub">La diferencia entre una respuesta útil y una que no sirve</div></div></div>
             <div class="resource-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
           </button>
-          <div class="resource-body">
-            <div class="resource-body-inner">
-              <p class="resource-p">Un <strong>prompt</strong> es simplemente lo que le escribes a ChatGPT. La calidad de la respuesta depende directamente de qué tan bien está escrito el prompt. No es magia — es instrucción.</p>
-              <p class="resource-p">La mayoría de personas escriben prompts demasiado cortos o demasiado vagos. ChatGPT responde según lo que recibe, así que si la instrucción es incompleta, la respuesta también lo será.</p>
-              <div class="resource-box">
-                <div class="resource-box-label">Estructura de un buen prompt — 3 partes</div>
-                <div class="resource-box-content">
-                  <strong>1. Rol o contexto:</strong> Quién eres o qué situación tienes.<br/>
-                  <strong>2. Tarea concreta:</strong> Qué quieres exactamente que haga.<br/>
-                  <strong>3. Formato o restricción:</strong> Cómo quieres que te lo entregue.
-                </div>
-              </div>
-              <div class="resource-example">
-                <strong>Prompt débil</strong>
-                "Redacta un correo para un proveedor"
-              </div>
-              <div class="resource-example">
-                <strong>Prompt efectivo</strong>
-                "Soy del área administrativa de una empresa de confección. Necesito escribirle un correo formal a un proveedor de telas para pedirle una cotización de 200 metros de tela algodón en color negro y gris. El tono debe ser profesional pero cercano. Máximo 150 palabras."
-              </div>
-              <p class="resource-p">La diferencia entre los dos ejemplos no es el tema — es el nivel de detalle. Mientras más específico seas, menos veces tendrás que corregir o pedir que lo haga de nuevo.</p>
-              <div class="resource-tip">
-                <div class="resource-tip-label">Regla práctica</div>
-                Si le explicarías lo mismo a un asistente humano nuevo que no conoce tu empresa, explícaselo también a ChatGPT. No asumas que ya sabe el contexto.
-              </div>
-            </div>
-          </div>
+          <div class="resource-body"><div class="resource-body-inner">
+            <p class="resource-p">Un <strong>prompt</strong> es simplemente lo que le escribes a ChatGPT. La calidad de la respuesta depende directamente de qué tan bien está escrito. No es magia — es instrucción.</p>
+            <div class="resource-box"><div class="resource-box-label">Estructura en 3 partes</div><div class="resource-box-content"><strong>1. Contexto:</strong> Quién eres o qué situación tienes.<br/><strong>2. Tarea concreta:</strong> Qué quieres exactamente que haga.<br/><strong>3. Formato:</strong> Cómo quieres que te lo entregue.</div></div>
+            <div class="resource-example"><strong>Prompt débil</strong>"Redacta un correo para un proveedor"</div>
+            <div class="resource-example"><strong>Prompt efectivo</strong>"Soy del área administrativa de ML Studio. Necesito escribirle a un proveedor de telas para cotizar 200 metros de algodón negro y gris. Tono profesional pero cercano. Máximo 150 palabras."</div>
+            <div class="resource-tip"><div class="resource-tip-label">Regla práctica</div>Si le explicarías lo mismo a un asistente humano nuevo que no conoce tu empresa, explícaselo también a ChatGPT. No asumas que ya sabe el contexto.</div>
+          </div></div>
         </div>
 
-        <!-- R3: Iniciar chat -->
         <div class="resource-card" id="rc-3">
           <button class="resource-trigger" onclick="toggleResource('rc-3')">
-            <div class="resource-trigger-left">
-              <div class="resource-num">3</div>
-              <div>
-                <div class="resource-trigger-title">Cómo iniciar un chat efectivo</div>
-                <div class="resource-trigger-sub">Los primeros mensajes determinan la calidad de toda la conversación</div>
-              </div>
-            </div>
+            <div class="resource-trigger-left"><div class="resource-num">3</div><div><div class="resource-trigger-title">Cómo iniciar un chat efectivo</div><div class="resource-trigger-sub">Los primeros mensajes determinan la calidad de toda la conversación</div></div></div>
             <div class="resource-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
           </button>
-          <div class="resource-body">
-            <div class="resource-body-inner">
-              <p class="resource-p">Muchas personas abren ChatGPT y escriben directamente la pregunta como si fuera una búsqueda en Google. El resultado suele ser una respuesta genérica que no aplica bien a su situación.</p>
-              <p class="resource-p">La forma en que inicias la conversación establece el "tono" de todo lo que sigue. Si das buen contexto al inicio, las respuestas siguientes son más precisas sin necesidad de corregir.</p>
-              <div class="resource-steps">
-                <div class="resource-step"><div class="resource-step-num">1</div><div class="resource-step-text"><strong>Preséntate brevemente.</strong> No es obligatorio, pero ayuda. "Soy coordinadora de diseño en una empresa de moda femenina en Colombia."</div></div>
-                <div class="resource-step"><div class="resource-step-num">2</div><div class="resource-step-text"><strong>Describe la situación.</strong> Qué estás enfrentando o qué necesitas resolver. Un párrafo corto es suficiente.</div></div>
-                <div class="resource-step"><div class="resource-step-num">3</div><div class="resource-step-text"><strong>Haz la solicitud específica.</strong> No "ayúdame con esto" sino "necesito que redactes / analices / me expliques / me hagas una lista de..."</div></div>
-                <div class="resource-step"><div class="resource-step-num">4</div><div class="resource-step-text"><strong>Indica el formato si importa.</strong> "En lista", "en menos de 100 palabras", "con lenguaje técnico", "como si me lo explicaras a mí que no soy experto".</div></div>
-              </div>
-              <div class="resource-example">
-                <strong>Ejemplo completo — área comercial</strong>
-                "Soy asesor comercial de una empresa de dotaciones empresariales. Estoy preparando una propuesta para una empresa que quiere uniformes para 80 empleados del área de mantenimiento. Necesito un esquema de argumentos de venta enfocados en durabilidad y costo-beneficio. Dámelo en formato de lista con máximo 6 puntos."
-              </div>
-              <div class="resource-tip">
-                <div class="resource-tip-label">Si la respuesta no fue lo que esperabas</div>
-                No empieces un chat nuevo. Corrígelo dentro de la misma conversación: "Está bien pero necesito que sea más corto" o "Hazlo en un tono más formal". ChatGPT recuerda todo lo que dijiste en esa sesión.
-              </div>
+          <div class="resource-body"><div class="resource-body-inner">
+            <p class="resource-p">Muchas personas abren ChatGPT y escriben directamente la pregunta como si fuera una búsqueda en Google. El resultado suele ser una respuesta genérica que no aplica bien a su situación.</p>
+            <div class="resource-steps">
+              <div class="resource-step"><div class="resource-step-num">1</div><div class="resource-step-text"><strong>Preséntate brevemente.</strong> "Soy coordinadora de diseño en ML Studio, línea de moda femenina."</div></div>
+              <div class="resource-step"><div class="resource-step-num">2</div><div class="resource-step-text"><strong>Describe la situación.</strong> Qué estás enfrentando o qué necesitas resolver.</div></div>
+              <div class="resource-step"><div class="resource-step-num">3</div><div class="resource-step-text"><strong>Haz la solicitud específica.</strong> "Necesito que redactes / analices / me hagas una lista de..."</div></div>
+              <div class="resource-step"><div class="resource-step-num">4</div><div class="resource-step-text"><strong>Indica el formato.</strong> "En lista", "máximo 100 palabras", "sin tecnicismos".</div></div>
             </div>
-          </div>
+            <div class="resource-tip"><div class="resource-tip-label">Si la respuesta no fue lo que esperabas</div>No empieces un chat nuevo. Corrígelo dentro de la misma conversación. ChatGPT recuerda todo lo que dijiste en esa sesión.</div>
+          </div></div>
         </div>
 
-        <!-- R4: GPT interno vs general -->
         <div class="resource-card" id="rc-4">
           <button class="resource-trigger" onclick="toggleResource('rc-4')">
-            <div class="resource-trigger-left">
-              <div class="resource-num">4</div>
-              <div>
-                <div class="resource-trigger-title">GPT interno vs ChatGPT general — cuándo usar cada uno</div>
-                <div class="resource-trigger-sub">La empresa ya tiene herramientas especializadas. Aprende a elegir</div>
-              </div>
-            </div>
+            <div class="resource-trigger-left"><div class="resource-num">4</div><div><div class="resource-trigger-title">GPT interno vs ChatGPT general — cuándo usar cada uno</div><div class="resource-trigger-sub">La empresa ya tiene herramientas especializadas. Aprende a elegir</div></div></div>
             <div class="resource-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
           </button>
-          <div class="resource-body">
-            <div class="resource-body-inner">
-              <p class="resource-p">La empresa ya creó GPTs personalizados para áreas específicas — jurídico, financiero, administrativo y por marca. Estos no son simplemente ChatGPT con otro nombre. Tienen instrucciones, documentos y contexto de la empresa ya cargados dentro.</p>
-              <div class="resource-compare">
-                <div class="resource-compare-col">
-                  <div class="resource-compare-title">ChatGPT general</div>
-                  <div class="resource-compare-item">No sabe nada de ML Studio</div>
-                  <div class="resource-compare-item">No conoce tus procesos internos</div>
-                  <div class="resource-compare-item">Responde de forma genérica</div>
-                  <div class="resource-compare-item">Útil para tareas generales</div>
-                  <div class="resource-compare-item">Requiere dar contexto cada vez</div>
-                </div>
-                <div class="resource-compare-col">
-                  <div class="resource-compare-title">GPT interno del área</div>
-                  <div class="resource-compare-item">Ya conoce el contexto de la empresa</div>
-                  <div class="resource-compare-item">Tiene documentos del área cargados</div>
-                  <div class="resource-compare-item">Respuestas alineadas al negocio</div>
-                  <div class="resource-compare-item">Diseñado para casos específicos</div>
-                  <div class="resource-compare-item">Menos fricción desde el primer mensaje</div>
-                </div>
-              </div>
-              <p class="resource-p"><strong>¿Cuándo usar el GPT interno?</strong> Cuando la tarea está relacionada directamente con el área para la que fue creado. El GPT jurídico para revisar contratos, el financiero para análisis de costos, los de marca para contenido alineado a cada línea.</p>
-              <p class="resource-p"><strong>¿Cuándo usar ChatGPT general?</strong> Para tareas que no tienen que ver con el área específica, exploración de ideas, redacción libre, o cuando quieres una perspectiva sin filtros del negocio.</p>
-              <div class="resource-tip">
-                <div class="resource-tip-label">Lo más importante</div>
-                Si no sabes exactamente qué hace el GPT de tu área, pregúntale directamente: "¿Para qué fuiste creado y qué tipo de tareas puedes ayudarme a resolver?" Te responderá con su propósito específico.
-              </div>
+          <div class="resource-body"><div class="resource-body-inner">
+            <p class="resource-p">La empresa ya creó GPTs personalizados — jurídico, financiero, administrativo y por marca. Tienen instrucciones, documentos y contexto de la empresa ya cargados. No son simplemente ChatGPT con otro nombre.</p>
+            <div class="resource-compare">
+              <div class="resource-compare-col"><div class="resource-compare-title">ChatGPT general</div><div class="resource-compare-item">No sabe nada de ML Studio</div><div class="resource-compare-item">Responde de forma genérica</div><div class="resource-compare-item">Requiere contexto cada vez</div><div class="resource-compare-item">Útil para cualquier tema</div></div>
+              <div class="resource-compare-col"><div class="resource-compare-title">GPT interno del área</div><div class="resource-compare-item">Ya conoce el contexto de la empresa</div><div class="resource-compare-item">Respuestas alineadas al negocio</div><div class="resource-compare-item">Menos fricción desde el inicio</div><div class="resource-compare-item">Diseñado para casos específicos</div></div>
             </div>
-          </div>
+            <div class="resource-tip"><div class="resource-tip-label">Si no sabes qué hace el GPT de tu área</div>Ábrelo y pregúntale: "¿Para qué fuiste creado y qué tipo de tareas puedes ayudarme a resolver?"</div>
+          </div></div>
         </div>
 
-        <!-- R5: FAQ -->
         <div class="resource-card" id="rc-5">
           <button class="resource-trigger" onclick="toggleResource('rc-5')">
-            <div class="resource-trigger-left">
-              <div class="resource-num">5</div>
-              <div>
-                <div class="resource-trigger-title">Preguntas frecuentes</div>
-                <div class="resource-trigger-sub">Las dudas más comunes sobre el uso de IA en el trabajo</div>
-              </div>
-            </div>
+            <div class="resource-trigger-left"><div class="resource-num">5</div><div><div class="resource-trigger-title">Preguntas frecuentes</div><div class="resource-trigger-sub">Las dudas más comunes — respondidas sin rodeos</div></div></div>
             <div class="resource-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
           </button>
-          <div class="resource-body">
-            <div class="resource-body-inner">
-              <div class="resource-faq-item">
-                <div class="resource-faq-q">¿Puedo confiar en lo que me dice ChatGPT?</div>
-                <div class="resource-faq-a">Depende del tipo de tarea. Para redactar, organizar o resumir información, es muy confiable. Para datos específicos, fechas, cifras o información legal, siempre verifica. ChatGPT puede equivocarse en hechos concretos — no en razonamiento o escritura.</div>
-              </div>
-              <div class="resource-faq-item">
-                <div class="resource-faq-q">¿Lo que escribo en ChatGPT es confidencial?</div>
-                <div class="resource-faq-a">Con ChatGPT Enterprise — que es el que usa la empresa — los datos no se usan para entrenar modelos y hay mayor control de privacidad que en la versión gratuita. Aun así, evita pegar información extremadamente sensible como contraseñas, datos bancarios completos o información personal de clientes.</div>
-              </div>
-              <div class="resource-faq-item">
-                <div class="resource-faq-q">¿Por qué a veces me da respuestas muy largas que no necesito?</div>
-                <div class="resource-faq-a">Porque por defecto intenta ser exhaustivo. La solución es simple: díselo en el prompt. "Responde en máximo 3 líneas", "sé directo y conciso", "dame solo la conclusión". También puedes escribir "sé breve" al final de cualquier mensaje.</div>
-              </div>
-              <div class="resource-faq-item">
-                <div class="resource-faq-q">¿Tengo que saber de tecnología para usar bien la IA?</div>
-                <div class="resource-faq-a">No. La habilidad principal que necesitas es saber explicar bien lo que quieres — igual que le explicarías a un asistente humano. Si puedes escribir un correo claro, puedes escribir un buen prompt.</div>
-              </div>
-              <div class="resource-faq-item">
-                <div class="resource-faq-q">¿Puedo pedirle que corrija su propia respuesta?</div>
-                <div class="resource-faq-a">Sí, siempre. De hecho es la forma correcta de trabajar. "Esto está bien pero hazlo más formal", "el segundo punto no aplica a mi caso, ajústalo", "está muy largo, resume". No tienes que empezar de cero — corrígelo en la misma conversación.</div>
-              </div>
-              <div class="resource-faq-item">
-                <div class="resource-faq-q">¿La IA me va a quitar el trabajo?</div>
-                <div class="resource-faq-a">La IA no reemplaza el criterio, el contexto del negocio ni las relaciones. Lo que sí hace es eliminar el tiempo que gastas en tareas repetitivas y de bajo valor — redactar borradores, organizar información, resumir documentos — para que puedas dedicarle más tiempo a lo que realmente requiere tu juicio.</div>
-              </div>
-            </div>
-          </div>
+          <div class="resource-body"><div class="resource-body-inner">
+            <div class="resource-faq-item"><div class="resource-faq-q">¿Puedo confiar en lo que me dice ChatGPT?</div><div class="resource-faq-a">Para redactar, organizar o resumir, muy confiable. Para datos específicos, cifras o información legal, siempre verifica. Su fortaleza está en el razonamiento y la escritura.</div></div>
+            <div class="resource-faq-item"><div class="resource-faq-q">¿Lo que escribo es confidencial?</div><div class="resource-faq-a">Con ChatGPT Enterprise los datos no se usan para entrenar modelos. Evita pegar contraseñas o datos bancarios. Para el trabajo del día a día, puedes usarlo con tranquilidad.</div></div>
+            <div class="resource-faq-item"><div class="resource-faq-q">¿Por qué me da respuestas muy largas?</div><div class="resource-faq-a">Por defecto intenta ser exhaustivo. La solución: díselo en el prompt. "Responde en máximo 3 líneas", "sé directo", "dame solo la conclusión".</div></div>
+            <div class="resource-faq-item"><div class="resource-faq-q">¿Tengo que saber de tecnología para usarlo bien?</div><div class="resource-faq-a">No. La habilidad principal es saber explicar bien lo que quieres — igual que le explicarías a un asistente humano. Si puedes escribir un correo claro, puedes escribir un buen prompt.</div></div>
+            <div class="resource-faq-item"><div class="resource-faq-q">¿Puedo pedirle que corrija su propia respuesta?</div><div class="resource-faq-a">Sí, siempre. "Hazlo más formal", "el tercer punto no aplica, cámbialo", "está muy largo, resume". No tienes que empezar de cero — corrígelo en la misma conversación.</div></div>
+            <div class="resource-faq-item"><div class="resource-faq-q">¿La IA me va a quitar el trabajo?</div><div class="resource-faq-a">La IA no reemplaza el criterio, el contexto del negocio ni las relaciones. Lo que hace es eliminar tiempo en tareas repetitivas para que puedas dedicarle más tiempo a lo que requiere tu juicio.</div></div>
+          </div></div>
         </div>
-      </div>
 
-      <!-- CTA -->
-      <div class="cta-section">
-        <h3 class="cta-title">¿Quieres profundizar en este diagnóstico?</h3>
-        <p class="cta-desc">Este resultado es el punto de partida. Una sesión de trabajo puede convertir estas oportunidades en un plan concreto de implementación para los próximos 30 días.</p>
-        <div class="cta-name">Joan Nicolas Benavides</div>
-        <div class="cta-role">Estrategia e implementación de IA · IAsolutions</div>
+        <!-- Pregunta de apertura + botón a guía completa -->
+        <div style="margin-top:20px;padding-top:18px;border-top:1px solid var(--border)">
+          <p style="font-size:13px;color:var(--ink-soft);margin-bottom:12px;text-align:center">¿Quieres profundizar en estos resultados? En la guía encuentras tu plan de acción, plantillas para tu área y mucho más.</p>
+          <a href="guia.html" target="_blank" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--accent);color:#fff;border-radius:var(--radius-sm);padding:14px 18px;text-decoration:none;font-size:14px;font-weight:600;transition:var(--t)" onmouseover="this.style.background='var(--accent-2)'" onmouseout="this.style.background='var(--accent)'">
+            <span class="guia-text-desktop">Ver guía completa con contenido personalizado para tu área</span>
+            <span class="guia-text-mobile">Ver mi guía personalizada</span>
+            <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </a>
+        </div>
       </div>
 
       <div class="export-bar">
@@ -805,14 +814,23 @@
 <div class="toast" id="toast"></div>
 
 <script>
+// ══ CONFIG — cambia esto para adaptar a otro cliente ══════
 var APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwf2vW8oYV4eG7kXFT5b7T649lyLxWeRQj_4DjX3yZCv0Olchf8DVCVgcfuxO0zPUhjkw/exec";
-var TOTAL_STEPS=11;
-var MULTI_STEPS=[3,4,9];
+var EMPRESA_NOMBRE ="ML Studio";
+var CODIGO_PREFIJO ="ML";
+var WA_NUMBER      ="573124365854";
+var GUIA_URL       ="guia.html";
+// ═════════════════════════════════════════════════════════
+
+var TOTAL_STEPS=12;
+var MULTI_STEPS=[3,4,9,12];
 var currentStep=1;
 var answers={};
-var multiAnswers={3:[],4:[],9:[]};
+var multiAnswers={3:[],4:[],9:[],12:[]};
 var diagnosis={};
 var isFacilitator=(window.location.search.indexOf('modo=facilitador')>-1);
+var isDemoMode=(window.location.search.indexOf('modo=demo')>-1);
+var codigoAcceso=generateCodigo();
 
 var metadata={
   id_respuesta:generateUUID(),fecha_inicio:new Date().toISOString(),
@@ -824,9 +842,10 @@ var metadata={
 };
 var utmParams=parseUTM();
 
-var SECTION_LABELS={1:'Contexto del rol',2:'Frecuencia de uso',3:'Tipo de uso',4:'Fricciones operativas',5:'Repetición de contexto',6:'Gestión del conocimiento',7:'Adopción de GPTs internos',8:'Impacto percibido',9:'Automatización',10:'Perspectiva abierta',11:'Perspectiva abierta'};
+var SECTION_LABELS={1:'Contexto del rol',2:'Frecuencia de uso',3:'Tipo de uso',4:'Fricciones operativas',5:'Repetición de contexto',6:'Gestión del conocimiento',7:'Adopción de GPTs internos',8:'Impacto percibido',9:'Automatización',10:'Perspectiva abierta',11:'Perspectiva abierta',12:'GPT preferido'};
 
 function generateUUID(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16)});}
+function generateCodigo(){var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var code='';for(var i=0;i<4;i++)code+=chars.charAt(Math.floor(Math.random()*chars.length));return CODIGO_PREFIJO+'-'+code;}
 function detectBrowser(){var ua=navigator.userAgent;if(ua.indexOf('Edg')>-1)return 'Edge';if(ua.indexOf('Chrome')>-1)return 'Chrome';if(ua.indexOf('Firefox')>-1)return 'Firefox';if(ua.indexOf('Safari')>-1)return 'Safari';return 'Otro';}
 function detectDevice(){if(/Mobi|Android/i.test(navigator.userAgent))return 'mobile';if(/Tablet|iPad/i.test(navigator.userAgent))return 'tablet';return 'desktop';}
 function parseUTM(){var p={},s=window.location.search.substring(1);if(!s)return p;s.split('&').forEach(function(pair){var kv=pair.split('=');p[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||'');});return{utm_source:p.utm_source||'',utm_medium:p.utm_medium||'',utm_campaign:p.utm_campaign||'',empresa:p.empresa||''};}
@@ -834,7 +853,79 @@ function showToast(msg){var t=document.getElementById('toast');t.textContent=msg
 function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
 function updateCharCounter(tid,cid,max){var len=document.getElementById(tid).value.length;document.getElementById(cid).textContent=len+' / '+max;}
 
-function startDiagnostic(){metadata.fecha_inicio=new Date().toISOString();showScreen('screen-form');updateProgress();}
+// ── LocalStorage ──────────────────────────────────────────
+function saveToLocal(data){try{localStorage.setItem('diagnostico_ia',JSON.stringify(data));}catch(e){}}
+function loadFromLocal(){try{var d=localStorage.getItem('diagnostico_ia');return d?JSON.parse(d):null;}catch(e){return null;}}
+function clearLocal(){try{localStorage.removeItem('diagnostico_ia');}catch(e){}}
+
+// ── Copiar código al portapapeles ─────────────────────────
+function copiarCodigo(){
+  navigator.clipboard.writeText(codigoAcceso).then(function(){
+    showToast('Código copiado: '+codigoAcceso);
+  }).catch(function(){
+    showToast('Tu código: '+codigoAcceso);
+  });
+}
+
+// ── Loader + recuperación al cargar la página ─────────────
+window.addEventListener('DOMContentLoaded',function(){
+  // Ocultar loader
+  setTimeout(function(){
+    var loader=document.getElementById('page-loader');
+    if(loader)loader.classList.add('hidden');
+  },600);
+
+  // Banner de recuperación si hay diagnóstico guardado
+  var saved=loadFromLocal();
+  if(saved&&saved.codigo){
+    var banner=document.getElementById('recovery-banner');
+    var codeEl=document.getElementById('recovery-code');
+    if(banner&&codeEl){
+      codeEl.textContent=saved.codigo;
+      banner.style.display='flex';
+    }
+  }
+
+  // Indicador de modo demo en topbar
+  if(isDemoMode){
+    var label=document.querySelector('.topbar-label');
+    if(label){label.textContent='Diagnóstico de IA — MODO DEMO';label.style.color='var(--amber)';}
+  }
+});
+
+function recoverDiagnosis(){
+  var saved=loadFromLocal();
+  if(!saved)return;
+  // Restaurar estado
+  answers=saved.answers||{};
+  multiAnswers=saved.multiAnswers||{3:[],4:[],9:[],12:[]};
+  codigoAcceso=saved.codigo||codigoAcceso;
+  diagnosis=saved.diagnosis||{};
+  if(diagnosis.scoring&&diagnosis.maturity&&diagnosis.profile){
+    renderResults(diagnosis.profile,diagnosis.maturity,diagnosis.alerts||[],diagnosis.recs||[],diagnosis.scoring);
+    showScreen('screen-results');
+    document.getElementById('topbar-step-counter').textContent='';
+    document.getElementById('recovery-banner').style.display='none';
+  }
+}
+
+function dismissRecovery(){
+  document.getElementById('recovery-banner').style.display='none';
+  clearLocal();
+}
+
+// ── WhatsApp ──────────────────────────────────────────────
+function openWhatsApp(){
+  var msg=encodeURIComponent('Hola Joan, acabo de completar el diagnóstico de IA. Mi código personal es: *'+codigoAcceso+'*. Quedo pendiente de la sesión.');
+  window.open('https://wa.me/'+WA_NUMBER+'?text='+msg,'_blank');
+}
+
+function startDiagnostic(){
+  document.getElementById('recovery-banner').style.display='none';
+  metadata.fecha_inicio=new Date().toISOString();
+  showScreen('screen-form');
+  updateProgress();
+}
 
 function selectSingle(step,value,el){
   document.querySelectorAll('#opts-'+step+' .option-card').forEach(function(c){c.classList.remove('selected');});
@@ -951,7 +1042,7 @@ function generateRecommendations(profile){
 }
 
 function submitDiagnostic(){
-  if(!validateStep(11))return;
+  if(!validateStep(12))return;
   showScreen('screen-sending');window.scrollTo({top:0,behavior:'smooth'});
   metadata.fecha_fin=new Date().toISOString();
   metadata.duracion_segundos=Math.round((new Date(metadata.fecha_fin)-new Date(metadata.fecha_inicio))/1000);
@@ -959,11 +1050,12 @@ function submitDiagnostic(){
   diagnosis={scoring,maturity,profile,alerts,recs};
   var payload={
     timestamp:new Date().toISOString(),id_respuesta:metadata.id_respuesta,
+    codigo_acceso:codigoAcceso,
     fecha_inicio:metadata.fecha_inicio,fecha_fin:metadata.fecha_fin,duracion_segundos:metadata.duracion_segundos,
     area_trabajo:answers.step1||'',frecuencia_uso_ia:answers.step2||'',
     tipo_uso:(multiAnswers[3]||[]).join(', '),friccion_principal:(multiAnswers[4]||[]).join(', '),
     repeticion_contexto:answers.step5||'',organizacion_conocimiento:answers.step6||'',
-    uso_gpts:answers.step7||'',impacto_productividad:answers.step8||'',
+    uso_gpts:answers.step7||'',gpt_preferido:(multiAnswers[12]||[]).join(', '),impacto_productividad:answers.step8||'',
     automatizacion_deseada:(multiAnswers[9]||[]).join(', '),
     respuesta_abierta_1:answers.step10||'',respuesta_abierta_2:answers.step11||'',
     perfil_usuario:profile.name,nivel_madurez_ia:maturity.label,score_total:scoring.total,
@@ -971,13 +1063,44 @@ function submitDiagnostic(){
     metadata:{navegador:metadata.navegador,dispositivo:metadata.dispositivo,idioma:metadata.idioma,zona_horaria:metadata.zona_horaria,pasos_retrocedidos:metadata.pasos_retrocedidos,user_agent_raw:metadata.user_agent_raw},
     utm_source:utmParams.utm_source,utm_medium:utmParams.utm_medium,utm_campaign:utmParams.utm_campaign,empresa:utmParams.empresa
   };
-  fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
+  // En modo demo no enviamos datos al Sheet — solo mostramos el diagnóstico
+  if(!isDemoMode){
+    fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){});
+  }
+
+  // Guardar en localStorage para recuperación
+  saveToLocal({
+    codigo:codigoAcceso,
+    answers:answers,
+    multiAnswers:multiAnswers,
+    diagnosis:{scoring:scoring,maturity:maturity,profile:profile,alerts:alerts,recs:recs},
+    fecha:new Date().toISOString()
+  });
   setTimeout(function(){renderResults(profile,maturity,alerts,recs,scoring);showScreen('screen-results');window.scrollTo({top:0,behavior:'smooth'});document.getElementById('topbar-step-counter').textContent='';},1800);
 }
 
 function renderResults(profile,maturity,alerts,recs,scoring){
   document.getElementById('results-subtitle').textContent='Área: '+(answers.step1||'—')+'  ·  '+maturity.label;
-  document.getElementById('score-number').innerHTML=scoring.total+'<span> / 50</span>';
+  var cd=document.getElementById('codigo-display');if(cd)cd.textContent=codigoAcceso;
+
+  // Gauge SVG animado
+  // Paleta progresiva en azul — sin rojo ni ámbar para no activar lectura de alarma
+  var GAUGE_COLORS={1:'#93a8f4',2:'#5b7ef5',3:'#1a1aff',4:'#6366f1'};
+  var gaugeColor=GAUGE_COLORS[maturity.level]||'#1a1aff';
+  var ARC_LEN=214; // π * radio 68 ≈ 214 — longitud del semicírculo
+  var pct=Math.min(scoring.total/50,1);
+  var offset=ARC_LEN-(pct*ARC_LEN);
+  var gaugeFill=document.getElementById('gauge-fill');
+  var gaugeNum=document.getElementById('gauge-num');
+  if(gaugeFill){
+    gaugeFill.style.stroke=gaugeColor;
+    gaugeFill.setAttribute('stroke-dasharray',ARC_LEN);
+    gaugeFill.setAttribute('stroke-dashoffset',ARC_LEN);
+    // Inicia en vacío y anima hasta el valor real
+    setTimeout(function(){gaugeFill.style.strokeDashoffset=offset;},100);
+  }
+  if(gaugeNum)gaugeNum.textContent=scoring.total;
+
   document.getElementById('score-context-text').textContent=maturity.contextText;
   document.getElementById('score-context-sub').textContent=maturity.contextSub;
   document.getElementById('result-profile').textContent=profile.name;
@@ -995,7 +1118,12 @@ function renderResults(profile,maturity,alerts,recs,scoring){
     document.getElementById('facilitator-panel').classList.add('visible');
     var axes=scoring.axes,axisLabels={intensity:'Intensidad',sophistication:'Sofisticación',friction:'Fricción (inv.)',knowledge:'Conocimiento',automation:'Automatización'},axisMax={intensity:10,sophistication:10,friction:9,knowledge:5,automation:5};
     document.getElementById('axes-grid').innerHTML=Object.keys(axes).map(function(k){var pct=Math.round((axes[k]/(axisMax[k]||10))*100);return'<div><div class="axis-label">'+axisLabels[k]+'</div><div class="axis-bar-track"><div class="axis-bar-fill" style="width:'+pct+'%"></div></div><div class="axis-value">'+axes[k]+' / '+axisMax[k]+'</div></div>';}).join('');
-    document.getElementById('fac-details').innerHTML='<div class="fac-row"><strong>Perfil:</strong> '+profile.name+' — Score: '+scoring.total+'</div><div class="fac-row"><strong>Usos:</strong> '+(multiAnswers[3]||[]).join(', ')+'</div><div class="fac-row"><strong>Fricciones:</strong> '+(multiAnswers[4]||[]).join(', ')+'</div><div class="fac-row"><strong>Automatización:</strong> '+(multiAnswers[9]||[]).join(', ')+'</div>';
+    document.getElementById('fac-details').innerHTML=
+      '<div class="fac-row"><strong>Perfil:</strong> '+profile.name+' — Score: '+scoring.total+'</div>'
+      +'<div class="fac-row"><strong>GPTs usados:</strong> '+(multiAnswers[12]||[]).join(', ')+'</div>'
+      +'<div class="fac-row"><strong>Usos:</strong> '+(multiAnswers[3]||[]).join(', ')+'</div>'
+      +'<div class="fac-row"><strong>Fricciones:</strong> '+(multiAnswers[4]||[]).join(', ')+'</div>'
+      +'<div class="fac-row"><strong>Automatización:</strong> '+(multiAnswers[9]||[]).join(', ')+'</div>';
   }
   renderCharts(scoring);
 }
@@ -1018,7 +1146,7 @@ function renderCharts(scoring){
 
 function downloadJSON(){
   var d=diagnosis;
-  var data={id_respuesta:metadata.id_respuesta,fecha:metadata.fecha_fin,area_trabajo:answers.step1,perfil:d.profile?d.profile.name:'',nivel_madurez:d.maturity?d.maturity.label:'',score_total:d.scoring?d.scoring.total:0,alertas:(d.alerts||[]).map(function(a){return a.title;}),recomendaciones:(d.recs||[]).map(function(r){return r.title;}),respuestas:{frecuencia_uso:answers.step2,tipo_uso:(multiAnswers[3]||[]).join(', '),friccion_principal:(multiAnswers[4]||[]).join(', '),repeticion_contexto:answers.step5,organizacion_conocimiento:answers.step6,uso_gpts:answers.step7,impacto_productividad:answers.step8,automatizacion_deseada:(multiAnswers[9]||[]).join(', '),respuesta_abierta_1:answers.step10,respuesta_abierta_2:answers.step11}};
+  var data={id_respuesta:metadata.id_respuesta,fecha:metadata.fecha_fin,area_trabajo:answers.step1,perfil:d.profile?d.profile.name:'',nivel_madurez:d.maturity?d.maturity.label:'',score_total:d.scoring?d.scoring.total:0,alertas:(d.alerts||[]).map(function(a){return a.title;}),recomendaciones:(d.recs||[]).map(function(r){return r.title;}),respuestas:{frecuencia_uso:answers.step2,tipo_uso:(multiAnswers[3]||[]).join(', '),friccion_principal:(multiAnswers[4]||[]).join(', '),repeticion_contexto:answers.step5,organizacion_conocimiento:answers.step6,uso_gpts:answers.step7,gpt_preferido:(multiAnswers[12]||[]).join(', '),impacto_productividad:answers.step8,automatizacion_deseada:(multiAnswers[9]||[]).join(', '),respuesta_abierta_1:answers.step10,respuesta_abierta_2:answers.step11}};
   var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;a.download='diagnostico_ia_'+metadata.id_respuesta.substring(0,8)+'.json';a.click();URL.revokeObjectURL(url);
   showToast('Diagnóstico descargado');
@@ -1031,13 +1159,14 @@ function copyDiagnosis(){
 }
 
 function restartDiagnostic(){
-  currentStep=1;answers={};multiAnswers={3:[],4:[],9:[]};diagnosis={};
+  currentStep=1;answers={};multiAnswers={3:[],4:[],9:[],12:[]};diagnosis={};
+  codigoAcceso=generateCodigo();
   metadata={id_respuesta:generateUUID(),fecha_inicio:new Date().toISOString(),fecha_fin:null,duracion_segundos:null,navegador:detectBrowser(),dispositivo:detectDevice(),idioma:navigator.language||'es',zona_horaria:Intl.DateTimeFormat().resolvedOptions().timeZone||'',pasos_retrocedidos:0,user_agent_raw:navigator.userAgent};
   document.querySelectorAll('.option-card').forEach(function(c){c.classList.remove('selected');});
   document.querySelectorAll('.open-textarea').forEach(function(t){t.value='';});
   document.getElementById('counter-1').textContent='0 / 600';document.getElementById('counter-2').textContent='0 / 600';
   document.querySelectorAll('.error-msg').forEach(function(e){e.classList.remove('visible');});
-  [3,4,9].forEach(function(s){var b=document.getElementById('btn-'+s);if(b)b.textContent='Continuar';});
+  [3,4,9,12].forEach(function(s){var b=document.getElementById('btn-'+s);if(b)b.textContent='Continuar';});
   document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active','slide-back');s.style.display='none';});
   var first=document.getElementById('step-1');first.style.display='block';first.classList.add('active');
   document.getElementById('maturity-fill').style.width='0%';
