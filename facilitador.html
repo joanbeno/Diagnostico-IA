@@ -3,819 +3,778 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Dashboard Facilitador — ML Studio</title>
+<title>Guia de IA - ML Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
 <style>
 :root{
   --ink:#0d0d12;--ink-soft:#3a3a4a;--ink-muted:#8888a0;
   --bg:#f7f7f9;--bg-card:#fff;--border:#e4e4ee;
-  --accent:#1a1aff;--accent-bg:#f0f0ff;
+  --accent:#1a1aff;--accent-2:#0d0dcc;--accent-bg:#f0f0ff;
   --green:#00875a;--green-bg:#e6f5f0;
   --amber:#b45309;--amber-bg:#fef3c7;
   --red:#c0392b;--red-bg:#fdecea;
+  --purple:#6d28d9;--purple-bg:#f3f0ff;
   --radius:14px;--radius-sm:8px;
   --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
-  --t:.2s cubic-bezier(.4,0,.2,1);
+  --t:.22s cubic-bezier(.4,0,.2,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-/* LOGIN */
-.login-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-.login-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;max-width:400px;width:100%;box-shadow:var(--shadow);text-align:center}
-.login-logo{height:40px;max-width:180px;object-fit:contain;margin-bottom:24px}
-.login-title{font-family:"DM Serif Display",serif;font-size:26px;margin-bottom:6px}
-.login-sub{font-size:13px;color:var(--ink-muted);margin-bottom:28px}
-.login-field{margin-bottom:14px;text-align:left}
-.login-label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-muted);display:block;margin-bottom:6px}
-.login-input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:15px;color:var(--ink);background:var(--bg);outline:none;transition:var(--t)}
-.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,26,255,.08)}
-.login-error{font-size:13px;color:var(--red);margin-top:-8px;margin-bottom:12px;display:none}
-.login-error.show{display:block}
-
-/* BUTTONS */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:var(--t);white-space:nowrap;user-select:none}
-.btn-primary{background:var(--accent);color:#fff;width:100%}
-.btn-primary:hover{background:#0d0dcc;transform:translateY(-1px)}
-.btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border)}
-.btn-ghost:hover{background:var(--bg);color:var(--ink)}
-.btn-sm{padding:7px 14px;font-size:13px;width:auto}
-.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+/* LOADER */
+.loader{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s,visibility .4s}
+.loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.loader-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:ldot 1.2s ease-in-out infinite}
+.loader-dot:nth-child(2){animation-delay:.2s;margin:0 6px}
+.loader-dot:nth-child(3){animation-delay:.4s}
+@keyframes ldot{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
 
 /* TOPBAR */
-.topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(247,247,249,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;z-index:100;gap:14px}
-.topbar-logo{height:28px;max-width:140px;object-fit:contain;object-position:left}
-.topbar-divider{width:1px;height:16px;background:var(--border)}
-.topbar-label{font-size:11px;font-weight:700;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
-.topbar-right{margin-left:auto;display:flex;align-items:center;gap:12px}
-.refresh-indicator{font-size:12px;color:var(--ink-muted)}
-.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;margin-right:5px;animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.topbar{position:fixed;top:0;left:0;right:0;height:58px;background:rgba(247,247,249,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;z-index:100;gap:14px}
+.topbar-logo{height:30px;max-width:160px;object-fit:contain;object-position:left}
+.topbar-divider{width:1px;height:18px;background:var(--border)}
+.topbar-label{font-size:11px;font-weight:600;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.progress-pill{font-size:12px;color:var(--ink-muted);font-weight:500}
 
-/* DASHBOARD */
-.dashboard{padding:56px 0 0}
-.dash-inner{max-width:1100px;margin:0 auto;padding:28px 28px 60px}
+/* PROGRESS BAR */
+.guide-progress{height:3px;background:var(--border);position:fixed;top:58px;left:0;right:0;z-index:99}
+.guide-progress-fill{height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1)}
 
-/* SECTION HEADERS */
-.section-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-.section-title{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);display:flex;align-items:center;gap:8px}
-.section-tag{padding:2px 9px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:.05em}
-.tag-blue{background:var(--accent-bg);color:var(--accent)}
-.tag-green{background:var(--green-bg);color:var(--green)}
-.tag-amber{background:var(--amber-bg);color:var(--amber)}
+/* SHELL */
+.guide-shell{padding-top:58px;min-height:100vh}
 
-/* CONTROLS */
-.controls-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow)}
-.control-label{font-size:12px;font-weight:600;color:var(--ink-muted);letter-spacing:.04em;text-transform:uppercase}
-.exclude-input{flex:1;min-width:160px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:13px;color:var(--ink);outline:none;transition:var(--t)}
-.exclude-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,26,255,.08)}
+/* SCREENS */
+.gscreen{display:none;min-height:calc(100vh - 58px);flex-direction:column}
+.gscreen.active{display:flex;animation:fadeUp .35s cubic-bezier(.4,0,.2,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-/* KPI GRID */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px}
-.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
-.kpi-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px}
-.kpi-value{font-family:"DM Serif Display",serif;font-size:36px;color:var(--ink);line-height:1;margin-bottom:4px;letter-spacing:-.5px}
-.kpi-sub{font-size:12px;color:var(--ink-muted)}
+/* CONTENT */
+.guide-content{max-width:740px;margin:0 auto;width:100%;padding:44px 28px 120px}
 
-/* CHARTS */
-.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
-.chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow)}
-.chart-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:16px}
-.chart-wrap{position:relative;height:160px}
+/* TYPOGRAPHY */
+.guide-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+.guide-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.guide-title{font-family:"DM Serif Display",serif;font-size:clamp(26px,4vw,40px);line-height:1.15;margin-bottom:12px;letter-spacing:-.3px}
+.guide-title em{font-style:italic;color:var(--accent)}
+.guide-subtitle{font-size:15px;color:var(--ink-soft);font-weight:300;line-height:1.7;margin-bottom:28px}
 
-/* FRICCIONES */
-.friction-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px;box-shadow:var(--shadow)}
-.friction-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
-.friction-row:last-child{border-bottom:none}
-.friction-label{font-size:13px;color:var(--ink);flex:1;min-width:0}
-.friction-bar-wrap{width:160px;height:6px;background:var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
-.friction-bar{height:100%;background:var(--accent);border-radius:100px;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.friction-count{font-size:12px;font-weight:600;color:var(--ink-muted);min-width:40px;text-align:right}
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.card-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px}
+.card-text{font-size:14px;color:var(--ink-soft);line-height:1.7}
+.card-text p{margin-bottom:10px}
+.card-text p:last-child{margin-bottom:0}
+.card-text strong{color:var(--ink);font-weight:600}
 
-/* GPT ADOPCION */
-.gpt-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px;box-shadow:var(--shadow)}
-.gpt-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)}
-.gpt-row:last-child{border-bottom:none}
-.gpt-name{font-size:13px;color:var(--ink);flex:1}
-.gpt-bar-wrap{width:140px;height:6px;background:var(--border);border-radius:100px;overflow:hidden;flex-shrink:0}
-.gpt-bar{height:100%;border-radius:100px;transition:width .8s cubic-bezier(.4,0,.2,1)}
-.gpt-count{font-size:12px;font-weight:600;color:var(--ink-muted);min-width:40px;text-align:right}
+/* HIGHLIGHTS */
+.hl{border-left:3px solid var(--accent);background:var(--accent-bg);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 16px;margin-bottom:14px;font-size:14px;color:var(--ink-soft);line-height:1.65}
+.hl strong{color:var(--accent);display:block;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:3px}
+.hl-green{background:var(--green-bg);border-left-color:var(--green)}
+.hl-green strong{color:var(--green)}
+.hl-amber{background:var(--amber-bg);border-left-color:var(--amber)}
+.hl-amber strong{color:var(--amber)}
+.hl-dark{background:var(--ink);color:rgba(255,255,255,.75);border-left-color:rgba(255,255,255,.3)}
+.hl-dark strong{color:rgba(255,255,255,.45)}
 
-/* PATTERNS */
-.patterns-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px;box-shadow:var(--shadow)}
-.patterns-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:16px}
-.pattern-item{background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px}
-.pattern-item-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px}
-.pattern-item-value{font-size:14px;font-weight:600;color:var(--ink);line-height:1.4}
-.pattern-rec{background:var(--ink);color:#fff;border-radius:var(--radius-sm);padding:16px 18px;font-size:13px;line-height:1.7;color:rgba(255,255,255,.8)}
-.pattern-rec strong{color:#fff;font-weight:600}
+/* COMPARE */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.compare-col{border-radius:var(--radius-sm);padding:14px 16px}
+.compare-col.bad{background:var(--red-bg);border:1px solid rgba(192,57,43,.12)}
+.compare-col.good{background:var(--green-bg);border:1px solid rgba(0,135,90,.12)}
+.compare-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:7px}
+.compare-col.bad .compare-label{color:var(--red)}
+.compare-col.good .compare-label{color:var(--green)}
+.compare-text{font-size:13px;color:var(--ink);line-height:1.6}
 
-/* LOOKUP */
-.lookup-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:20px 22px;margin-bottom:20px;box-shadow:var(--shadow)}
-.lookup-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px}
-.lookup-code-input{flex:1;min-width:130px;padding:9px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:15px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;outline:none;transition:var(--t);color:var(--ink)}
-.lookup-code-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,26,255,.08)}
-.lookup-result-card{margin-top:16px;display:none;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px}
-.lookup-result-card.show{display:block;animation:fadeUp .3s cubic-bezier(.4,0,.2,1) both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.lookup-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-.lookup-item-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:3px}
-.lookup-item-value{font-size:13px;color:var(--ink);line-height:1.5}
+/* STEPS */
+.step-list{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
+.step-item{display:flex;align-items:flex-start;gap:12px}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex-shrink:0;margin-top:1px}
+.step-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.step-text{font-size:13px;color:var(--ink-soft);line-height:1.6}
+
+/* CHAT SIMULATOR */
+.chat-sim{background:#f0f2f5;border-radius:var(--radius);padding:18px;margin-bottom:14px}
+.chat-sim-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px}
+.chat-bubbles{display:flex;flex-direction:column;gap:8px}
+.chat-user-wrap{display:flex;flex-direction:column;align-items:flex-end}
+.chat-ai-wrap{display:flex;flex-direction:column;align-items:flex-start}
+.chat-tag{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.55;margin-bottom:3px}
+.bubble{max-width:86%;padding:11px 15px;border-radius:14px;font-size:13px;line-height:1.55}
+.bubble.user{background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+.bubble.ai{background:#fff;color:var(--ink);border-bottom-left-radius:4px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.bubble.ai strong{color:var(--accent)}
+
+/* TOOL CARDS */
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow)}
+.tool-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-bottom:6px;letter-spacing:.04em}
+.tag-ent{background:var(--accent-bg);color:var(--accent)}
+.tag-con{background:var(--amber-bg);color:var(--amber)}
+.tag-adv{background:var(--purple-bg);color:var(--purple)}
+.tool-name{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.tool-what{font-size:11px;color:var(--ink-muted);margin-bottom:6px}
+.tool-impact{font-size:12px;color:var(--ink-soft);line-height:1.5}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--border);padding:14px 0}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.faq-chevron{width:18px;height:18px;flex-shrink:0;transition:transform .25s;margin-top:2px}
+.faq-chevron svg{width:18px;height:18px;stroke:var(--ink-muted);fill:none;stroke-width:2}
+.faq-item.open .faq-chevron{transform:rotate(180deg)}
+.faq-a{font-size:13px;color:var(--ink-soft);line-height:1.7;display:none;padding-top:8px}
+.faq-item.open .faq-a{display:block}
+
+/* RESULTADOS PERSONALES */
+.lookup-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.lookup-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.lookup-input{flex:1;min-width:130px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:16px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;outline:none;transition:var(--t);color:var(--ink)}
+.lookup-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,26,255,.08)}
+.lookup-input::placeholder{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-muted);font-size:14px}
 .lookup-error{color:var(--red);font-size:13px;margin-top:8px;display:none}
 .lookup-error.show{display:block}
-.lookup-spinner{display:none;margin-top:8px;align-items:center;gap:8px;font-size:13px;color:var(--ink-muted)}
+.lookup-spinner{display:none;margin-top:12px;align-items:center;gap:8px;font-size:13px;color:var(--ink-muted)}
 .lookup-spinner.show{display:flex}
-.spin-sm{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+.spin-sm{width:15px;height:15px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* TABLE */
-.table-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead tr{background:var(--ink)}
-thead th{padding:12px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.55);white-space:nowrap}
-tbody tr{border-bottom:1px solid var(--border);transition:background var(--t)}
-tbody tr:hover{background:var(--bg)}
-tbody td{padding:11px 14px;vertical-align:top}
-.detail-row{display:none}
-.detail-row.open{display:table-row}
-.detail-cell{background:var(--bg);border-bottom:1px solid var(--border)}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
-.detail-block-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:5px}
-.detail-block-text{font-size:13px;color:var(--ink-soft);line-height:1.6}
-.detail-alerts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px}
-.detail-alert-item{font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px}
-.detail-alert-item.critical{background:var(--red-bg);color:var(--red)}
-.detail-alert-item.warning{background:var(--amber-bg);color:var(--amber)}
-.expand-btn{font-size:12px;font-weight:600;color:var(--accent);background:var(--accent-bg);border:none;padding:4px 12px;border-radius:100px;cursor:pointer;transition:var(--t);font-family:"DM Sans",sans-serif}
-.expand-btn:hover{background:var(--accent);color:#fff}
+/* RESULTADO PERSONAL */
+.personal-result{display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.personal-result.show{display:block;animation:fadeUp .3s cubic-bezier(.4,0,.2,1) both}
+.pr-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.pr-profile{font-family:"DM Serif Display",serif;font-size:32px;color:var(--accent);line-height:1}
+.pr-meta{flex:1}
+.pr-level{font-size:13px;color:var(--ink-muted);margin-bottom:4px}
+.pr-score{font-size:13px;font-weight:600;color:var(--ink)}
+.pr-section{margin-bottom:16px}
+.pr-section-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px}
+.pr-section-value{font-size:14px;color:var(--ink-soft);line-height:1.6}
 
-/* TAGS */
-.tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px;letter-spacing:.04em}
-.tag-explorador{background:#f3f0ff;color:#6d28d9}
-.tag-operativo{background:var(--accent-bg);color:var(--accent)}
-.tag-optimizador{background:var(--amber-bg);color:var(--amber)}
-.tag-estratega{background:var(--green-bg);color:var(--green)}
-.tag-nivel{background:var(--bg);border:1px solid var(--border);color:var(--ink-soft)}
+/* PLAN PERSONALIZADO */
+.plan-wrap{background:var(--ink);border-radius:var(--radius);padding:24px;margin-bottom:14px;color:#fff}
+.plan-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:18px}
+.plan-item{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.plan-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.plan-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;flex-shrink:0;margin-top:1px}
+.plan-text strong{display:block;font-size:14px;font-weight:600;color:#fff;margin-bottom:2px}
+.plan-text p{font-size:13px;color:rgba(255,255,255,.6);line-height:1.55}
 
-/* EMPTY STATE */
-.empty-state{padding:48px 24px;text-align:center}
-.empty-icon{width:48px;height:48px;border-radius:50%;background:var(--border);display:grid;place-items:center;margin:0 auto 16px}
-.empty-icon svg{width:22px;height:22px;stroke:var(--ink-muted);fill:none;stroke-width:2}
-.empty-title{font-size:16px;font-weight:600;color:var(--ink);margin-bottom:6px}
-.empty-desc{font-size:13px;color:var(--ink-muted)}
+/* PLANTILLA */
+.template-card{background:var(--bg-card);border:1.5px solid var(--accent);border-radius:var(--radius);padding:20px 22px;margin-bottom:14px}
+.template-label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.template-label svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+.template-text{font-size:14px;color:var(--ink);line-height:1.7;background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px;font-family:monospace;letter-spacing:0;white-space:pre-wrap;word-break:break-word}
+.template-tip{font-size:12px;color:var(--ink-muted);margin-top:8px;line-height:1.5}
 
-/* LOADING */
-.loading-overlay{position:fixed;inset:0;background:rgba(247,247,249,.9);display:flex;align-items:center;justify-content:center;z-index:200;flex-direction:column;gap:14px}
-.loading-overlay.hidden{display:none}
-.spinner-lg{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
-.loading-text{font-size:14px;color:var(--ink-muted)}
+/* CAMINOS */
+.caminos-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.camino-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px 18px;box-shadow:var(--shadow)}
+.camino-letter{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;margin-bottom:10px}
+.camino-a .camino-letter{background:var(--accent-bg);color:var(--accent)}
+.camino-b .camino-letter{background:var(--green-bg);color:var(--green)}
+.camino-title{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.camino-desc{font-size:13px;color:var(--ink-soft);line-height:1.55}
+
+/* INTRO */
+.intro-wrap{text-align:center;padding:52px 28px 40px;max-width:620px;margin:0 auto}
+.intro-badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-bg);color:var(--green);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:22px}
+.intro-title{font-family:"DM Serif Display",serif;font-size:clamp(28px,5vw,46px);line-height:1.1;margin-bottom:14px;letter-spacing:-.4px}
+.intro-title em{font-style:italic;color:var(--accent)}
+.intro-desc{font-size:15px;color:var(--ink-soft);font-weight:300;line-height:1.7;margin-bottom:28px}
+.modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin-bottom:28px;text-align:left}
+.module-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow)}
+.module-num{font-size:10px;font-weight:700;color:var(--ink-muted);margin-bottom:3px}
+.module-title{font-size:13px;font-weight:600;color:var(--ink)}
+.code-block{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;text-align:left}
+.code-block-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px}
+.code-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.code-input{flex:1;min-width:130px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:16px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;outline:none;transition:var(--t);color:var(--ink)}
+.code-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,26,255,.08)}
+.code-input::placeholder{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-muted);font-size:14px}
+.code-desc{font-size:12px;color:var(--ink-muted);margin-top:6px;line-height:1.5}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:var(--t);white-space:nowrap;user-select:none}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-2);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--bg);color:var(--ink)}
+.btn-sm{padding:8px 16px;font-size:13px}
+.btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+
+/* BOTTOM NAV */
+.guide-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(247,247,249,.96);backdrop-filter:blur(14px);border-top:1px solid var(--border);padding:12px 28px;display:flex;align-items:center;gap:12px;z-index:100}
+.guide-nav-left{flex:1}
+.guide-nav-center{font-size:12px;color:var(--ink-muted);font-weight:500;text-align:center;flex:1}
+.guide-nav-right{flex:1;display:flex;justify-content:flex-end}
+
+/* WA FLOAT */
+.wa-float{position:fixed;bottom:76px;right:22px;z-index:200;display:flex;align-items:center;gap:9px;background:#25D366;color:#fff;padding:10px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:"DM Sans",sans-serif;box-shadow:0 4px 18px rgba(37,211,102,.4);transition:var(--t)}
+.wa-float:hover{background:#1da851;transform:translateY(-2px)}
+.wa-float svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
+.wa-label{font-size:13px}
 
 /* RESPONSIVE */
-@media(max-width:768px){
-  .charts-grid{grid-template-columns:1fr}
-  .kpi-grid{grid-template-columns:1fr 1fr}
-  .lookup-grid{grid-template-columns:1fr 1fr}
-  .detail-grid{grid-template-columns:1fr}
+@media(max-width:640px){
   .topbar{padding:0 18px}
-  .dash-inner{padding:20px 18px 60px}
-  .friction-bar-wrap,.gpt-bar-wrap{width:100px}
+  .guide-content{padding:32px 18px 110px}
+  .guide-nav{padding:10px 18px}
+  .compare{grid-template-columns:1fr}
+  .tools-grid{grid-template-columns:1fr}
+  .caminos-grid{grid-template-columns:1fr}
+  .wa-float .wa-label{display:none}
+  .wa-float{padding:11px}
+  .modules-grid{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login-shell" class="login-shell">
-  <div class="login-card">
-    <img class="login-logo" src="https://drive.google.com/uc?export=view&id=1G-lloNV4CNt9s6PIY79AXr7FvlUVhzG0" alt="ML Studio" onerror="this.style.display='none'"/>
-    <h1 class="login-title">Dashboard Facilitador</h1>
-    <p class="login-sub">Acceso restringido — solo para el asesor</p>
-    <div class="login-field">
-      <label class="login-label">Usuario</label>
-      <input class="login-input" id="login-user" type="text" placeholder="Jancob" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
-    <div class="login-field">
-      <label class="login-label">Contraseña</label>
-      <input class="login-input" id="login-pass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
-    <div class="login-error" id="login-err">Usuario o contraseña incorrectos.</div>
-    <button class="btn btn-primary" onclick="doLogin()">Ingresar</button>
-  </div>
+<div class="loader" id="loader">
+  <div class="loader-dot"></div>
+  <div class="loader-dot"></div>
+  <div class="loader-dot"></div>
 </div>
 
-<!-- LOADING OVERLAY — oculto por defecto, solo aparece tras el login -->
-<div class="loading-overlay hidden" id="loading-overlay">
-  <div class="spinner-lg"></div>
-  <div class="loading-text">Cargando datos del grupo...</div>
-</div>
-
-<!-- TOPBAR -->
-<header class="topbar" id="topbar" style="display:none">
+<header class="topbar">
   <img class="topbar-logo" src="https://drive.google.com/uc?export=view&id=1G-lloNV4CNt9s6PIY79AXr7FvlUVhzG0" alt="ML Studio" onerror="this.style.display='none'"/>
   <div class="topbar-divider"></div>
-  <span class="topbar-label">Facilitador</span>
-  <div class="topbar-right">
-    <span class="refresh-indicator"><span class="status-dot"></span><span id="refresh-label">En vivo</span></span>
-    <button class="btn btn-ghost btn-sm" onclick="loadData()">
-      <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>
-      Actualizar
-    </button>
-    <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      CSV
-    </button>
-    <button class="btn btn-ghost btn-sm" onclick="exportJSON()">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      JSON
-    </button>
-    <button class="btn btn-ghost btn-sm" onclick="doLogout()" style="color:var(--red)">Salir</button>
-  </div>
+  <span class="topbar-label">Guia de IA</span>
+  <div class="topbar-right"><span class="progress-pill" id="progress-pill"></span></div>
 </header>
 
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard" style="display:none">
-  <div class="dash-inner">
+<div class="guide-progress"><div class="guide-progress-fill" id="progress-fill" style="width:0%"></div></div>
 
-    <!-- CONTROLES -->
-    <div class="controls-bar">
-      <span class="control-label">Excluir filas</span>
-      <input class="exclude-input" id="exclude-input" placeholder="Números separados por coma (ej: 1, 3)" oninput="applyFilters()"/>
-      <span class="control-label" style="margin-left:auto" id="last-update"></span>
+<div class="guide-shell" id="guide-shell">
+
+<!-- GS0: INTRO -->
+<div class="gscreen active" id="gs-0">
+<div class="intro-wrap">
+  <div class="intro-badge">ML Studio &nbsp;·&nbsp; IAsolutions</div>
+  <h1 class="intro-title">Tu guia practica de<br/><em>Inteligencia Artificial</em></h1>
+  <p class="intro-desc">Todo lo que necesitas para aprovechar mejor las herramientas de IA que ya tienes. Explicado con ejemplos reales de tu trabajo.</p>
+
+  <div class="code-block">
+    <div class="code-block-label">Ya tienes un codigo de diagnostico? Ingresalo para ver tu contenido personalizado</div>
+    <div class="code-row">
+      <input class="code-input" id="intro-code" placeholder="ML-XXXX" maxlength="7" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')lookupIntro()"/>
+      <button class="btn btn-primary btn-sm" onclick="lookupIntro()">Ver mis resultados</button>
     </div>
-
-    <!-- KPIs -->
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-label">Total diagnósticos</div>
-        <div class="kpi-value" id="kpi-total">—</div>
-        <div class="kpi-sub">respuestas registradas</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Score promedio</div>
-        <div class="kpi-value" id="kpi-score">—</div>
-        <div class="kpi-sub">madurez del grupo</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Perfil más frecuente</div>
-        <div class="kpi-value" id="kpi-profile" style="font-size:24px;padding-top:4px">—</div>
-        <div class="kpi-sub" id="kpi-profile-sub"></div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-label">Fricción dominante</div>
-        <div class="kpi-value" id="kpi-friction" style="font-size:16px;padding-top:8px;line-height:1.3">—</div>
-        <div class="kpi-sub" id="kpi-friction-sub"></div>
-      </div>
-    </div>
-
-    <!-- CHARTS -->
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-label">Distribución por perfil</div>
-        <div class="chart-wrap"><canvas id="chart-profiles"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-label">Niveles de madurez</div>
-        <div class="chart-wrap"><canvas id="chart-levels"></canvas></div>
-      </div>
-    </div>
-
-    <!-- FRICCIONES -->
-    <div class="friction-card">
-      <div class="section-header">
-        <div class="section-title">Fricciones detectadas <span class="section-tag tag-amber" id="friction-total-tag"></span></div>
-      </div>
-      <div id="friction-list"></div>
-    </div>
-
-    <!-- GPT ADOPCIÓN -->
-    <div class="gpt-card">
-      <div class="section-header">
-        <div class="section-title">Adopción de GPTs internos <span class="section-tag tag-blue">por persona</span></div>
-      </div>
-      <div id="gpt-list"></div>
-    </div>
-
-    <!-- PATRONES Y RECOMENDACIÓN -->
-    <div class="patterns-card">
-      <div class="section-header">
-        <div class="section-title">Análisis del grupo <span class="section-tag tag-blue">Generado automáticamente</span></div>
-      </div>
-      <div class="patterns-grid" id="patterns-grid"></div>
-      <div class="pattern-rec" id="pattern-rec"></div>
-    </div>
-
-    <!-- LOOKUP POR CÓDIGO -->
-    <div class="lookup-card">
-      <div class="section-title">Buscar por código ML-XXXX</div>
-      <div class="lookup-row">
-        <input class="lookup-code-input" id="lookup-code" placeholder="ML-XXXX" maxlength="7"
-          oninput="this.value=this.value.toUpperCase()"
-          onkeydown="if(event.key==='Enter')lookupCode()"/>
-        <button class="btn btn-ghost btn-sm" onclick="lookupCode()">
-          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Buscar
-        </button>
-      </div>
-      <div class="lookup-error" id="lookup-err">Código no encontrado.</div>
-      <div class="lookup-spinner" id="lookup-spin"><div class="spin-sm"></div>Buscando...</div>
-      <div class="lookup-result-card" id="lookup-result">
-        <div class="lookup-grid" id="lookup-grid"></div>
-      </div>
-    </div>
-
-    <!-- TABLA INDIVIDUAL -->
-    <div>
-      <div class="section-header">
-        <div class="section-title">Respuestas individuales <span class="section-tag tag-blue" id="table-count-tag"></span></div>
-      </div>
-      <div class="table-card">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Área</th>
-                <th>Perfil</th>
-                <th>Nivel</th>
-                <th>Score</th>
-                <th>Fricciones</th>
-                <th>Alertas</th>
-                <th>GPTs usados</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="table-body"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
+    <div class="code-desc">Tu codigo es personal. Si no lo tienes, completa el diagnostico primero.</div>
+    <div class="lookup-error" id="intro-err">Codigo no encontrado. Verifica que este bien escrito (ej: ML-4B2X).</div>
+    <div class="lookup-spinner" id="intro-spin"><div class="spin-sm"></div>Buscando...</div>
   </div>
+
+  <div class="modules-grid">
+    <div class="module-card"><div class="module-num">01</div><div class="module-title">Buen prompt</div></div>
+    <div class="module-card"><div class="module-num">02</div><div class="module-title">Iniciar un chat</div></div>
+    <div class="module-card"><div class="module-num">03</div><div class="module-title">Proyectos ChatGPT</div></div>
+    <div class="module-card"><div class="module-num">04</div><div class="module-title">GPT interno vs general</div></div>
+    <div class="module-card"><div class="module-num">05</div><div class="module-title">Enterprise</div></div>
+    <div class="module-card"><div class="module-num">06</div><div class="module-title">Conectores</div></div>
+    <div class="module-card"><div class="module-num">07</div><div class="module-title">Preguntas frecuentes</div></div>
+    <div class="module-card"><div class="module-num">08</div><div class="module-title">Tu diagnostico</div></div>
+  </div>
+  <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="goTo(1)">Comenzar<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
+</div>
 </div>
 
+<!-- GS1: PROMPT -->
+<div class="gscreen" id="gs-1">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 01</div>
+  <h1 class="guide-title">Como hacer un<br/><em>buen prompt</em></h1>
+  <p class="guide-subtitle">Un prompt es simplemente lo que le escribes a ChatGPT. La calidad de la respuesta depende casi completamente de que tan bien esta escrito.</p>
+  <div class="card">
+    <div class="card-label">La regla fundamental</div>
+    <div class="card-text"><p>ChatGPT no adivina lo que quieres. Responde exactamente segun lo que recibe. Instruccion vaga, respuesta vaga. Contexto claro y tarea especifica, respuesta util desde el primer intento.</p><p>La mayoria de frustraciones con la IA vienen de prompts incompletos, no de limitaciones de la herramienta.</p></div>
+  </div>
+  <div class="card">
+    <div class="card-label">Estructura en 3 partes</div>
+    <div class="step-list">
+      <div class="step-item"><div class="step-num">1</div><div><div class="step-title">Contexto o rol</div><div class="step-text">Quien eres, en que empresa trabajas, cual es tu area. Daselo al inicio.</div></div></div>
+      <div class="step-item"><div class="step-num">2</div><div><div class="step-title">Tarea concreta</div><div class="step-text">Que quieres exactamente. No "ayudame" — di "redacta", "analiza", "resume", "haz una lista de".</div></div></div>
+      <div class="step-item"><div class="step-num">3</div><div><div class="step-title">Formato o restriccion</div><div class="step-text">Como quieres que te lo entregue. "En lista", "maximo 5 puntos", "tono formal", "sin tecnicismos".</div></div></div>
+    </div>
+  </div>
+  <div class="compare">
+    <div class="compare-col bad"><div class="compare-label">Prompt debil</div><div class="compare-text">"Redacta un correo para un proveedor"<br/><br/>Resultado: algo generico que no aplica a tu situacion.</div></div>
+    <div class="compare-col good"><div class="compare-label">Prompt efectivo</div><div class="compare-text">"Soy del area administrativa de ML Studio, empresa de confeccion. Escribele a un proveedor de telas para cotizar 200 metros de algodon negro y gris. Tono profesional. Maximo 150 palabras."</div></div>
+  </div>
+  <div class="chat-sim">
+    <div class="chat-sim-label">Asi se ve en la practica</div>
+    <div class="chat-bubbles">
+      <div class="chat-user-wrap"><div class="chat-tag">Tu escribes</div><div class="bubble user">Soy coordinadora de diseno en ML Studio, linea de moda femenina. Necesito un mensaje para produccion explicando el cambio de paleta para la nueva coleccion. Tono claro. Maximo 4 oraciones.</div></div>
+      <div class="chat-ai-wrap"><div class="chat-tag">ChatGPT responde</div><div class="bubble ai">Para la nueva coleccion cambiamos la paleta hacia tonos tierra: arena, terracota, burdeos y verde oliva. Aplica desde la semana de corte del 20 de enero. Revisar materiales en bodega y reportar faltantes antes del viernes. <strong>Dudas, coordinamos con diseno directamente.</strong></div></div>
+    </div>
+  </div>
+  <div class="hl"><strong>Regla practica</strong>Si le explicarias lo mismo a un asistente humano nuevo que no conoce tu empresa, explicaselo tambien a ChatGPT. No asumas que ya sabe el contexto.</div>
+  <div class="hl hl-green"><strong>Tip avanzado</strong>Si la respuesta no fue exactamente lo que necesitabas, no empieces un chat nuevo. Corrigelo en la misma conversacion: "Hazlo mas corto", "cambia el tono a mas formal". ChatGPT recuerda toda la sesion.</div>
+</div>
+</div>
+
+<!-- GS2: CHAT EFECTIVO -->
+<div class="gscreen" id="gs-2">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 02</div>
+  <h1 class="guide-title">Como iniciar un<br/><em>chat efectivo</em></h1>
+  <p class="guide-subtitle">Los primeros mensajes determinan la calidad de todo lo que sigue. Un buen inicio ahorra tiempo en cada mensaje posterior.</p>
+  <div class="card"><div class="card-label">El error mas comun</div><div class="card-text"><p>La mayoria de personas abren ChatGPT y escriben la pregunta como si fuera una busqueda en Google. El resultado es una respuesta generica.</p><p>ChatGPT no sabe quien eres, en que empresa trabajas, ni como quieres que te responda — a menos que se lo digas.</p></div></div>
+  <div class="step-list">
+    <div class="step-item"><div class="step-num">1</div><div><div class="step-title">Presentate brevemente</div><div class="step-text">"Soy coordinadora de ventas en ML Studio, linea de dotaciones." No siempre es obligatorio, pero ayuda cuando el tema tiene que ver con tu trabajo especifico.</div></div></div>
+    <div class="step-item"><div class="step-num">2</div><div><div class="step-title">Describe la situacion</div><div class="step-text">Que estas enfrentando o que necesitas resolver. Un parrafo corto es suficiente.</div></div></div>
+    <div class="step-item"><div class="step-num">3</div><div><div class="step-title">Haz la solicitud especifica</div><div class="step-text">"Necesito que redactes...", "Ayudame a analizar...", "Haz una lista de...", "Explicame como si no supiera nada del tema..."</div></div></div>
+    <div class="step-item"><div class="step-num">4</div><div><div class="step-title">Indica el formato si importa</div><div class="step-text">"En lista", "como tabla", "en un parrafo", "sin terminos tecnicos", "maximo 100 palabras".</div></div></div>
+  </div>
+  <div class="chat-sim">
+    <div class="chat-sim-label">Ejemplo completo — area comercial</div>
+    <div class="chat-bubbles">
+      <div class="chat-user-wrap"><div class="bubble user">Soy asesor comercial de ML Studio, linea de dotaciones. Tengo una reunion con una empresa de construccion que necesita uniformes para 60 operarios. Dame argumentos de venta enfocados en durabilidad y costo-beneficio. Lista de maximo 5 puntos, lenguaje directo.</div></div>
+      <div class="chat-ai-wrap"><div class="bubble ai"><strong>5 argumentos:</strong><br/>1. Tela reforzada — reduce reposiciones a la mitad.<br/>2. Costo por uso menor que marcas genericas.<br/>3. Tallas personalizadas sin costo adicional.<br/>4. Entrega en planta segun cronograma.<br/>5. Garantia de reposicion en 48h si hay defectos.</div></div>
+    </div>
+  </div>
+  <div class="hl hl-amber"><strong>Si la respuesta no fue lo que esperabas</strong>No cierres el chat. Corrigelo dentro de la misma conversacion. Cada correccion mejora la respuesta sin perder el contexto.</div>
+</div>
+</div>
+
+<!-- GS3: PROYECTOS -->
+<div class="gscreen" id="gs-3">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 03</div>
+  <h1 class="guide-title">Proyectos en ChatGPT:<br/><em>el contexto que no se pierde</em></h1>
+  <p class="guide-subtitle">Un Proyecto es un espacio de trabajo que recuerda quien eres y que haces — sin que tengas que repetirlo en cada conversacion nueva.</p>
+  <div class="compare">
+    <div class="compare-col bad"><div class="compare-label">Sin Proyecto — hoy</div><div class="compare-text">Abres ChatGPT, escribes quien eres, explicas tu area, describes el contexto, haces la pregunta.<br/><br/>Repites esto cada vez que abres una nueva conversacion.</div></div>
+    <div class="compare-col good"><div class="compare-label">Con Proyecto</div><div class="compare-text">Abres ChatGPT y haces directamente la pregunta.<br/><br/>El contexto ya esta guardado. ChatGPT ya sabe quien eres.</div></div>
+  </div>
+  <div class="card"><div class="card-label">Como crear tu Proyecto — paso a paso</div>
+    <div class="step-list">
+      <div class="step-item"><div class="step-num">1</div><div><div class="step-title">Abre ChatGPT y busca "Proyectos"</div><div class="step-text">En el panel izquierdo. Haz clic en "Nuevo proyecto".</div></div></div>
+      <div class="step-item"><div class="step-num">2</div><div><div class="step-title">Dale un nombre claro</div><div class="step-text">Ejemplo: "Trabajo — ML Studio Dotaciones" o "Diseno — Moda Femenina".</div></div></div>
+      <div class="step-item"><div class="step-num">3</div><div><div class="step-title">Escribe las instrucciones de contexto</div><div class="step-text">Quien eres y como quieres que te responda. Aplica a todas las conversaciones del proyecto.</div></div></div>
+      <div class="step-item"><div class="step-num">4</div><div><div class="step-title">Carga archivos si los tienes</div><div class="step-text">Catalogos, listas de precios, procedimientos — ChatGPT los consultara automaticamente.</div></div></div>
+    </div>
+  </div>
+  <div class="hl"><strong>Ejemplo de instruccion de contexto</strong>"Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en el area comercial de dotaciones. Me ayudas con propuestas para clientes, manejo de objeciones y preparacion de reuniones. Se directo, usa lenguaje comercial, sin introducciones largas."</div>
+  <div class="hl hl-green"><strong>Extra: carga tus archivos</strong>Si tienes el catalogo en PDF o lista de precios en Excel, subelo al Proyecto. ChatGPT lo leera y usara para responder preguntas especificas sobre esos documentos.</div>
+  <div class="card"><div class="card-label">Necesitas ayuda para configurarlo?</div><div class="card-text"><p>La configuracion de un Proyecto bien hecho toma unos 15 minutos y cambia completamente la experiencia. En la sesion de asesoria lo configuramos juntos con las instrucciones especificas de tu area.</p></div></div>
+</div>
+</div>
+
+<!-- GS4: GPT INTERNO VS GENERAL -->
+<div class="gscreen" id="gs-4">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 04</div>
+  <h1 class="guide-title">GPT interno vs<br/><em>ChatGPT general</em></h1>
+  <p class="guide-subtitle">La empresa ya creo GPTs personalizados para areas especificas. Saber cuando usar cada uno marca una diferencia real en la calidad de las respuestas.</p>
+  <div class="compare">
+    <div class="compare-col bad"><div class="compare-label">ChatGPT general</div><div class="compare-text">No sabe nada de ML Studio<br/>No conoce tus procesos<br/>Responde de forma generica<br/>Requiere contexto cada vez<br/>Util para cualquier tema</div></div>
+    <div class="compare-col good"><div class="compare-label">GPT interno del area</div><div class="compare-text">Ya conoce el contexto de la empresa<br/>Tiene documentos internos cargados<br/>Respuestas alineadas al negocio<br/>Menos friccion desde el primer mensaje<br/>Disenado para casos especificos</div></div>
+  </div>
+  <div class="card"><div class="card-label">Los GPTs disponibles en ML Studio</div>
+    <div class="step-list">
+      <div class="step-item"><div class="step-num" style="background:var(--accent)">J</div><div><div class="step-title">GPT Juridico</div><div class="step-text">Revision de contratos, consultas legales basicas, redaccion de clausulas y documentos formales. Ideal para importaciones, acuerdos comerciales y procesos legales del negocio.</div></div></div>
+      <div class="step-item"><div class="step-num" style="background:var(--green)">F</div><div><div class="step-title">GPT Financiero</div><div class="step-text">Analisis de costos, interpretacion de reportes, proyecciones e indicadores. Para trazabilidad financiera e informes de gestion.</div></div></div>
+      <div class="step-item"><div class="step-num" style="background:var(--amber)">A</div><div><div class="step-title">GPT Administrativo</div><div class="step-text">Gestion de procesos, comunicaciones internas, redaccion de documentos y soporte operativo. El mas versatil para el dia a dia.</div></div></div>
+      <div class="step-item"><div class="step-num" style="background:var(--purple)">M</div><div><div class="step-title">GPTs por marca</div><div class="step-text">Cada linea tiene su propio GPT con el tono, identidad y contexto especifico. Para contenido, comunicaciones y estrategia de cada marca.</div></div></div>
+    </div>
+  </div>
+  <div class="hl"><strong>Si no sabes que hace el GPT de tu area</strong>Abrelo y preguntale directamente: "Para que fuiste creado y que tipo de tareas puedes ayudarme a resolver?" Te respondera con su proposito y ejemplos de uso.</div>
+  <div class="hl hl-green"><strong>Cuando usar ChatGPT general</strong>Para tareas que no tienen que ver con el area especifica, exploracion de ideas, redaccion libre, o cuando quieres una perspectiva sin el filtro del negocio.</div>
+</div>
+</div>
+
+<!-- GS5: ENTERPRISE -->
+<div class="gscreen" id="gs-5">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 05</div>
+  <h1 class="guide-title">Que mas puede hacer<br/><em>ChatGPT Enterprise</em></h1>
+  <p class="guide-subtitle">La version Enterprise que tiene la empresa tiene funciones que la mayoria no conoce ni usa. Aqui las mas relevantes para el trabajo del dia a dia.</p>
+  <div class="tools-grid">
+    <div class="tool-card"><span class="tool-tag tag-ent">Enterprise</span><div class="tool-name">Analisis de archivos</div><div class="tool-what">Excel, CSV, PDF directamente</div><div class="tool-impact">Sube un reporte de ventas o inventario y pidele que encuentre patrones, haga graficas o compare periodos. Sin saber formulas.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-ent">Enterprise</span><div class="tool-name">Conexion con Google Drive</div><div class="tool-what">Lee documentos directamente de Drive</div><div class="tool-impact">Sube el catalogo o una propuesta desde Drive y ChatGPT lo analiza al instante — sin copiar y pegar nada.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-ent">Enterprise</span><div class="tool-name">Busqueda web en tiempo real</div><div class="tool-what">Consulta internet para info actual</div><div class="tool-impact">Precios de materiales, tendencias de moda, analisis de competidores — informacion actualizada, no del ano pasado.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-ent">Enterprise</span><div class="tool-name">Generacion de imagenes</div><div class="tool-what">Crea imagenes con DALL-E integrado</div><div class="tool-impact">Referencias visuales, mockups de uniformes, variaciones de color en prendas, imagenes para redes de las marcas.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-ent">Enterprise</span><div class="tool-name">Memoria persistente</div><div class="tool-what">Recuerda preferencias entre sesiones</div><div class="tool-impact">Diferente a Proyectos — memoria general que persiste en tu cuenta. ChatGPT recuerda como prefieres que te responda.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-ent">Enterprise</span><div class="tool-name">Modo voz</div><div class="tool-what">Conversa verbalmente con ChatGPT</div><div class="tool-impact">Util cuando estas en movimiento — en planta, en visita a cliente, o cuando es mas rapido hablar que escribir.</div></div>
+  </div>
+  <div class="hl hl-amber"><strong>Importante</strong>Algunas de estas funciones requieren activacion o configuracion inicial. En la sesion de asesoria identificamos cuales tienen mas impacto para tu area y las activamos juntos.</div>
+  <div class="card"><div class="card-label">Prompts visuales para marketing e imagenes</div><div class="card-text">
+    <p>Para generar imagenes utiles de moda o productos, el prompt visual necesita ser mas especifico que uno de texto:</p>
+    <p><strong>Valores de iluminacion:</strong> "luz natural suave lateral, sin sombras duras, temperatura de color calida"</p>
+    <p><strong>Variacion de color:</strong> "misma imagen pero el pantalon en color burdeos oscuro, todo lo demas igual"</p>
+    <p><strong>Mockup de prenda:</strong> "uniforme de operario en tela drill negro, vista frontal y posterior, fondo blanco limpio, estilo fotografico de catalogo"</p>
+  </div></div>
+</div>
+</div>
+
+<!-- GS6: CONECTORES -->
+<div class="gscreen" id="gs-6">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 06</div>
+  <h1 class="guide-title">Conectores y<br/><em>automatizacion</em></h1>
+  <p class="guide-subtitle">ChatGPT no tiene que vivir aislado. Se puede conectar con otras herramientas para automatizar flujos completos sin intervencion manual.</p>
+  <div class="card"><div class="card-label">Que es un conector?</div><div class="card-text"><p>Un puente entre dos aplicaciones. Cuando pasa algo en una (llega un correo, alguien llena un formulario, se agrega una fila en Excel), el conector hace que algo pase automaticamente en otra — ChatGPT lo procesa, genera un resumen, lo guarda en una carpeta.</p><p>Para flujos basicos no requiere saber programar. Para flujos complejos, es parte del trabajo de asesoria — tu defines que necesitas, yo lo implemento.</p></div></div>
+  <div class="tools-grid">
+    <div class="tool-card"><span class="tool-tag tag-con">Conector</span><div class="tool-name">Zapier</div><div class="tool-what">Conecta mas de 6.000 apps</div><div class="tool-impact">Ejemplo: cuando llega un correo de cliente, ChatGPT lo resume y lo envia al canal de WhatsApp del equipo. Sin intervencion manual.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-con">Conector</span><div class="tool-name">Make (Integromat)</div><div class="tool-what">Automatizaciones visuales complejas</div><div class="tool-impact">Flujos con multiples pasos y condiciones. Mas potente que Zapier para procesos elaborados.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-adv">Avanzado</span><div class="tool-name">Google Apps Script</div><div class="tool-what">Automatizacion en Google Workspace</div><div class="tool-impact">Esta misma herramienta de diagnostico usa Apps Script. Conecta Sheets, Docs, Gmail y Forms con logica personalizada.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-con">Conector</span><div class="tool-name">Notion AI</div><div class="tool-what">Base de conocimiento con IA</div><div class="tool-impact">Ideal para guardar prompts que funcionan, documentar procesos y crear una biblioteca de conocimiento del area.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-adv">Avanzado</span><div class="tool-name">Agente WhatsApp con IA</div><div class="tool-what">Respuesta automatica a clientes</div><div class="tool-impact">Responde consultas frecuentes por WhatsApp usando informacion de la empresa. En proceso de implementacion para ML Studio.</div></div>
+    <div class="tool-card"><span class="tool-tag tag-con">Conector</span><div class="tool-name">ChatGPT + Google Sheets</div><div class="tool-what">IA que lee y escribe en tus hojas</div><div class="tool-impact">Analisis de datos, generacion de formulas, reportes automaticos a partir de informacion existente en el Sheet.</div></div>
+  </div>
+  <div class="hl"><strong>Disponible ahora vs requiere implementacion</strong>Algunas herramientas las puedes explorar hoy mismo. Otras requieren configuracion tecnica — para eso esta la asesoria. El objetivo es que sepas que puede hacer por ti, no como funciona por dentro.</div>
+</div>
+</div>
+
+<!-- GS7: FAQ -->
+<div class="gscreen" id="gs-7">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 07</div>
+  <h1 class="guide-title">Preguntas<br/><em>frecuentes</em></h1>
+  <p class="guide-subtitle">Las dudas mas comunes sobre el uso de IA en el trabajo — respondidas sin rodeos.</p>
+  <div class="card">
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Puedo confiar en lo que me dice ChatGPT?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Depende del tipo de tarea. Para redactar, organizar y resumir es muy confiable. Para datos especificos, cifras exactas o informacion legal, siempre verifica antes de usar. Su fortaleza esta en el razonamiento y la escritura.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Lo que escribo en ChatGPT es confidencial?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Con ChatGPT Enterprise los datos no se usan para entrenar modelos y hay mayor control de privacidad. Aun asi, evita pegar informacion extremadamente sensible: contrasenas, datos bancarios o informacion personal de clientes.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Por que me da respuestas muy largas que no necesito?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Por defecto intenta ser exhaustivo. La solucion es simple: díselo. "Responde en maximo 3 lineas", "se directo y conciso", "dame solo la conclusion". Tambien puedes escribir "se breve" al final de cualquier mensaje.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Tengo que saber de tecnologia para usar bien la IA?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">No. La habilidad principal es saber explicar bien lo que quieres — igual que le explicarias a un asistente humano. Lo tecnico es parte del trabajo de asesoria. Tu defines que necesitas, yo lo implemento.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Puedo pedirle que corrija su propia respuesta?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Si, siempre. Es la forma correcta de trabajar. "Hazlo mas formal", "el tercer punto no aplica, cambialo", "esta muy largo, quédate con los 3 mas importantes". No tienes que empezar de cero.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">La IA me va a quitar el trabajo?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">La IA no reemplaza el criterio, el contexto del negocio ni las relaciones. Lo que hace es eliminar tiempo en tareas repetitivas — redactar borradores, organizar informacion, resumir documentos. El objetivo es que tengas mas tiempo para lo que requiere tu juicio.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Que pasa si uso una respuesta incorrecta sin verificar?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">La responsabilidad final siempre es tuya — igual que con cualquier herramienta. Para redaccion el riesgo es bajo. Para informacion factual especifica como precios, normativas o datos tecnicos, verifica con la fuente original antes de usar.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Puedo pedirle que me explique algo que no entiendo?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Absolutamente — y es una de sus mayores fortalezas. "Explicame como si tuviera 10 anos", "con un ejemplo practico", "sin terminos tecnicos", "paso a paso". Ajusta el nivel segun lo que necesites.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Como se si estoy usando bien la herramienta?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Buena senal: la primera respuesta ya es util o esta cerca de lo que necesitas. Otra senal: sientes que te ahorra tiempo real, no que te genera mas trabajo. Si ninguna de las dos pasa, hay algo en como estes escribiendo los prompts que se puede mejorar.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Puedo usar ChatGPT para analisis financiero?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Si. Puedes subir un reporte en Excel o PDF y pedirle que analice tendencias, compare periodos, detecte anomalias o genere un resumen ejecutivo. El GPT Financiero de la empresa ya esta configurado para esto con el contexto de ML Studio.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Puede ayudarme con documentos legales o de importacion?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">Si, para revision y primer borrador. El GPT Juridico puede revisar contratos, identificar clausulas problematicas y redactar documentos formales. Para documentacion de importacion puede ayudarte a estructurar requerimientos y verificar que no falten datos. El fallo de verificacion final siempre es tuyo o del especialista.</div></div>
+    <div class="faq-item" onclick="this.classList.toggle('open')"><div class="faq-q">Como genero imagenes utiles y no solo bonitas?<div class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div><div class="faq-a">La clave esta en la especificidad del prompt visual. En lugar de "uniforme negro" di "uniforme de operario en drill negro 100%, cuello redondo, logo bordado en el pecho izquierdo, vista frontal, fondo blanco, estilo fotografico de catalogo de confeccion". Cuanto mas especifico, mas util el resultado.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- GS8: RESULTADOS PERSONALES -->
+<div class="gscreen" id="gs-8">
+<div class="guide-content">
+  <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 08</div>
+  <h1 class="guide-title">Tu diagnostico<br/><em>personalizado</em></h1>
+  <p class="guide-subtitle">Ingresa tu codigo para ver tu perfil, tu plan de accion y las plantillas especificas para tu area. Solo compartelo con tu asesor.</p>
+
+  <div class="lookup-wrap">
+    <div class="card-label">Ingresa tu codigo</div>
+    <div class="lookup-row">
+      <input class="lookup-input" id="main-code" placeholder="ML-XXXX" maxlength="7" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')lookupMain()"/>
+      <button class="btn btn-primary btn-sm" onclick="lookupMain()"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Ver</button>
+    </div>
+    <div class="lookup-error" id="main-err">Codigo no encontrado. Verifica que este bien escrito (ej: ML-4B2X).</div>
+    <div class="lookup-spinner" id="main-spin"><div class="spin-sm"></div>Buscando tu diagnostico...</div>
+
+    <div class="personal-result" id="personal-result">
+      <!-- Header del perfil -->
+      <div class="pr-header">
+        <div><div class="pr-profile" id="pr-profile">-</div><div class="pr-level" id="pr-level">-</div><div class="pr-score" id="pr-score">-</div></div>
+      </div>
+      <!-- Datos del diagnostico -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+        <div class="pr-section"><div class="pr-section-label">Area</div><div class="pr-section-value" id="pr-area">-</div></div>
+        <div class="pr-section"><div class="pr-section-label">GPT que mas usas</div><div class="pr-section-value" id="pr-gpt">-</div></div>
+        <div class="pr-section"><div class="pr-section-label">Friccion principal</div><div class="pr-section-value" id="pr-friccion">-</div></div>
+        <div class="pr-section"><div class="pr-section-label">Quieres automatizar</div><div class="pr-section-value" id="pr-auto">-</div></div>
+        <div class="pr-section" style="grid-column:1/-1"><div class="pr-section-label">Si la IA pudiera ahorrarte tiempo en una cosa</div><div class="pr-section-value" id="pr-open1">-</div></div>
+      </div>
+      <!-- Plan personalizado -->
+      <div class="plan-wrap" id="plan-wrap"></div>
+      <!-- Plantilla personalizada -->
+      <div id="template-wrap"></div>
+      <!-- Caminos (solo para Direccion/Gerencia) -->
+      <div id="caminos-wrap"></div>
+      <!-- CTA WhatsApp -->
+      <div style="margin-top:16px">
+        <button onclick="waPersonal()" style="display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t)">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
+          Hablar con mi asesor sobre este diagnostico
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hl hl-green"><strong>No tienes codigo?</strong>Completa el diagnostico en el link que te compartio tu asesor. Al finalizar recibes tu codigo automaticamente.</div>
+</div>
+</div>
+
+</div><!-- /guide-shell -->
+
+<!-- NAV -->
+<div class="guide-nav" id="guide-nav" style="display:none">
+  <div class="guide-nav-left"><button class="btn btn-ghost btn-sm" id="btn-prev" onclick="prevScreen()" style="display:none"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Anterior</button></div>
+  <div class="guide-nav-center" id="nav-center"></div>
+  <div class="guide-nav-right"><button class="btn btn-primary btn-sm" id="btn-next" onclick="nextScreen()">Siguiente<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button></div>
+</div>
+
+<!-- WA FLOAT -->
+<button class="wa-float" id="wa-float" style="display:none" onclick="openWA()">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
+  <span class="wa-label">Hablar con mi asesor</span>
+</button>
+
 <script>
-// ══ CONFIGURACIÓN ══════════════════════════════════════
-var SCRIPT_URL    = "https://script.google.com/macros/s/AKfycbxZd9u3ijKqlSHzv-AjpZf3hgaHzxLYwmshhRFyJA6EkbcBWyWlJ-N_tdFMrFuQvW0sUQ/exec";
-var FACILITATOR_KEY = "ConfeIA-Jancob-2025";
-var LOGIN_USER    = "Jancob";
-var LOGIN_PASS    = "ConfeIA";
-var AUTO_REFRESH_MS = 60000; // 60 segundos
-// ═══════════════════════════════════════════════════════
+var SCRIPT_URL="https://script.google.com/macros/s/AKfycbxZd9u3ijKqlSHzv-AjpZf3hgaHzxLYwmshhRFyJA6EkbcBWyWlJ-N_tdFMrFuQvW0sUQ/exec";
+var WA="573124365854";
+var TOTAL=8;
+var current=0;
+var foundCode="";
+var foundData=null;
 
-var allData    = [];   // todos los registros del Sheet
-var filtered   = [];   // registros tras excluir filas
-var charts     = {};   // instancias Chart.js para destroy/recreate
-var refreshTimer = null;
+var TITLES={1:"Como hacer un buen prompt",2:"Iniciar un chat efectivo",3:"Proyectos en ChatGPT",4:"GPT interno vs general",5:"Herramientas Enterprise",6:"Conectores y automatizacion",7:"Preguntas frecuentes",8:"Tu diagnostico personalizado"};
 
-// ── LOGIN ────────────────────────────────────────────
-function doLogin() {
-  var u = document.getElementById("login-user").value.trim();
-  var p = document.getElementById("login-pass").value.trim();
-  var err = document.getElementById("login-err");
+// ── NAVIGATION ────────────────────────────────────────────
+function goTo(n){
+  document.getElementById("gs-"+current).classList.remove("active");
+  current=n;
+  document.getElementById("gs-"+n).classList.add("active");
+  updateNav();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function nextScreen(){if(current<TOTAL)goTo(current+1);}
+function prevScreen(){if(current>1)goTo(current-1);}
+function updateNav(){
+  var nav=document.getElementById("guide-nav"),wa=document.getElementById("wa-float");
+  if(current===0){nav.style.display="none";wa.style.display="none";return;}
+  nav.style.display="flex";wa.style.display="flex";
+  var pct=Math.round((current/TOTAL)*100);
+  document.getElementById("progress-fill").style.width=pct+"%";
+  document.getElementById("progress-pill").textContent=current+" / "+TOTAL;
+  document.getElementById("nav-center").textContent=TITLES[current]||"";
+  var bp=document.getElementById("btn-prev"),bn=document.getElementById("btn-next");
+  bp.style.display=current>1?"inline-flex":"none";
+  if(current===TOTAL){
+    bn.innerHTML="Volver al inicio";
+    bn.onclick=function(){goTo(0);};
+  }else{
+    bn.innerHTML='Siguiente<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+    bn.onclick=nextScreen;
+  }
+}
+
+// ── WA ────────────────────────────────────────────────────
+function openWA(){
+  var code=foundCode?" Mi codigo es *"+foundCode+"*.":"";
+  var msg=encodeURIComponent("Hola Joan, estoy revisando la guia de IA de ML Studio."+code+" Me gustaria agendar una sesion de asesoria.");
+  window.open("https://wa.me/"+WA+"?text="+msg,"_blank");
+}
+function waPersonal(){
+  var code=foundCode?" Mi codigo es *"+foundCode+"*.":"";
+  var msg=encodeURIComponent("Hola Joan, acabo de revisar mi diagnostico personalizado."+code+" Me gustaria hablar sobre mis resultados y los proximos pasos.");
+  window.open("https://wa.me/"+WA+"?text="+msg,"_blank");
+}
+
+// ── LOOKUP ────────────────────────────────────────────────
+function lookupIntro(){
+  var code=document.getElementById("intro-code").value.trim().toUpperCase();
+  var err=document.getElementById("intro-err");
+  var spin=document.getElementById("intro-spin");
   err.classList.remove("show");
-  if (u === LOGIN_USER && p === LOGIN_PASS) {
-    document.getElementById("login-shell").style.display = "none";
-    document.getElementById("topbar").style.display = "flex";
-    document.getElementById("dashboard").style.display = "block";
-    startDashboard();
-  } else {
-    err.classList.add("show");
-  }
-}
-
-function doLogout() {
-  clearInterval(refreshTimer);
-  document.getElementById("login-shell").style.display = "flex";
-  document.getElementById("topbar").style.display = "none";
-  document.getElementById("dashboard").style.display = "none";
-  document.getElementById("login-user").value = "";
-  document.getElementById("login-pass").value = "";
-  allData = []; filtered = [];
-}
-
-// ── INIT ─────────────────────────────────────────────
-function startDashboard() {
-  loadData();
-  refreshTimer = setInterval(loadData, AUTO_REFRESH_MS);
-}
-
-// ── FETCH DATA ────────────────────────────────────────
-function loadData() {
-  var overlay = document.getElementById("loading-overlay");
-  var label   = document.getElementById("refresh-label");
-  overlay.classList.remove("hidden");
-  label.textContent = "Actualizando...";
-
-  // Timeout de seguridad — oculta el overlay en máx 10s pase lo que pase
-  var safetyTimer = setTimeout(function() {
-    overlay.classList.add("hidden");
-    label.textContent = "Tiempo agotado — reintenta";
-  }, 10000);
-
-  fetch(SCRIPT_URL + "?action=data&key=" + encodeURIComponent(FACILITATOR_KEY), {
-    method: "GET",
-    redirect: "follow"
-  })
-    .then(function(r) {
-      // Apps Script puede responder con text/plain aunque sea JSON
-      return r.text();
-    })
-    .then(function(text) {
-      clearTimeout(safetyTimer);
-      overlay.classList.add("hidden");
-      var res;
-      try { res = JSON.parse(text); } catch(e) {
-        label.textContent = "Error de formato";
-        return;
-      }
-      if (res.status === "ok") {
-        allData = res.data || [];
-        document.getElementById("last-update").textContent =
-          "Actualizado: " + new Date().toLocaleTimeString("es-CO", {hour:"2-digit",minute:"2-digit"});
-        label.textContent = "En vivo";
-        applyFilters();
-      } else {
-        label.textContent = "Error: " + (res.message || "respuesta inesperada");
-      }
-    })
-    .catch(function(err) {
-      clearTimeout(safetyTimer);
-      overlay.classList.add("hidden");
-      label.textContent = "Sin conexión — reintenta";
-      console.error("loadData error:", err);
-    });
-}
-
-// ── FILTROS — excluir filas por número ────────────────
-function applyFilters() {
-  var raw = document.getElementById("exclude-input").value;
-  var excluded = raw.split(",").map(function(s) {
-    return parseInt(s.trim(), 10);
-  }).filter(function(n) { return !isNaN(n) && n > 0; });
-
-  // Las filas se indexan desde 1 (como aparecen en la tabla)
-  filtered = allData.filter(function(_, i) {
-    return excluded.indexOf(i + 1) === -1;
-  });
-
-  renderAll();
-}
-
-function renderAll() {
-  renderKPIs();
-  renderCharts();
-  renderFrictions();
-  renderGPTs();
-  renderPatterns();
-  renderTable();
-}
-
-// ── KPIs ─────────────────────────────────────────────
-function renderKPIs() {
-  var total  = filtered.length;
-  var scores = filtered.map(function(r) { return parseFloat(r.score_total) || 0; });
-  var avg    = total ? Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / total) : 0;
-
-  var profileCount = {};
-  filtered.forEach(function(r) {
-    var p = r.perfil_usuario || "—";
-    profileCount[p] = (profileCount[p] || 0) + 1;
-  });
-  var topProfile = Object.keys(profileCount).sort(function(a, b) {
-    return profileCount[b] - profileCount[a];
-  })[0] || "—";
-
-  var fricCount = {};
-  filtered.forEach(function(r) {
-    (r.friccion_principal || "").split(",").forEach(function(item) {
-      var t = item.trim();
-      if (t) fricCount[t] = (fricCount[t] || 0) + 1;
-    });
-  });
-  var topFric = Object.keys(fricCount).sort(function(a, b) {
-    return fricCount[b] - fricCount[a];
-  })[0] || "—";
-
-  document.getElementById("kpi-total").textContent       = total;
-  document.getElementById("kpi-score").textContent       = avg + " / 50";
-  document.getElementById("kpi-profile").textContent     = topProfile;
-  document.getElementById("kpi-profile-sub").textContent = (profileCount[topProfile] || 0) + " de " + total + " personas";
-  document.getElementById("kpi-friction").textContent    = topFric;
-  document.getElementById("kpi-friction-sub").textContent= (fricCount[topFric] || 0) + " persona" + ((fricCount[topFric] || 0) !== 1 ? "s" : "");
-  document.getElementById("table-count-tag").textContent = total + " persona" + (total !== 1 ? "s" : "");
-}
-
-// ── CHARTS ───────────────────────────────────────────
-function renderCharts() {
-  var bf = {family:"'DM Sans',sans-serif", size:11};
-
-  // Perfiles
-  var profiles      = ["Explorador","Operativo","Optimizador","Estratega"];
-  var profileColors = ["#6d28d9","#1a1aff","#b45309","#00875a"];
-  var profileData   = profiles.map(function(p) {
-    return filtered.filter(function(r) { return r.perfil_usuario === p; }).length;
-  });
-  if (charts.profiles) charts.profiles.destroy();
-  charts.profiles = new Chart(document.getElementById("chart-profiles").getContext("2d"), {
-    type: "bar",
-    data: {labels: profiles, datasets: [{data: profileData, backgroundColor: profileColors, borderRadius: 8, borderWidth: 0}]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {legend: {display: false}, tooltip: {callbacks: {label: function(c) { return " " + c.parsed.y + " persona" + (c.parsed.y !== 1 ? "s" : ""); }}}},
-      scales: {
-        x: {ticks: {font: bf, color: "#8888a0"}, grid: {display: false}, border: {display: false}},
-        y: {ticks: {font: bf, color: "#8888a0", stepSize: 1}, grid: {color: "#f0f0f8"}, border: {display: false}}
-      }
-    }
-  });
-
-  // Niveles — paleta azul progresiva, sin alarma
-  var niveles      = ["Nivel 1","Nivel 2","Nivel 3","Nivel 4"];
-  var nivelColors  = ["#93a8f4","#5b7ef5","#1a1aff","#6366f1"];
-  var nivelData    = [1,2,3,4].map(function(n) {
-    return filtered.filter(function(r) { return (r.nivel_madurez_ia || "").indexOf("Nivel " + n) === 0; }).length;
-  });
-  if (charts.levels) charts.levels.destroy();
-  charts.levels = new Chart(document.getElementById("chart-levels").getContext("2d"), {
-    type: "doughnut",
-    data: {labels: niveles, datasets: [{data: nivelData, backgroundColor: nivelColors, borderWidth: 3, borderColor: "#ffffff", hoverOffset: 6}]},
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: "60%",
-      plugins: {
-        legend: {position: "right", labels: {font: bf, color: "#3a3a4a", padding: 14, boxWidth: 12, boxHeight: 12}},
-        tooltip: {callbacks: {label: function(c) { return " " + c.label + ": " + c.parsed + " persona" + (c.parsed !== 1 ? "s" : ""); }}}
-      }
-    }
+  if(!code||code.length<4){err.classList.add("show");return;}
+  spin.classList.add("show");
+  fetchDiag(code,function(data){
+    spin.classList.remove("show");
+    if(!data){err.classList.add("show");return;}
+    foundCode=code;foundData=data;
+    fillPersonalResult(data);
+    goTo(8);
   });
 }
-
-// ── FRICCIONES ───────────────────────────────────────
-function renderFrictions() {
-  var fricCount = {};
-  filtered.forEach(function(r) {
-    (r.friccion_principal || "").split(",").forEach(function(item) {
-      var t = item.trim();
-      if (t) fricCount[t] = (fricCount[t] || 0) + 1;
-    });
-  });
-  var sorted = Object.keys(fricCount).sort(function(a, b) { return fricCount[b] - fricCount[a]; });
-  var max    = sorted.length ? fricCount[sorted[0]] : 1;
-  var total  = filtered.length;
-
-  document.getElementById("friction-total-tag").textContent = sorted.length + " tipos detectados";
-  document.getElementById("friction-list").innerHTML = sorted.length ? sorted.map(function(f) {
-    var pct = Math.round((fricCount[f] / max) * 100);
-    return "<div class=\"friction-row\">"
-      + "<span class=\"friction-label\">" + f + "</span>"
-      + "<div class=\"friction-bar-wrap\"><div class=\"friction-bar\" style=\"width:" + pct + "%\"></div></div>"
-      + "<span class=\"friction-count\">" + fricCount[f] + "/" + total + "</span>"
-      + "</div>";
-  }).join("") : "<div style=\"padding:16px;font-size:13px;color:var(--ink-muted)\">Sin datos suficientes.</div>";
-}
-
-// ── GPT ADOPCIÓN ─────────────────────────────────────
-function renderGPTs() {
-  var gptCount = {};
-  var GPT_COLORS = {
-    "GPT Jurídico":     "#6d28d9",
-    "GPT Financiero":   "#00875a",
-    "GPT Administrativo":"#b45309",
-    "GPT de mi marca":  "#1a1aff",
-    "ChatGPT general":  "#8888a0",
-    "No sé cuál usar":  "#c0392b"
-  };
-
-  filtered.forEach(function(r) {
-    // gpt_preferido puede ser multi: "GPT Jurídico, GPT Administrativo"
-    var gpts = r.gpt_preferido || "";
-    if (!gpts) return;
-    gpts.split(",").forEach(function(item) {
-      var t = item.trim();
-      if (t) gptCount[t] = (gptCount[t] || 0) + 1;
-    });
-  });
-
-  var sorted = Object.keys(gptCount).sort(function(a, b) { return gptCount[b] - gptCount[a]; });
-  var max    = sorted.length ? gptCount[sorted[0]] : 1;
-  var total  = filtered.length;
-
-  document.getElementById("gpt-list").innerHTML = sorted.length ? sorted.map(function(g) {
-    var pct   = Math.round((gptCount[g] / max) * 100);
-    var color = GPT_COLORS[g] || "#1a1aff";
-    return "<div class=\"gpt-row\">"
-      + "<span class=\"gpt-name\">" + g + "</span>"
-      + "<div class=\"gpt-bar-wrap\"><div class=\"gpt-bar\" style=\"width:" + pct + "%;background:" + color + "\"></div></div>"
-      + "<span class=\"gpt-count\">" + gptCount[g] + "/" + total + "</span>"
-      + "</div>";
-  }).join("") : "<div style=\"padding:16px;font-size:13px;color:var(--ink-muted)\">Sin datos de GPT preferido aún. Se captura desde la versión con la pregunta 12.</div>";
-}
-
-// ── PATRONES Y RECOMENDACIÓN ─────────────────────────
-function renderPatterns() {
-  var total = filtered.length;
-  if (!total) {
-    document.getElementById("patterns-grid").innerHTML = "";
-    document.getElementById("pattern-rec").innerHTML   = "";
-    return;
-  }
-
-  var fricCount = {};
-  filtered.forEach(function(r) {
-    (r.friccion_principal || "").split(",").forEach(function(f) {
-      var t = f.trim(); if (t) fricCount[t] = (fricCount[t] || 0) + 1;
-    });
-  });
-  var topFric = Object.keys(fricCount).sort(function(a, b) { return fricCount[b] - fricCount[a]; })[0] || "—";
-
-  var autoCount = {};
-  filtered.forEach(function(r) {
-    (r.automatizacion_deseada || "").split(",").forEach(function(a) {
-      var t = a.trim(); if (t) autoCount[t] = (autoCount[t] || 0) + 1;
-    });
-  });
-  var topAuto = Object.keys(autoCount).sort(function(a, b) { return autoCount[b] - autoCount[a]; })[0] || "—";
-
-  var gptsNo  = filtered.filter(function(r) {
-    return r.uso_gpts === "No sabía que existían" || r.uso_gpts === "Sé que existen pero no los uso";
-  }).length;
-  var gptsPct = Math.round((gptsNo / total) * 100);
-
-  var repCount = filtered.filter(function(r) {
-    return r.repeticion_contexto === "Siempre" || r.repeticion_contexto === "Muchas veces";
-  }).length;
-
-  var avgScore = Math.round(filtered.reduce(function(s, r) { return s + (parseFloat(r.score_total) || 0); }, 0) / total);
-  var matLevel = avgScore >= 38 ? "estratégico" : avgScore >= 25 ? "integrado" : avgScore >= 13 ? "operativo" : "experimental";
-
-  // GPT más usado
-  var gptCount2 = {};
-  filtered.forEach(function(r) {
-    (r.gpt_preferido || "").split(",").forEach(function(g) {
-      var t = g.trim(); if (t) gptCount2[t] = (gptCount2[t] || 0) + 1;
-    });
-  });
-  var topGPT = Object.keys(gptCount2).sort(function(a, b) { return gptCount2[b] - gptCount2[a]; })[0] || "Sin datos aún";
-
-  document.getElementById("patterns-grid").innerHTML = [
-    {label:"Fricción dominante",           value: topFric},
-    {label:"Mayor oportunidad de auto.",   value: topAuto},
-    {label:"GPT más usado",                value: topGPT},
-    {label:"GPTs internos sin adoptar",    value: gptsPct + "% del grupo"},
-    {label:"Repiten contexto frecuente",   value: repCount + " de " + total + " personas"},
-    {label:"Nivel de madurez promedio",    value: "Uso " + matLevel + " (" + avgScore + "/50)"}
-  ].map(function(item) {
-    return "<div class=\"pattern-item\">"
-      + "<div class=\"pattern-item-label\">" + item.label + "</div>"
-      + "<div class=\"pattern-item-value\">" + item.value + "</div>"
-      + "</div>";
-  }).join("");
-
-  // Recomendación de sesión generada automáticamente
-  var recs = [];
-  if (repCount > total / 2)
-    recs.push("<strong>Prioridad 1 — ChatGPT Projects:</strong> más de la mitad repite contexto constantemente. Empieza la sesión creando un Proyecto en vivo con ellos.");
-  if (gptsPct > 40)
-    recs.push("<strong>Prioridad 2 — Adopción de GPTs internos:</strong> el " + gptsPct + "% no los usa. Dedica tiempo a mostrar qué hace cada uno y cómo acceder.");
-  if (topFric === "Ajustar el prompt varias veces" || topFric === "Explicar el contexto correctamente")
-    recs.push("<strong>Prioridad 3 — Estructura de prompts:</strong> la fricción dominante es saber cómo pedir. El ejercicio de los 3 elementos (contexto, tarea, formato) tiene impacto inmediato.");
-  if (topAuto === "Documentos o reportes" || topAuto === "Análisis de información")
-    recs.push("<strong>Oportunidad detectada — Automatización:</strong> el grupo quiere automatizar " + topAuto.toLowerCase() + ". Muestra un caso práctico con Apps Script o Zapier.");
-  if (!recs.length)
-    recs.push("<strong>Grupo con adopción avanzada:</strong> enfoca la sesión en automatización y flujos, no en fundamentos. Ya tienen la base — el trabajo es escalar.");
-
-  document.getElementById("pattern-rec").innerHTML = recs.join("<br/><br/>");
-}
-
-// ── LOOKUP POR CÓDIGO ────────────────────────────────
-function lookupCode() {
-  var code = document.getElementById("lookup-code").value.trim().toUpperCase();
-  var err  = document.getElementById("lookup-err");
-  var spin = document.getElementById("lookup-spin");
-  var res  = document.getElementById("lookup-result");
+function lookupMain(){
+  var code=document.getElementById("main-code").value.trim().toUpperCase();
+  var err=document.getElementById("main-err");
+  var spin=document.getElementById("main-spin");
+  var res=document.getElementById("personal-result");
   err.classList.remove("show");
   res.classList.remove("show");
-  if (!code || code.length < 4) { err.classList.add("show"); return; }
+  if(!code||code.length<4){err.classList.add("show");return;}
   spin.classList.add("show");
-
-  fetch(SCRIPT_URL + "?action=lookup&codigo=" + encodeURIComponent(code), {
-    method: "GET",
-    redirect: "follow"
-  })
-    .then(function(r) { return r.text(); })
-    .then(function(text) {
-      spin.classList.remove("show");
-      var data;
-      try { data = JSON.parse(text); } catch(e) { err.classList.add("show"); return; }
-      if (data.status !== "ok" || !data.data) { err.classList.add("show"); return; }
-      var d = data.data;
-      var fields = [
-        {label:"Perfil",           value: d.perfil_usuario || "—"},
-        {label:"Nivel",            value: d.nivel_madurez_ia || "—"},
-        {label:"Score",            value: (d.score_total || "—") + " / 50"},
-        {label:"Área",             value: d.area_trabajo || "—"},
-        {label:"GPTs usados",      value: d.gpt_preferido || "—"},
-        {label:"Fricción",         value: d.friccion_principal || "—"},
-        {label:"Quiere automatizar",value: d.automatizacion_deseada || "—"},
-        {label:"Organización",     value: d.organizacion_conocimiento || "—"},
-        {label:"Repetición",       value: d.repeticion_contexto || "—"},
-        {label:"Respuesta abierta 1", value: d.respuesta_abierta_1 || "—"},
-        {label:"Respuesta abierta 2", value: d.respuesta_abierta_2 || "—"},
-        {label:"Fecha",            value: d.timestamp ? new Date(d.timestamp).toLocaleDateString("es-CO") : "—"}
-      ];
-      document.getElementById("lookup-grid").innerHTML = fields.map(function(f) {
-        return "<div><div class=\"lookup-item-label\">" + f.label + "</div><div class=\"lookup-item-value\">" + f.value + "</div></div>";
-      }).join("");
-      res.classList.add("show");
-    })
-    .catch(function() {
-      spin.classList.remove("show");
-      err.classList.add("show");
-    });
-}
-
-// ── TABLA INDIVIDUAL ─────────────────────────────────
-function renderTable() {
-  var html = "";
-  filtered.forEach(function(row, i) {
-    var profile    = (row.perfil_usuario || "—").toLowerCase();
-    var alertItems = (row.alertas_detectadas || "").split(",").map(function(a) { return a.trim(); }).filter(Boolean);
-    var alertsHtml = alertItems.map(function(a) {
-      var cls = a.toLowerCase().indexOf("gpt") > -1 || a.toLowerCase().indexOf("conocimiento") > -1 ? "critical" : "warning";
-      return "<span class=\"detail-alert-item " + cls + "\">" + a + "</span>";
-    }).join("");
-    var gptsUsados = row.gpt_preferido || "—";
-
-    html += "<tr>"
-      + "<td style=\"color:var(--ink-muted);font-size:12px\">" + (i + 1) + "</td>"
-      + "<td><strong>" + (row.area_trabajo || "—") + "</strong></td>"
-      + "<td><span class=\"tag tag-" + profile + "\">" + (row.perfil_usuario || "—") + "</span></td>"
-      + "<td><span class=\"tag tag-nivel\">" + (row.nivel_madurez_ia || "—").split(" — ")[0] + "</span></td>"
-      + "<td><strong>" + (row.score_total || "—") + "</strong><span style=\"color:var(--ink-muted);font-size:11px\"> /50</span></td>"
-      + "<td style=\"font-size:12px;color:var(--ink-soft);max-width:160px\">" + (row.friccion_principal || "—") + "</td>"
-      + "<td style=\"font-size:12px;color:var(--ink-muted)\">" + (alertItems.length ? alertItems.length + " alerta" + (alertItems.length !== 1 ? "s" : "") : "Ninguna") + "</td>"
-      + "<td style=\"font-size:12px;color:var(--ink-soft);max-width:160px\">" + gptsUsados + "</td>"
-      + "<td><button class=\"expand-btn\" onclick=\"toggleDetail(" + (i + 1) + ")\">Ver más</button></td>"
-      + "</tr>"
-      + "<tr class=\"detail-row\" id=\"detail-" + (i + 1) + "\">"
-      + "<td colspan=\"9\" class=\"detail-cell\">"
-      + "<div class=\"detail-grid\">"
-      + "<div><div class=\"detail-block-label\">Si la IA pudiera ahorrarle tiempo en una cosa</div><div class=\"detail-block-text\">" + (row.respuesta_abierta_1 || "Sin respuesta") + "</div></div>"
-      + "<div><div class=\"detail-block-label\">Qué mejoraría del uso de IA</div><div class=\"detail-block-text\">" + (row.respuesta_abierta_2 || "Sin respuesta") + "</div></div>"
-      + "<div><div class=\"detail-block-label\">Alertas detectadas</div><div class=\"detail-alerts\">" + (alertsHtml || "<span style=\"font-size:13px;color:var(--ink-muted)\">Ninguna crítica</span>") + "</div></div>"
-      + "<div><div class=\"detail-block-label\">Automatización deseada</div><div class=\"detail-block-text\">" + (row.automatizacion_deseada || "—") + "</div></div>"
-      + "</div>"
-      + "</td>"
-      + "</tr>";
+  fetchDiag(code,function(data){
+    spin.classList.remove("show");
+    if(!data){err.classList.add("show");return;}
+    foundCode=code;foundData=data;
+    fillPersonalResult(data);
+    res.classList.add("show");
   });
-
-  document.getElementById("table-body").innerHTML = html || "<tr><td colspan=\"9\"><div class=\"empty-state\"><div class=\"empty-icon\"><svg viewBox=\"0 0 24 24\"><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/></svg></div><div class=\"empty-title\">Sin datos aún</div><div class=\"empty-desc\">Cuando el grupo complete el diagnóstico aparecerán aquí.</div></div></td></tr>";
+}
+function fetchDiag(code,cb){
+  fetch(SCRIPT_URL+"?action=lookup&codigo="+encodeURIComponent(code))
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.status==="ok"&&res.data)cb(res.data);
+      else cb(null);
+    }).catch(function(){cb(null);});
 }
 
-function toggleDetail(idx) {
-  var row    = document.getElementById("detail-" + idx);
-  if (!row) return;
-  var isOpen = row.classList.contains("open");
-  document.querySelectorAll(".detail-row").forEach(function(r) { r.classList.remove("open"); });
-  document.querySelectorAll(".expand-btn").forEach(function(b) { b.textContent = "Ver más"; });
-  if (!isOpen) {
-    row.classList.add("open");
-    var prev = row.previousElementSibling;
-    if (prev) { var btn = prev.querySelector(".expand-btn"); if (btn) btn.textContent = "Cerrar"; }
+// ── RENDER RESULTADOS PERSONALES ─────────────────────────
+function fillPersonalResult(d){
+  var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"-";};
+  set("pr-profile",d.perfil_usuario);
+  set("pr-level",d.nivel_madurez_ia);
+  set("pr-score","Score: "+(d.score_total||"-")+" / 50");
+  set("pr-area",d.area_trabajo);
+  set("pr-gpt",d.gpt_preferido||"No especificado");
+  set("pr-friccion",d.friccion_principal);
+  set("pr-auto",d.automatizacion_deseada);
+  set("pr-open1",d.respuesta_abierta_1);
+
+  // Plan personalizado
+  renderPlan(d);
+  // Plantilla personalizada
+  renderTemplate(d);
+  // Caminos (solo Direccion/Gerencia)
+  renderCaminos(d);
+
+  // Precargar codigo en el campo
+  var mainInput=document.getElementById("main-code");
+  if(mainInput&&!mainInput.value)mainInput.value=foundCode;
+}
+
+// ── PLAN POR PERFIL + NIVEL ───────────────────────────────
+function renderPlan(d){
+  var perfil=d.perfil_usuario||"";
+  var nivel=parseInt((d.nivel_madurez_ia||"1").replace(/\D/g,'').charAt(0))||1;
+  var friccion=d.friccion_principal||"";
+  var org=d.organizacion_conocimiento||"";
+  var rep=d.repeticion_contexto||"";
+  var area=d.area_trabajo||"";
+
+  var items=[];
+
+  // Accion 1 segun friccion + nivel
+  if(rep==="Siempre"||rep==="Muchas veces"){
+    items.push({t:"Esta semana: crea tu primer Proyecto en ChatGPT",p:"Abre ChatGPT, ve a Proyectos y configura uno con tu contexto de area. Esto elimina el problema de repetir contexto en cada sesion. Toma 15 minutos."});
+  }else if(nivel<=2){
+    items.push({t:"Esta semana: documenta 3 prompts que ya te funcionan",p:"Escribe en un documento los prompts que ya usas y que dan buenos resultados. Compartelos con tu equipo. Es el primer paso para sistematizar el uso."});
+  }else{
+    items.push({t:"Esta semana: identifica una tarea para automatizar",p:"Elige el proceso que mas veces repites. Con un template de prompt bien construido puedes reducir ese tiempo significativamente."});
   }
-}
 
-// ── EXPORT ───────────────────────────────────────────
-function exportCSV() {
-  if (!filtered.length) return;
-  var cols = ["area_trabajo","perfil_usuario","nivel_madurez_ia","score_total","frecuencia_uso_ia","tipo_uso","friccion_principal","repeticion_contexto","organizacion_conocimiento","uso_gpts","gpt_preferido","impacto_productividad","automatizacion_deseada","alertas_detectadas","respuesta_abierta_1","respuesta_abierta_2","timestamp"];
-  var csv  = cols.join(",") + "\n";
-  filtered.forEach(function(row) {
-    csv += cols.map(function(c) {
-      return "\"" + (row[c] || "").toString().replace(/"/g, "\"\"") + "\"";
-    }).join(",") + "\n";
+  // Accion 2 segun organizacion del conocimiento
+  if(org==="En los chats"||org==="No hay un sistema claro"){
+    items.push({t:"Semana 2: sistema minimo de archivo de outputs",p:"Crea una carpeta compartida del area. Cuando generes algo util con IA, guardalo ahi con un nombre descriptivo. Simple, sin sobreingenieria."});
+  }else if(nivel>=3){
+    items.push({t:"Semana 2: conecta una herramienta adicional",p:"Identifica una tarea repetitiva que podrias automatizar con Zapier o con el analisis de archivos de Enterprise. En la sesion de asesoria lo implementamos."});
+  }else{
+    items.push({t:"Semana 2: usa el GPT interno de tu area",p:"Abre el GPT especifico de tu area y pruebalo con una tarea real. Preguntale para que fue creado si no estas seguro. Es mas efectivo que ChatGPT general para tu trabajo especifico."});
+  }
+
+  // Accion 3 segun perfil
+  if(perfil==="Explorador"){
+    items.push({t:"Semana 3: construye el habito",p:"Comprometete a usar la IA al menos una vez al dia para una tarea real. No tiene que ser perfecta — el objetivo es familiarizarse con el flujo de trabajo."});
+  }else if(perfil==="Operativo"){
+    items.push({t:"Semana 3: sube el nivel de la tarea",p:"Ya usas la IA para tareas basicas. Esta semana prueba delegarle algo mas complejo: un analisis, una decision, una estructura de proceso. El salto de calidad es grande."});
+  }else if(perfil==="Optimizador"){
+    items.push({t:"Semana 3: escala al equipo",p:"Lo que ya funciona para ti puede funcionar para los demas. Comparte tus prompts mas efectivos con un companero y ensenale el sistema que estas usando."});
+  }else{
+    items.push({t:"Semana 3: mide el impacto",p:"Define un indicador simple de cuanto tiempo ahorras semanalmente con IA. Ese numero es el argumento para la siguiente inversion en automatizacion."});
+  }
+
+  var html='<div class="plan-title">Tu plan de accion — proximas 3 semanas</div>';
+  items.forEach(function(item,i){
+    html+='<div class="plan-item"><div class="plan-num">'+(i+1)+'</div><div class="plan-text"><strong>'+item.t+'</strong><p>'+item.p+'</p></div></div>';
   });
-  downloadFile("diagnostico_grupo_" + today() + ".csv", csv, "text/csv");
+  document.getElementById("plan-wrap").innerHTML=html;
 }
 
-function exportJSON() {
-  if (!filtered.length) return;
-  downloadFile("diagnostico_grupo_" + today() + ".json", JSON.stringify(filtered, null, 2), "application/json");
+// ── PLANTILLA POR AREA ────────────────────────────────────
+var TEMPLATES={
+  "Direccion / Gerencia":{
+    gpt:"GPT Administrativo o Financiero",
+    titulo:"Plantilla — analisis de equipo y toma de decisiones",
+    prompt:"Soy gerente de ML Studio, empresa de confeccion en Colombia con tres lineas de negocio (dotaciones, moda femenina y matriz). Necesito [analizar el desempeno del equipo / revisar el estado de un proyecto / tomar una decision sobre X]. El contexto es: [describe la situacion en 2-3 lineas]. Dame [un analisis con recomendacion / opciones con pros y contras / un plan de accion] en formato ejecutivo, maximo una pagina.",
+    tip:"Para reportes financieros agrega: 'Tengo los datos en esta tabla: [pega los datos]' y pidele que los interprete."
+  },
+  "Administracion":{
+    gpt:"GPT Administrativo",
+    titulo:"Plantilla — gestion de procesos y comunicaciones",
+    prompt:"Soy del area administrativa de ML Studio. Necesito [redactar una comunicacion interna / documentar un proceso / preparar una respuesta para un proveedor] sobre [describe el tema]. El tono debe ser [formal / directo / cercano]. Maximo [X] palabras. Incluye [cualquier detalle especifico que necesites].",
+    tip:"Para procesos, agrega: 'El proceso actual tiene estos pasos: [describe]. Ayudame a optimizarlo o a documentarlo de forma clara para el equipo.'"
+  },
+  "Produccion":{
+    gpt:"GPT Administrativo",
+    titulo:"Plantilla — seguimiento y reportes de produccion",
+    prompt:"Soy del area de produccion de ML Studio. Necesito [hacer seguimiento a un pedido / generar un reporte de planta / comunicarle algo al proveedor / resolver un problema operativo]. El contexto es: [describe la situacion]. Necesito una respuesta [rapida y directa / en formato de informe / lista de verificacion]. Usa lenguaje operativo, sin tecnicismos innecesarios.",
+    tip:"Para trazabilidad: 'Tengo esta informacion de los pedidos: [pega los datos]. Ayudame a identificar cuellos de botella o retrasos.'"
+  },
+  "Diseno / Desarrollo de producto":{
+    gpt:"GPT de tu marca",
+    titulo:"Plantilla — briefs de diseno y desarrollo de coleccion",
+    prompt:"Soy del area de diseno de [nombre de la marca] en ML Studio. Estoy trabajando en [nueva coleccion / desarrollo de pieza especifica / investigacion de tendencias]. Necesito [un brief de diseno / descripcion de la pieza / analisis de referencias / texto para catalogo]. El concepto de la coleccion es: [describe]. El publico objetivo es: [describe]. Tono de comunicacion: [elegante / casual / tecnico].",
+    tip:"Para imagenes: 'Genera una imagen de [describe la prenda] con estas caracteristicas: [material, color, detalles]. Vista [frontal/lateral/detalle]. Fondo [blanco limpio/contexto especifico]. Estilo fotografico de catalogo de moda.'"
+  },
+  "Marketing / Contenido":{
+    gpt:"GPT de tu marca",
+    titulo:"Plantilla — contenido y comunicacion de marca",
+    prompt:"Soy del area de marketing de [nombre de la marca] en ML Studio. Necesito [crear contenido para redes sociales / redactar un texto para campana / generar ideas creativas / describir una coleccion]. El objetivo es: [describe]. El tono de la marca es [elegante / juvenil / profesional]. El formato de entrega es [post de Instagram / descripcion de catalogo / email / caption]. Maximo [X] palabras.",
+    tip:"Para variaciones de imagen: 'Tengo esta imagen de [describe]. Quiero la misma composicion pero [cambia el color del pantalon a burdeos / agrega el logo en el pecho / cambia el fondo a contexto de oficina].'"
+  },
+  "Comercial / Ventas":{
+    gpt:"GPT Administrativo",
+    titulo:"Plantilla — propuestas y argumentos comerciales",
+    prompt:"Soy asesor comercial de ML Studio, linea de dotaciones empresariales. Estoy preparando una propuesta para [tipo de empresa / sector]. Necesitan [tipo de prenda / cantidad de empleados / tipo de uso]. Mis argumentos deben enfocarse en [durabilidad / costo-beneficio / personalizacion / entrega]. Dame [una propuesta comercial / argumentos de venta / respuesta a una objecion especifica: describe la objecion]. Maximo [X] puntos, lenguaje directo.",
+    tip:"Para seguimiento: 'El cliente dijo [describe lo que dijo]. Ayudame a redactar una respuesta que [mantenga el interes / resuelva la objecion / acelere la decision].'"
+  }
+};
+
+function renderTemplate(d){
+  var area=d.area_trabajo||"";
+  var tmpl=TEMPLATES[area];
+  if(!tmpl){
+    document.getElementById("template-wrap").innerHTML="";
+    return;
+  }
+  var html='<div class="template-card">'
+    +'<div class="template-label"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'+tmpl.titulo+'</div>'
+    +'<div style="font-size:11px;font-weight:600;color:var(--ink-muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">GPT recomendado: '+tmpl.gpt+'</div>'
+    +'<div class="template-text">'+tmpl.prompt+'</div>'
+    +'<div class="template-tip">'+tmpl.tip+'</div>'
+    +'</div>';
+  document.getElementById("template-wrap").innerHTML=html;
 }
 
-function downloadFile(name, content, type) {
-  var blob = new Blob([content], {type: type});
-  var url  = URL.createObjectURL(blob);
-  var a    = document.createElement("a");
-  a.href = url; a.download = name; a.click();
-  URL.revokeObjectURL(url);
+// ── CAMINOS (solo Direccion/Gerencia) ─────────────────────
+function renderCaminos(d){
+  var area=d.area_trabajo||"";
+  if(area!=="Direccion / Gerencia"){
+    document.getElementById("caminos-wrap").innerHTML="";
+    return;
+  }
+  var html='<div class="card" style="margin-bottom:14px">'
+    +'<div class="card-label">Dos caminos — tu decides cual primero</div>'
+    +'<div class="caminos-grid">'
+    +'<div class="camino-card camino-a"><div class="camino-letter">A</div><div class="camino-title">Exprimir lo que ya existe</div><div class="camino-desc">Los GPTs internos ya estan configurados. El equipo ya los conoce. El trabajo es estructurar como y cuando usarlos para que el tiempo liberado sea real y medible para cada persona.</div></div>'
+    +'<div class="camino-card camino-b"><div class="camino-letter">B</div><div class="camino-title">Ampliar con nuevas conexiones</div><div class="camino-desc">Conectar lo que ya usan con otras herramientas. Informes automaticos desde Sheets, trazabilidad de pedidos, seguimiento del equipo sin reuniones adicionales.</div></div>'
+    +'</div>'
+    +'<div style="font-size:13px;color:var(--ink-muted);margin-top:14px;line-height:1.6">Ambos se pueden hacer. La pregunta es cual genera mas impacto en menos tiempo para tu equipo especifico. En la sesion de asesoria lo definimos juntos con los datos de tu diagnostico.</div>'
+    +'</div>';
+  document.getElementById("caminos-wrap").innerHTML=html;
 }
 
-function today() { return new Date().toISOString().slice(0, 10); }
+// ── INIT ──────────────────────────────────────────────────
+window.addEventListener("DOMContentLoaded",function(){
+  setTimeout(function(){
+    var l=document.getElementById("loader");
+    if(l)l.classList.add("hidden");
+  },500);
+  // Precargar codigo desde localStorage si existe
+  try{
+    var s=localStorage.getItem("diagnostico_ia");
+    if(s){
+      var d=JSON.parse(s);
+      if(d&&d.codigo){
+        var introInput=document.getElementById("intro-code");
+        if(introInput)introInput.value=d.codigo;
+      }
+    }
+  }catch(e){}
+});
 </script>
 </body>
 </html>
