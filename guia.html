@@ -655,28 +655,25 @@ function fetchDiag(code,cb){
 
 // ── RENDER RESULTADOS PERSONALES ─────────────────────────
 function fillPersonalResult(d){
-  var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"-";};
-  set("pr-profile",d.perfil_usuario);
-  set("pr-level",d.nivel_madurez_ia);
-  set("pr-score","Score: "+(d.score_total||"-")+" / 50");
-  set("pr-area",d.area_trabajo);
-  set("pr-gpt",d.gpt_preferido||"No especificado");
-  set("pr-friccion",d.friccion_principal);
-  set("pr-auto",d.automatizacion_deseada);
-  set("pr-open1",d.respuesta_abierta_1);
-
-  // Plan personalizado
-  renderPlan(d);
-  // Insight personalizado segun fricciones
-  renderInsight(d);
-  // Plantilla personalizada
-  renderTemplate(d);
-  // Caminos (solo Direccion/Gerencia)
-  renderCaminos(d);
-
-  // Precargar codigo en el campo
-  var mainInput=document.getElementById("main-code");
-  if(mainInput&&!mainInput.value)mainInput.value=foundCode;
+  try{
+    var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"-";};
+    set("pr-profile",d.perfil_usuario);
+    set("pr-level",d.nivel_madurez_ia);
+    set("pr-score","Score: "+(d.score_total||"-")+" / 50");
+    set("pr-area",d.area_trabajo);
+    set("pr-gpt",d.gpt_preferido||"No especificado");
+    set("pr-friccion",d.friccion_principal);
+    set("pr-auto",d.automatizacion_deseada);
+    set("pr-open1",d.respuesta_abierta_1);
+    renderPlan(d);
+    renderInsight(d);
+    renderTemplate(d);
+    renderCaminos(d);
+    var mainInput=document.getElementById("main-code");
+    if(mainInput&&!mainInput.value)mainInput.value=foundCode;
+  }catch(e){
+    console.error("fillPersonalResult error:",e);
+  }
 }
 
 // ── PLAN POR PERFIL + NIVEL ───────────────────────────────
@@ -865,27 +862,24 @@ function renderInsight(d){
   }
 
   // ── Instruccion de Proyecto especifica del area ──────────
-  // Siempre presente — es uno de los cambios mas impactantes
   var instruccionesArea = {
-    "Direccion / Gerencia":   "Trabajo en ML Studio, empresa de confeccion en Colombia. Soy de Direccion y Gerencia. Me ayudas con analisis de equipo, reportes ejecutivos, toma de decisiones y revision de planes estrategicos. Responde siempre en formato ejecutivo, conciso y orientado a accion. Sin introducciones largas.",
-    "Administracion":         "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en el area Administrativa. Me ayudas con procesos internos, comunicaciones con proveedores, documentacion de procedimientos y soporte operativo. Usa lenguaje claro y directo.",
-    "Produccion":             "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en el area de Produccion. Me ayudas con seguimiento de pedidos, reportes de planta, comunicacion con proveedores y resolucion de problemas operativos. Lenguaje operativo, sin tecnicismos innecesarios.",
-    "Diseno / Desarrollo de producto": "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en Diseno y Desarrollo de producto. Me ayudas con briefs de coleccion, descripcion de prendas, investigacion de tendencias y prompts para generacion de imagenes de moda. Tono creativo pero preciso.",
-    "Marketing / Contenido":  "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en Marketing y Contenido. Me ayudas con textos para redes sociales, campanas, descripcion de colecciones y contenido de marca. Adapta el tono segun la marca que te indique en cada solicitud.",
-    "Comercial / Ventas":     "Trabajo en ML Studio, empresa de confeccion en Colombia, linea de dotaciones empresariales. Estoy en el area Comercial. Me ayudas con propuestas para clientes, argumentos de venta, manejo de objeciones y seguimiento post-reunion. Lenguaje comercial, directo y persuasivo."
+    "Direccion / Gerencia":            "Trabajo en ML Studio, empresa de confeccion en Colombia. Soy de Direccion y Gerencia. Me ayudas con analisis de equipo, reportes ejecutivos, toma de decisiones y revision de planes estrategicos. Responde en formato ejecutivo, conciso y orientado a accion. Sin introducciones largas.",
+    "Administracion":                  "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en el area Administrativa. Me ayudas con procesos internos, comunicaciones con proveedores, documentacion de procedimientos y soporte operativo. Usa lenguaje claro y directo.",
+    "Produccion":                      "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en el area de Produccion. Me ayudas con seguimiento de pedidos, reportes de planta, comunicacion con proveedores y resolucion de problemas operativos. Lenguaje operativo, sin tecnicismos.",
+    "Diseno / Desarrollo de producto": "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en Diseno y Desarrollo de producto. Me ayudas con briefs de coleccion, descripcion de prendas, investigacion de tendencias y prompts para imagenes de moda. Tono creativo pero preciso.",
+    "Marketing / Contenido":           "Trabajo en ML Studio, empresa de confeccion en Colombia. Estoy en Marketing y Contenido. Me ayudas con textos para redes, campanas y contenido de marca. Adapta el tono segun la marca que te indique en cada solicitud.",
+    "Comercial / Ventas":              "Trabajo en ML Studio, empresa de confeccion en Colombia, linea de dotaciones. Estoy en el area Comercial. Me ayudas con propuestas, argumentos de venta, manejo de objeciones y seguimiento de clientes. Lenguaje comercial, directo y persuasivo."
   };
 
   var instruccion = instruccionesArea[area] || "Trabajo en ML Studio, empresa de confeccion en Colombia. Ayudame con las tareas de mi area de forma clara y directa.";
-  var proyId = "copy-proy-"+Math.floor(Math.random()*9999);
-  var instrEscaped = instruccion.replace(/'/g,"&#39;");
+
+  // Guardamos la instruccion en variable global para el boton
+  window._proyInstruccion = instruccion;
 
   var proyectosHtml = '<div style="background:var(--accent-bg);border:1.5px solid rgba(26,26,255,.2);border-radius:var(--radius-sm);padding:16px 18px;margin-top:4px">'
-    +'<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;display:flex;align-items:center;gap:6px">'
-      +'<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>'
-      +'Tu instruccion de Proyecto — lista para pegar'
-    +'</div>'
-    +'<div style="font-size:13px;color:var(--ink);line-height:1.7;background:var(--bg);border-radius:6px;padding:12px 14px;font-family:monospace;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">'+instruccion+'</div>'
-    +'<button class="copy-btn" id="'+proyId+'" onclick="copiarPrompt(\''+proyId+'\',\''+instrEscaped+'\')">'
+    +'<div style="font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px">Tu instruccion de Proyecto — lista para pegar</div>'
+    +'<div id="proy-text" style="font-size:13px;color:var(--ink);line-height:1.7;background:var(--bg);border-radius:6px;padding:12px 14px;font-family:monospace;white-space:pre-wrap;word-break:break-word;margin-bottom:8px">'+instruccion+'</div>'
+    +'<button class="copy-btn" id="copy-proy" onclick="copiarTextoElemento(\'proy-text\',\'copy-proy\')">'
       +'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar instruccion'
     +'</button>'
     +'<div style="font-size:11px;color:var(--ink-muted);margin-top:8px;line-height:1.5">Pega esto en la configuracion de tu Proyecto en ChatGPT. Si no sabes como, el modulo 3 de esta guia lo explica paso a paso.</div>'
@@ -904,7 +898,7 @@ function renderInsight(d){
 
   var sectionLabel = '<div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;margin-top:4px">Lo que esto significa para ti</div>';
   var proyLabel    = '<div style="font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;margin-top:16px">Tu Proyecto en ChatGPT — configuralo ahora</div>'
-    +'<div style="font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px">Un Proyecto es el cambio de habito mas impactante que puedes hacer. Imagina que ChatGPT ya sabe quien eres, en que empresa trabajas y como quieres que te responda — desde el primer mensaje, en cada conversacion, para siempre. Esta instruccion ya esta escrita para tu area. Solo copias, pegas y listo.</div>';
+    +'<div style="font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:10px">Un Proyecto es el cambio de habito mas impactante que puedes hacer. ChatGPT sabra quien eres, en que empresa trabajas y como quieres que te responda — desde el primer mensaje, en cada conversacion. Esta instruccion ya esta escrita para tu area. Solo copias y pegas.</div>';
 
   el.innerHTML = sectionLabel + insightsHtml + proyLabel + proyectosHtml;
 
@@ -923,6 +917,13 @@ function copiarPrompt(btnId, texto){
   }).catch(function(){
     if(btn){btn.innerHTML='Selecciona el texto y copia manualmente';}
   });
+}
+
+// Lee el texto de un elemento del DOM — evita problemas de escaping en onclick
+function copiarTextoElemento(elId, btnId){
+  var el=document.getElementById(elId);
+  var texto=el?el.textContent||el.innerText:"";
+  copiarPrompt(btnId, texto);
 }
 
 // ── PLANTILLA POR AREA ────────────────────────────────────
@@ -990,8 +991,8 @@ function renderTemplate(d){
   var html='<div class="template-card">'
     +'<div class="template-label"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'+tmpl.titulo+'</div>'
     +'<div style="font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">GPT recomendado: '+tmpl.gpt+'</div>'
-    +'<div class="template-text">'+tmpl.prompt+'</div>'
-    +'<button class="copy-btn" id="'+id1+'" onclick="copiarPrompt(\''+id1+'\',\''+p1+'\')">'
+    +'<div class="template-text" id="tmpl-p1">'+tmpl.prompt+'</div>'
+    +'<button class="copy-btn" id="copy-btn-1" onclick="copiarTextoElemento(\'tmpl-p1\',\'copy-btn-1\')">'
       +'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar prompt'
     +'</button>'
     +'<div class="template-tip" style="margin-top:10px">'+tmpl.tip+'</div>';
@@ -1002,8 +1003,8 @@ function renderTemplate(d){
         +'<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>'
         +tmpl.titulo2
       +'</div>'
-      +'<div class="template-text">'+tmpl.prompt2+'</div>'
-      +'<button class="copy-btn" id="'+id2+'" onclick="copiarPrompt(\''+id2+'\',\''+p2+'\')">'
+      +'<div class="template-text" id="tmpl-p2">'+tmpl.prompt2+'</div>'
+      +'<button class="copy-btn" id="copy-btn-2" onclick="copiarTextoElemento(\'tmpl-p2\',\'copy-btn-2\')">'
         +'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar prompt'
       +'</button>'
     +'</div>';
