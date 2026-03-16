@@ -208,8 +208,8 @@ tbody td{padding:11px 14px;vertical-align:top}
   </div>
 </div>
 
-<!-- LOADING OVERLAY -->
-<div class="loading-overlay" id="loading-overlay">
+<!-- LOADING OVERLAY — oculto por defecto, solo aparece tras el login -->
+<div class="loading-overlay hidden" id="loading-overlay">
   <div class="spinner-lg"></div>
   <div class="loading-text">Cargando datos del grupo...</div>
 </div>
@@ -406,26 +406,48 @@ function startDashboard() {
 
 // ── FETCH DATA ────────────────────────────────────────
 function loadData() {
-  document.getElementById("loading-overlay").classList.remove("hidden");
-  document.getElementById("refresh-label").textContent = "Actualizando...";
-  fetch(SCRIPT_URL + "?action=data&key=" + encodeURIComponent(FACILITATOR_KEY))
-    .then(function(r) { return r.json(); })
-    .then(function(res) {
-      document.getElementById("loading-overlay").classList.add("hidden");
+  var overlay = document.getElementById("loading-overlay");
+  var label   = document.getElementById("refresh-label");
+  overlay.classList.remove("hidden");
+  label.textContent = "Actualizando...";
+
+  // Timeout de seguridad — oculta el overlay en máx 10s pase lo que pase
+  var safetyTimer = setTimeout(function() {
+    overlay.classList.add("hidden");
+    label.textContent = "Tiempo agotado — reintenta";
+  }, 10000);
+
+  fetch(SCRIPT_URL + "?action=data&key=" + encodeURIComponent(FACILITATOR_KEY), {
+    method: "GET",
+    redirect: "follow"
+  })
+    .then(function(r) {
+      // Apps Script puede responder con text/plain aunque sea JSON
+      return r.text();
+    })
+    .then(function(text) {
+      clearTimeout(safetyTimer);
+      overlay.classList.add("hidden");
+      var res;
+      try { res = JSON.parse(text); } catch(e) {
+        label.textContent = "Error de formato";
+        return;
+      }
       if (res.status === "ok") {
         allData = res.data || [];
         document.getElementById("last-update").textContent =
           "Actualizado: " + new Date().toLocaleTimeString("es-CO", {hour:"2-digit",minute:"2-digit"});
-        document.getElementById("refresh-label").textContent = "En vivo";
+        label.textContent = "En vivo";
         applyFilters();
       } else {
-        document.getElementById("loading-overlay").classList.add("hidden");
-        document.getElementById("refresh-label").textContent = "Error al cargar";
+        label.textContent = "Error: " + (res.message || "respuesta inesperada");
       }
     })
-    .catch(function() {
-      document.getElementById("loading-overlay").classList.add("hidden");
-      document.getElementById("refresh-label").textContent = "Sin conexión";
+    .catch(function(err) {
+      clearTimeout(safetyTimer);
+      overlay.classList.add("hidden");
+      label.textContent = "Sin conexión — reintenta";
+      console.error("loadData error:", err);
     });
 }
 
@@ -680,10 +702,15 @@ function lookupCode() {
   if (!code || code.length < 4) { err.classList.add("show"); return; }
   spin.classList.add("show");
 
-  fetch(SCRIPT_URL + "?action=lookup&codigo=" + encodeURIComponent(code))
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
+  fetch(SCRIPT_URL + "?action=lookup&codigo=" + encodeURIComponent(code), {
+    method: "GET",
+    redirect: "follow"
+  })
+    .then(function(r) { return r.text(); })
+    .then(function(text) {
       spin.classList.remove("show");
+      var data;
+      try { data = JSON.parse(text); } catch(e) { err.classList.add("show"); return; }
       if (data.status !== "ok" || !data.data) { err.classList.add("show"); return; }
       var d = data.data;
       var fields = [
