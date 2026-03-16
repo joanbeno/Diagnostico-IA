@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Guia de IA - ML Studio</title>
+<title>Guía de IA — ML Studio</title>
+<meta name="description" content="Guía interactiva de IA para ML Studio — prompts, Proyectos, GPTs internos y tu plan de acción personalizado."/>
+<meta property="og:title" content="Guía de IA — ML Studio"/>
+<meta property="og:description" content="Aprende a usar ChatGPT para tu trabajo real. 8 módulos + contenido personalizado con tu código de diagnóstico."/>
+<meta property="og:type" content="website"/>
+<meta property="og:image" content="https://drive.google.com/uc?export=view&id=1G-lloNV4CNt9s6PIY79AXr7FvlUVhzG0"/>
+<meta property="og:locale" content="es_CO"/>
+<meta name="theme-color" content="#1a1aff"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet"/>
@@ -604,9 +611,37 @@ function lookupMain(){
   });
 }
 function fetchDiag(code,cb){
-  fetch(SCRIPT_URL+"?action=lookup&codigo="+encodeURIComponent(code))
-    .then(function(r){return r.json();})
-    .then(function(res){
+  // ── Código de demo — datos hardcodeados, no va al Sheet ──
+  if(code.toUpperCase()==="ML-DEMO"){
+    cb({
+      area_trabajo:              "Direccion / Gerencia",
+      frecuencia_uso_ia:         "Varias veces al dia",
+      tipo_uso:                  "Redaccion de textos, Organizacion de informacion, Analisis o toma de decisiones, Resolver problemas operativos",
+      friccion_principal:        "Explicar el contexto correctamente, Revisar o corregir lo que genera, Encontrar conversaciones anteriores",
+      repeticion_contexto:       "A veces",
+      organizacion_conocimiento: "En los chats",
+      uso_gpts:                  "Si, frecuentemente",
+      gpt_preferido:             "GPT Administrativo",
+      impacto_productividad:     "Mucho",
+      automatizacion_deseada:    "Documentos o reportes, Atencion a clientes, Analisis de informacion, Organizacion de procesos, Generacion de contenido",
+      respuesta_abierta_1:       "Gestion financiera — que los reportes se generen automaticamente sin tener que armarlos desde cero cada vez.",
+      respuesta_abierta_2:       "La efectividad del equipo de trabajo — que cada persona use bien las herramientas que ya tenemos.",
+      perfil_usuario:            "Optimizador",
+      nivel_madurez_ia:          "Nivel 3 — Uso integrado",
+      score_total:               "30",
+      alertas_detectadas:        "Conocimiento generado sin sistema de archivo, Perdida de trabajo realizado con IA",
+      timestamp:                 new Date().toISOString()
+    });
+    return;
+  }
+  // ── Lookup real al Sheet ──────────────────────────────────
+  fetch(SCRIPT_URL+"?action=lookup&codigo="+encodeURIComponent(code),{
+    method:"GET",redirect:"follow"
+  })
+    .then(function(r){return r.text();})
+    .then(function(text){
+      var res;
+      try{res=JSON.parse(text);}catch(e){cb(null);return;}
       if(res.status==="ok"&&res.data)cb(res.data);
       else cb(null);
     }).catch(function(){cb(null);});
@@ -776,5 +811,13 @@ window.addEventListener("DOMContentLoaded",function(){
   }catch(e){}
 });
 </script>
+
+<!-- FOOTER -->
+<footer style="text-align:center;padding:24px 24px 32px;border-top:1px solid var(--border);margin-top:8px">
+  <p style="font-size:12px;color:var(--ink-muted);letter-spacing:.04em">
+    <strong style="color:var(--ink-soft);font-weight:600">IAsolutions</strong>
+    &nbsp;·&nbsp; Joan Nicolas Benavides
+  </p>
+</footer>
 </body>
 </html>
