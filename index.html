@@ -154,7 +154,7 @@
     .gauge-label{font-size:10px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:600}
 
     /* SCORE HERO */
-    .score-hero{background:var(--ink);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+    .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap}
     .score-context{flex:1;min-width:180px}
     .score-context-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
     .score-context-text{font-size:17px;color:#fff;font-weight:400;line-height:1.4}
@@ -166,6 +166,7 @@
 
     /* MODO OSCURO */
     :root[data-theme="dark"]{
+  --surface-inv:#12121f;
       --ink:#f0f0f5;--ink-soft:#b8b8cc;--ink-muted:#666688;
       --bg:#0f0f14;--bg-card:#1a1a24;--border:#2a2a38;
       --accent:#6b7fff;--accent-2:#8b9fff;--accent-bg:#1a1a35;
@@ -177,7 +178,7 @@
     }
     :root[data-theme="dark"] .page-loader{background:#0f0f14}
     :root[data-theme="dark"] .topbar{background:rgba(15,15,20,.95)}
-    :root[data-theme="dark"] .recovery-banner{background:var(--ink)}
+    :root[data-theme="dark"] .recovery-banner{background:var(--surface-inv)}
     :root[data-theme="dark"] .score-hero{background:#1a1a24}
     :root[data-theme="dark"] .option-btn:hover{background:#1a1a35}
     :root[data-theme="dark"] .step-card{background:#1a1a24}
@@ -289,7 +290,7 @@
     .resource-example strong{color:var(--accent);font-style:normal;font-weight:600;display:block;margin-bottom:4px;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
     .resource-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
     .resource-step{display:flex;align-items:flex-start;gap:12px}
-    .resource-step-num{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;flex-shrink:0;margin-top:1px}
+    .resource-step-num{width:22px;height:22px;border-radius:50%;background:var(--surface-inv);color:#fff;font-size:11px;font-weight:700;display:grid;place-items:center;flex-shrink:0;margin-top:1px}
     .resource-step-text{font-size:14px;color:var(--ink-soft);line-height:1.6}
     .resource-step-text strong{color:var(--ink);font-weight:600}
     .resource-tip{background:var(--green-bg);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--green);font-weight:500;line-height:1.5;margin-bottom:14px}
@@ -306,14 +307,14 @@
     @media(max-width:640px){.resource-compare{grid-template-columns:1fr}}
 
     /* RECOVERY BANNER */
-    .recovery-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--ink);color:#fff;padding:14px 24px;align-items:center;gap:14px;flex-wrap:wrap}
+    .recovery-banner{display:none;position:fixed;bottom:0;left:0;right:0;z-index:150;background:var(--surface-inv);color:#fff;padding:14px 24px;align-items:center;gap:14px;flex-wrap:wrap}
     .recovery-text{font-size:14px;flex:1;min-width:200px}
     .recovery-text strong{color:#fff}
     .recovery-code{font-family:monospace;font-size:16px;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:6px;letter-spacing:.1em}
     .recovery-actions{display:flex;gap:8px}
 
     /* CODIGO ACCESO en resultados */
-    .codigo-card{background:var(--ink);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+    .codigo-card{background:var(--surface-inv);border-radius:var(--radius);padding:24px 28px;margin-bottom:16px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
     .codigo-left{flex:1;min-width:180px}
     .codigo-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:8px}
     .codigo-value{font-family:monospace;font-size:42px;font-weight:700;color:#fff;letter-spacing:.15em;line-height:1}
@@ -339,7 +340,7 @@
     .site-footer-text strong{color:var(--ink-soft);font-weight:600}
 
     /* LOADER INICIAL */
-    .page-loader{position:fixed;inset:0;background:#fff;display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s ease,visibility .4s ease}
+    .page-loader{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s ease,visibility .4s ease}
     .page-loader.hidden{opacity:0;visibility:hidden;pointer-events:none}
     .loader-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:loaderPulse 1.2s ease-in-out infinite}
     .loader-dot:nth-child(2){animation-delay:.2s;margin:0 6px}
@@ -666,7 +667,7 @@
       </div>
 
       <!-- 2. CÓDIGO DE ACCESO — después del resultado -->
-      <div style="background:var(--ink);border-radius:var(--radius);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+      <div style="background:var(--surface-inv);border-radius:var(--radius);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
         <div style="flex:1;min-width:160px">
           <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Tu código personal</div>
           <div id="codigo-display" style="font-family:monospace;font-size:22px;font-weight:700;color:#fff;letter-spacing:.12em;line-height:1"></div>
