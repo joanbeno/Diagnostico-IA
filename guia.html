@@ -1407,7 +1407,8 @@ function renderModulosPersonalizados(d){
     || friccion.indexOf("prompt")>-1
     || friccion.indexOf("contexto")>-1
     || friccion.indexOf("Revisar")>-1
-    || friccion.indexOf("Ajustar")>-1;
+    || friccion.indexOf("Ajustar")>-1
+    || friccion.indexOf("corregir")>-1;
 
   var needsChat = nivel<=1
     || frec==="Rara vez"
@@ -1422,6 +1423,7 @@ function renderModulosPersonalizados(d){
   var needsGPTs = gpts==="No sabia que existian"
     || gpts==="Se que existen pero no los uso"
     || gpts==="Los uso ocasionalmente"
+    || gpts==="A veces"
     || nivel<=2;
 
   var needsEnterprise = nivel>=2;
