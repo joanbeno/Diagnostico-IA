@@ -18,8 +18,8 @@
 :root{
   --ink:#0a0a12;--ink-soft:#4a4a5a;--ink-muted:#909098;
   --bg:#f5f5f7;--bg-card:#fff;--border:#e2e2e8;
-  --accent:#1a1aff;--accent-2:#0d0dcc;--accent-bg:#f0f0ff;
-  --accent-dim:rgba(26,26,255,.08);
+  --accent:#3535cc;--accent-2:#2525aa;--accent-bg:#f0f0ff;
+  --accent-dim:rgba(53,53,204,.08);
   --green:#00875a;--green-bg:#eaf5f0;
   --amber:#92650a;--amber-bg:#fdf5e4;
   --red:#c0392b;--red-bg:#fdecea;
@@ -97,7 +97,7 @@
 
 /* Fondos claros usan SVG oscuro */
 .with-pattern.light-bg::before {
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg stroke='%230a0a12' stroke-width='0.6' fill='none'%3E%3Cline x1='9' y1='24' x2='24' y2='9'/%3E%3Cline x1='24' y1='9' x2='39' y2='18'/%3E%3Cline x1='39' y1='18' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='39' y2='18' opacity='.35'/%3E%3Cline x1='24' y1='9' x2='33' y2='39' opacity='.25'/%3E%3C/g%3E%3Ccircle cx='9' cy='24' r='1.5' fill='%230a0a12'/%3E%3Ccircle cx='24' cy='9' r='1.8' fill='%230a0a12'/%3E%3Ccircle cx='39' cy='18' r='1.2' fill='%230a0a12'/%3E%3Ccircle cx='33' cy='39' r='2' fill='%230a0a12'/%3E%3C/svg%3E");
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg stroke='%230a0a12' stroke-width='0.6' opacity='0.04' fill='none'%3E%3Cline x1='9' y1='24' x2='24' y2='9'/%3E%3Cline x1='24' y1='9' x2='39' y2='18'/%3E%3Cline x1='39' y1='18' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='39' y2='18' opacity='.35'/%3E%3Cline x1='24' y1='9' x2='33' y2='39' opacity='.25'/%3E%3C/g%3E%3Ccircle cx='9' cy='24' r='1.5' fill='%230a0a12'/%3E%3Ccircle cx='24' cy='9' r='1.8' fill='%230a0a12'/%3E%3Ccircle cx='39' cy='18' r='1.2' fill='%230a0a12'/%3E%3Ccircle cx='33' cy='39' r='2' fill='%230a0a12'/%3E%3C/svg%3E");
 }
 /* En fondos claros el shimmer es aún más sutil */
 .with-pattern.light-bg::after {
@@ -126,9 +126,96 @@
 .icon-moon{display:block}
 :root[data-theme="dark"] .icon-sun{display:block}
 :root[data-theme="dark"] .icon-moon{display:none}
+
+/* Back to diagnóstico banner */
+.back-to-diag{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:12px;
+  font-weight:600;
+  color:var(--accent);
+  background:var(--accent-bg);
+  border:1px solid rgba(26,26,255,.15);
+  border-radius:var(--radius-sm);
+  padding:10px 14px;
+  margin-bottom:16px;
+  cursor:pointer;
+  transition:var(--t);
+  animation:fadeUp .3s ease both;
+  user-select:none;
+}
+.back-to-diag:hover{background:var(--accent);color:#fff}
+.back-to-diag svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+
+
+/* ── ACORDEONES MÓDULO 8 — "libros apilados" ────────────── */
+.mod-book {
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:8px;
+  overflow:hidden;
+  transition:box-shadow var(--t);
+}
+.mod-book:hover { box-shadow:var(--shadow) }
+.mod-book-header {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 18px;
+  background:var(--surface-inv);
+  cursor:pointer;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:background var(--t);
+}
+.mod-book-header:hover { background:#1a1a2e }
+:root[data-theme="dark"] .mod-book-header:hover { background:#16162a }
+.mod-book-num {
+  font-size:9px;font-weight:700;letter-spacing:.12em;
+  color:rgba(255,255,255,.3);text-transform:uppercase;
+  flex-shrink:0;min-width:36px;
+}
+.mod-book-title {
+  font-size:14px;font-weight:600;color:#fff;
+  line-height:1.3;flex:1;
+}
+.mod-book-badge {
+  font-size:10px;font-weight:700;padding:3px 9px;
+  border-radius:100px;border:1px solid;
+  opacity:.75;flex-shrink:0;
+}
+.mod-book-chevron {
+  width:16px;height:16px;flex-shrink:0;
+  stroke:rgba(255,255,255,.4);fill:none;stroke-width:2;
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+.mod-book.open .mod-book-chevron { transform:rotate(180deg) }
+.mod-book-body {
+  display:none;
+  padding:18px;
+  border-top:1px solid rgba(255,255,255,.06);
+  animation:fadeUp .22s ease both;
+}
+.mod-book.open .mod-book-body { display:block }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{
+  font-family:"DM Sans",sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg stroke='%230a0a12' stroke-width='0.6' fill='none'%3E%3Cline x1='9' y1='24' x2='24' y2='9'/%3E%3Cline x1='24' y1='9' x2='39' y2='18'/%3E%3Cline x1='39' y1='18' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='39' y2='18' opacity='.35'/%3E%3Cline x1='24' y1='9' x2='33' y2='39' opacity='.25'/%3E%3C/g%3E%3Ccircle cx='9' cy='24' r='1.5' fill='%230a0a12'/%3E%3Ccircle cx='24' cy='9' r='1.8' fill='%230a0a12'/%3E%3Ccircle cx='39' cy='18' r='1.2' fill='%230a0a12'/%3E%3Ccircle cx='33' cy='39' r='2' fill='%230a0a12'/%3E%3C/svg%3E");
+  background-size:48px 48px;
+}
+/* En modo oscuro — quitar el patrón del body (los fondos oscuros ya tienen el suyo) */
+:root[data-theme="dark"] body{
+  background-image:none;
+}
 
 /* LOADER */
 .loader{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s,visibility .4s}
@@ -149,7 +236,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 
 /* PROGRESS BAR */
 .guide-progress{height:3px;background:var(--border);position:fixed;top:58px;left:0;right:0;z-index:99}
-.guide-progress-fill{height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.guide-progress-fill{height:100%;background:#8C1C3A;transition:width .55s cubic-bezier(.22,1,.36,1)}
 
 /* SHELL */
 .guide-shell{padding-top:58px;min-height:100vh}
@@ -163,8 +250,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 .guide-content{max-width:740px;margin:0 auto;width:100%;padding:44px 28px 120px}
 
 /* TYPOGRAPHY */
-.guide-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
-.guide-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+.guide-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);color:var(--ink-muted);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
+.guide-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--ink-muted)}
 .guide-title{font-family:"DM Serif Display",serif;font-size:clamp(24px,4vw,38px);line-height:1.15;margin-bottom:12px;letter-spacing:-.3px}
 .guide-title em{font-style:italic;color:var(--accent)}
 .guide-subtitle{font-size:15px;color:var(--ink-soft);font-weight:300;line-height:1.7;margin-bottom:28px}
@@ -184,7 +271,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 .hl-green strong{color:var(--green)}
 .hl-amber{background:var(--amber-bg);border-left-color:var(--amber)}
 .hl-amber strong{color:var(--amber)}
-.hl-dark{background:var(--surface-inv);color:rgba(255,255,255,.75);border-left-color:rgba(255,255,255,.3)}
+.hl-dark{background:var(--surface-inv);color:rgba(255,255,255,.75);border-left-color:rgba(255,255,255,.3);box-shadow:0 3px 20px rgba(0,0,0,.2)}
 .hl-dark strong{color:rgba(255,255,255,.45)}
 
 /* COMPARE */
@@ -254,7 +341,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 .lookup-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:14px;box-shadow:var(--shadow)}
 .lookup-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
 .lookup-input{flex:1;min-width:130px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:16px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;outline:none;transition:var(--t);color:var(--ink);background:var(--bg)}
-.lookup-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(26,26,255,.08)}
+.lookup-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(53,53,204,.08)}
 .lookup-input::placeholder{font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-muted);font-size:14px}
 .lookup-error{color:var(--red);font-size:13px;margin-top:8px;display:none}
 .lookup-error.show{display:block}
@@ -311,9 +398,34 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 .intro-title em{font-style:italic;color:var(--accent)}
 .intro-desc{font-size:15px;color:var(--ink-soft);font-weight:300;line-height:1.7;margin-bottom:28px}
 .modules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px;margin-bottom:28px;text-align:left}
-.module-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;box-shadow:var(--shadow)}
-.module-num{font-size:10px;font-weight:700;color:var(--ink-muted);margin-bottom:3px}
-.module-title{font-size:13px;font-weight:600;color:var(--ink)}
+.module-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:12px 14px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  transition:transform .18s cubic-bezier(.22,1,.36,1),
+             box-shadow .18s ease,
+             border-color .18s ease,
+             background .18s ease;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.module-card:hover{
+  transform:translateY(-3px) scale(1.02);
+  box-shadow:0 6px 20px rgba(26,26,255,.13);
+  border-color:var(--accent);
+  background:var(--accent-bg);
+}
+.module-card:hover .module-num{color:var(--accent)}
+.module-card:hover .module-title{color:var(--accent)}
+.module-card:active{transform:translateY(-1px) scale(.99)}
+:root[data-theme="dark"] .module-card:hover{
+  box-shadow:0 6px 20px rgba(123,127,255,.2);
+}
+.module-num{font-size:10px;font-weight:700;color:var(--ink-muted);margin-bottom:3px;transition:color .18s ease}
+.module-title{font-size:13px;font-weight:600;color:var(--ink);transition:color .18s ease}
 .code-block{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;text-align:left}
 .code-block-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px}
 .code-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -346,7 +458,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 /* RESPONSIVE */
 @media(max-width:640px){
   .topbar{padding:0 16px;gap:10px}
-  .topbar-label{display:none}
+  .topbar-label{font-size:10px;letter-spacing:.05em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px}
   .guide-content{padding:28px 16px 110px}
   .guide-nav{padding:10px 16px}
   .guide-nav-center{font-size:11px}
@@ -395,6 +507,51 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 .mod-popover-go:hover{background:#0d0dcc}
 .mod-popover-go svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5}
 
+
+/* ACORDEONES OPCIONALES modulo 8 */
+.opt-section-header{margin-top:32px;padding-top:24px;border-top:1px dashed var(--border)}
+.opt-section-eyebrow{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-muted);opacity:.7;margin-bottom:4px}
+.opt-section-title{font-size:13px;font-weight:600;color:var(--ink-soft);margin-bottom:4px}
+.opt-section-desc{font-size:12px;color:var(--ink-muted);line-height:1.5;margin-bottom:14px}
+.opt-book{border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:6px;overflow:hidden;opacity:.82;transition:opacity var(--t),box-shadow var(--t)}
+.opt-book:hover{opacity:1;box-shadow:var(--shadow)}
+.opt-book-header{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--bg);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;border-bottom:1px solid transparent;transition:background var(--t)}
+.opt-book-header:hover{background:var(--accent-bg)}
+.opt-book.open .opt-book-header{border-bottom-color:var(--border)}
+.opt-book-num{font-size:9px;font-weight:700;letter-spacing:.1em;color:var(--ink-muted);text-transform:uppercase;flex-shrink:0;min-width:32px}
+.opt-book-title{font-size:13px;font-weight:500;color:var(--ink-soft);flex:1;line-height:1.3}
+.opt-book-badge{font-size:9px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);background:var(--bg-card);border:1px solid var(--border);padding:2px 8px;border-radius:100px;flex-shrink:0}
+.opt-book-chevron{width:14px;height:14px;flex-shrink:0;stroke:var(--ink-muted);fill:none;stroke-width:2;transition:transform .22s ease}
+.opt-book.open .opt-book-chevron{transform:rotate(180deg)}
+.opt-book-body{display:none;padding:16px 18px;animation:fadeUp .2s ease both}
+.opt-book.open .opt-book-body{display:block}
+
+/* ── SHIMMER en headers de módulo del 8 ─────────────────────
+   Barrido diagonal muy lento y sutil. Solo en fondos oscuros.
+   No afecta interactividad (pointer-events:none).
+   ──────────────────────────────────────────────────────────── */
+.mod-header-shimmer{
+  position:relative;
+  overflow:hidden;
+}
+.mod-header-shimmer::after{
+  content:'';
+  position:absolute;
+  top:-20%;left:-120%;
+  width:35%;height:140%;
+  background:linear-gradient(
+    112deg,
+    transparent 0%,
+    rgba(255,255,255,0) 35%,
+    rgba(255,255,255,.045) 50%,
+    rgba(255,255,255,0) 65%,
+    transparent 100%
+  );
+  animation:shimmer-sweep 11s cubic-bezier(.45,0,.55,1) infinite;
+  animation-delay:3s;
+  pointer-events:none;
+  will-change:transform;
+}
 </style>
 </head>
 <body>
@@ -442,14 +599,14 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
   </div>
 
   <div class="modules-grid">
-    <div class="module-card"><div class="module-num">01</div><div class="module-title">Buen prompt</div></div>
-    <div class="module-card"><div class="module-num">02</div><div class="module-title">Iniciar un chat</div></div>
-    <div class="module-card"><div class="module-num">03</div><div class="module-title">Proyectos ChatGPT</div></div>
-    <div class="module-card"><div class="module-num">04</div><div class="module-title">GPT interno vs general</div></div>
-    <div class="module-card"><div class="module-num">05</div><div class="module-title">Enterprise</div></div>
-    <div class="module-card"><div class="module-num">06</div><div class="module-title">Conectores</div></div>
-    <div class="module-card"><div class="module-num">07</div><div class="module-title">Preguntas frecuentes</div></div>
-    <div class="module-card"><div class="module-num">08</div><div class="module-title">Tu diagnostico</div></div>
+    <div class="module-card" onclick="goTo(1)" title="Ir al módulo 1"><div class="module-num">01</div><div class="module-title">Buen prompt</div></div>
+    <div class="module-card" onclick="goTo(2)" title="Ir al módulo 2"><div class="module-num">02</div><div class="module-title">Iniciar un chat</div></div>
+    <div class="module-card" onclick="goTo(3)" title="Ir al módulo 3"><div class="module-num">03</div><div class="module-title">Proyectos ChatGPT</div></div>
+    <div class="module-card" onclick="goTo(4)" title="Ir al módulo 4"><div class="module-num">04</div><div class="module-title">GPT interno vs general</div></div>
+    <div class="module-card" onclick="goTo(5)" title="Ir al módulo 5"><div class="module-num">05</div><div class="module-title">Enterprise</div></div>
+    <div class="module-card" onclick="goTo(6)" title="Ir al módulo 6"><div class="module-num">06</div><div class="module-title">Conectores</div></div>
+    <div class="module-card" onclick="goTo(7)" title="Ir al módulo 7"><div class="module-num">07</div><div class="module-title">Preguntas frecuentes</div></div>
+    <div class="module-card" onclick="goTo(8)" title="Ir al módulo 8"><div class="module-num">08</div><div class="module-title">Tu diagnóstico</div></div>
   </div>
   <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="goTo(1)">Comenzar<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
 </div>
@@ -458,6 +615,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS1: PROMPT -->
 <div class="gscreen" id="gs-1">
 <div class="guide-content">
+  <div id="back-from-8-1" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 01</div>
   <h1 class="guide-title">Como hacer un<br/><em>buen prompt</em></h1>
   <p class="guide-subtitle">Un prompt es simplemente lo que le escribes a ChatGPT. La calidad de la respuesta depende casi completamente de que tan bien esta escrito.</p>
@@ -492,6 +653,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS2: CHAT EFECTIVO -->
 <div class="gscreen" id="gs-2">
 <div class="guide-content">
+  <div id="back-from-8-2" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 02</div>
   <h1 class="guide-title">Como iniciar un<br/><em>chat efectivo</em></h1>
   <p class="guide-subtitle">Los primeros mensajes determinan la calidad de todo lo que sigue. Un buen inicio ahorra tiempo en cada mensaje posterior.</p>
@@ -516,6 +681,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS3: PROYECTOS -->
 <div class="gscreen" id="gs-3">
 <div class="guide-content">
+  <div id="back-from-8-3" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 03</div>
   <h1 class="guide-title">Proyectos en ChatGPT:<br/><em>el contexto que no se pierde</em></h1>
   <p class="guide-subtitle">Un Proyecto es un espacio de trabajo que recuerda quien eres y que haces — sin que tengas que repetirlo en cada conversacion nueva.</p>
@@ -540,6 +709,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS4: GPT INTERNO VS GENERAL -->
 <div class="gscreen" id="gs-4">
 <div class="guide-content">
+  <div id="back-from-8-4" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 04</div>
   <h1 class="guide-title">GPT interno vs<br/><em>ChatGPT general</em></h1>
   <p class="guide-subtitle">La empresa ya creo GPTs personalizados para areas especificas. Saber cuando usar cada uno marca una diferencia real en la calidad de las respuestas.</p>
@@ -563,6 +736,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS5: ENTERPRISE -->
 <div class="gscreen" id="gs-5">
 <div class="guide-content">
+  <div id="back-from-8-5" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 05</div>
   <h1 class="guide-title">Lo que tiene<br/><em>ChatGPT Enterprise</em></h1>
   <p class="guide-subtitle">La versión Enterprise que tiene la empresa incluye funciones que la mayoría no conoce ni usa. Aquí las más relevantes para el trabajo del día a día.</p>
@@ -598,6 +775,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS6: CONECTORES -->
 <div class="gscreen" id="gs-6">
 <div class="guide-content">
+  <div id="back-from-8-6" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 06</div>
   <h1 class="guide-title">Conectores y<br/><em>automatizacion</em></h1>
   <p class="guide-subtitle">ChatGPT no tiene que vivir aislado. Se puede conectar con otras herramientas para automatizar flujos completos sin intervencion manual.</p>
@@ -617,6 +798,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--ink);min-
 <!-- GS7: FAQ -->
 <div class="gscreen" id="gs-7">
 <div class="guide-content">
+  <div id="back-from-8-7" class="back-to-diag" style="display:none" onclick="goBackToDiag()">
+    <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Volver a tu diagnóstico personalizado
+  </div>
   <div class="guide-badge"><div class="guide-badge-dot"></div>Modulo 07</div>
   <h1 class="guide-title">Preguntas<br/><em>frecuentes</em></h1>
   <p class="guide-subtitle">Las dudas mas comunes sobre el uso de IA en el trabajo — respondidas sin rodeos.</p>
@@ -716,12 +901,51 @@ var foundData=null;
 var TITLES={1:"Cómo hacer un buen prompt",2:"Iniciar un chat efectivo",3:"Proyectos en ChatGPT",4:"GPT interno vs general",5:"Herramientas Enterprise",6:"Conectores y automatización",7:"Preguntas frecuentes",8:"Tu diagnóstico personalizado"};
 
 // ── NAVIGATION ────────────────────────────────────────────
-function goTo(n){
+function toggleBook(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var isOpen=el.classList.contains('open');
+  // Close all others
+  document.querySelectorAll('.mod-book.open').forEach(function(b){b.classList.remove('open');});
+  if(!isOpen) el.classList.add('open');
+}
+
+// Track origin module for back navigation
+var prevModule = 0;
+
+function goTo(n, fromDiag){
   document.getElementById("gs-"+current).classList.remove("active");
+  var prev = current;
   current=n;
   document.getElementById("gs-"+n).classList.add("active");
   updateNav();
   window.scrollTo({top:0,behavior:"smooth"});
+
+  // Si venimos del módulo 8 (diagnóstico), mostrar banner de vuelta
+  var backEl = document.getElementById("back-from-8-"+n);
+  if(backEl){
+    if(fromDiag || prev === 8){
+      prevModule = 8;
+      backEl.style.display = "flex";
+    } else {
+      backEl.style.display = "none";
+    }
+  }
+  // Ocultar banners en el módulo 8
+  if(n === 8){
+    for(var i=1;i<=7;i++){
+      var el=document.getElementById("back-from-8-"+i);
+      if(el) el.style.display="none";
+    }
+  }
+}
+
+function goBackToDiag(){
+  prevModule = 0;
+  goTo(8);
+  // Si hay datos cargados, asegurar que se muestren
+  var res = document.getElementById("personal-result");
+  if(res && !res.classList.contains("show")) res.classList.add("show");
 }
 function nextScreen(){if(current<TOTAL)goTo(current+1);}
 function prevScreen(){if(current>1)goTo(current-1);}
@@ -1099,10 +1323,32 @@ function renderInsight(d){
 // Nivel 1 (Explorador): todo.
 // Nivel 2 (Operativo): lo qué le falta.
 // Nivel 3+: solo brechas específicas.
+/* ═════════════════════════════════════════════════════════════════
+   renderModulosPersonalizados(d)
+
+   Genera DOS bloques dentro de modules-wrap:
+
+   1. MÓDULOS PRIORITARIOS (modulos[])
+      Seleccionados por el diagnóstico según nivel, fricciones,
+      repetición de contexto, uso de GPTs y deseo de automatización.
+      Se muestran expandidos con header oscuro.
+
+   2. MÓDULOS OPCIONALES (modulosOpcionales[])
+      Los que NO pasaron el filtro — disponibles "Por curiosidad".
+      Colapsados por defecto, header apagado, badge gris.
+      Solo módulos transversales — no contenido de otras áreas.
+      Contenido condensado, basado en documentación verificable de OpenAI.
+
+   Parámetros del objeto d (diagnóstico del Sheet):
+     nivel_madurez_ia, perfil_usuario, friccion_principal,
+     repeticion_contexto, organizacion_conocimiento, uso_gpts,
+     automatizacion_deseada, area_trabajo, frecuencia_uso_ia
+   ═════════════════════════════════════════════════════════════════ */
 function renderModulosPersonalizados(d){
   var el=document.getElementById("modules-wrap");
   if(!el)return;
 
+  // ── Variables del diagnóstico ─────────────────────────────────────
   var nivel   = parseInt((d.nivel_madurez_ia||"1").replace(/\D/g,'').charAt(0))||1;
   var perfil  = d.perfil_usuario||"";
   var friccion= d.friccion_principal||"";
@@ -1113,315 +1359,403 @@ function renderModulosPersonalizados(d){
   var area    = d.area_trabajo||"";
   var frec    = d.frecuencia_uso_ia||"";
 
-  var modulos = [];
+  // ── Arrays de salida ──────────────────────────────────────────────
+  var modulos           = []; // Prioritarios — expandidos
+  var modulosOpcionales = []; // Opcionales — colapsados
 
-  // ── Determinar qué modulos mostrar y en qué orden ─────
+  // ── Instrucción de Proyecto por área ─────────────────────────────
+  // Texto listo para copiar en ChatGPT Projects, adaptado al área
+  var instrArea={
+    "Direccion / Gerencia":
+      "Trabajo en ML Studio, empresa de confeccion y dotaciones en Colombia. Soy parte de Direccion y Gerencia. Ayudame con analisis estrategico, reportes ejecutivos, toma de decisiones y comunicacion directiva. Responde de forma ejecutiva, concisa y sin introducciones largas. Cuando analices datos, destaca las implicaciones para el negocio.",
+    "Administracion":
+      "Trabajo en ML Studio, empresa de confeccion en Colombia, area Administrativa. Ayudame con procesos internos, comunicaciones formales, documentacion y gestion de proveedores. Lenguaje claro, profesional y directo. Cuando redactes, adapta el tono segun el destinatario — interno o externo.",
+    "Produccion":
+      "Trabajo en ML Studio, empresa de confeccion en Colombia, area de Produccion. Ayudame con seguimiento de pedidos, reportes de planta, comunicacion con proveedores y control de procesos. Lenguaje operativo y preciso. Prioriza la claridad sobre la formalidad.",
+    "Diseno / Desarrollo de producto":
+      "Trabajo en ML Studio, empresa de confeccion en Colombia, area de Diseno y Desarrollo de producto. Ayudame con briefs de coleccion, fichas tecnicas, investigacion de tendencias y conceptos de diseno. Tono creativo y tecnico. Cuando describas prendas, incluye material, color, corte y detalles de acabado.",
+    "Marketing / Contenido":
+      "Trabajo en ML Studio, empresa de confeccion en Colombia, area de Marketing y Contenido. Ayudame con contenido de redes, copys, estrategia de comunicacion y adaptacion por marca. Siempre preguntame para cual de las marcas es el contenido antes de generar — cada una tiene tono distinto.",
+    "Comercial / Ventas":
+      "Trabajo en ML Studio, linea de dotaciones industriales en Colombia, area Comercial. Ayudame con propuestas de venta, seguimiento de clientes, argumentarios y comunicaciones comerciales. Lenguaje directo y orientado al cierre. Cuando redactes propuestas, enfocate en beneficios concretos: durabilidad, tiempos de entrega y servicio postventa."
+  };
+  var instr = instrArea[area]||"Trabajo en ML Studio, empresa de confeccion en Colombia. Ayudame con las tareas de mi area de forma clara, directa y profesional.";
 
-  // MOD 1 — Prompts: siempre para nivel 1-2, o si la friccion es de prompts
+  // ── GPT más relevante por área ────────────────────────────────────
+  var gptDesc={
+    "Direccion / Gerencia":            "el GPT Administrativo para procesos internos y el GPT Financiero para analisis de numeros",
+    "Administracion":                  "el GPT Administrativo — disenado para comunicaciones, procesos y documentacion interna",
+    "Produccion":                       "el GPT Administrativo para comunicaciones con proveedores y reportes de seguimiento",
+    "Diseno / Desarrollo de producto": "el GPT de tu marca — tiene el ADN visual y el tono de cada coleccion cargado",
+    "Marketing / Contenido":           "el GPT de tu marca — conoce la voz, el tono y las restricciones de cada marca de ML Studio",
+    "Comercial / Ventas":              "el GPT Administrativo para propuestas y seguimiento, y el GPT de marca para contenido comercial"
+  };
+  var miGPT = gptDesc[area]||"el GPT de tu area";
+
+  // ══════════════════════════════════════════════════════════════════
+  // REGLAS DE GATING — qué módulos son prioritarios para esta persona
+  // ══════════════════════════════════════════════════════════════════
+
   var needsPrompts = nivel<=2
     || friccion.indexOf("prompt")>-1
     || friccion.indexOf("contexto")>-1
     || friccion.indexOf("Revisar")>-1
     || friccion.indexOf("Ajustar")>-1;
 
-  // MOD 2 — Chat efectivo: nivel 1, o si usa poco o nunca
   var needsChat = nivel<=1
     || frec==="Rara vez"
     || frec==="Casi nunca";
 
-  // MOD 3 — Proyectos: si repite contexto o guarda en chats
   var needsProyectos = rep==="Siempre"
     || rep==="Muchas veces"
     || org==="En los chats"
     || org==="No hay un sistema claro"
     || nivel<=2;
 
-  // MOD 4 — GPT interno: si no lo usa o no lo conoce
   var needsGPTs = gpts==="No sabia que existian"
     || gpts==="Se que existen pero no los uso"
     || gpts==="Los uso ocasionalmente"
     || nivel<=2;
 
-  // MOD 5 — Enterprise: nivel 2+
   var needsEnterprise = nivel>=2;
 
-  // MOD 6 — Conectores/automatización: si quiere automatizar O nivel 3+
   var needsConectores = nivel>=3
     || auto.indexOf("Documentos")>-1
     || auto.indexOf("Analisis")>-1
     || auto.indexOf("Procesos")>-1
     || auto.indexOf("clientes")>-1;
 
-  // Construir lista de modulos en orden de prioridad para este perfil
-  // El orden importa — lo mas urgente primero
+  // ══════════════════════════════════════════════════════════════════
+  // MÓDULOS PRIORITARIOS — se muestran expandidos con header oscuro
+  // ══════════════════════════════════════════════════════════════════
 
   if(needsChat){
     modulos.push({
-      num:"02",
-      titulo:"Cómo iniciar un chat qué funcione desde el primer mensaje",
-      urgencia: nivel<=1?"Empieza aqui":"Útil recordatorio",
-      color: nivel<=1?"var(--red)":"var(--ink-muted)",
+      num:"02", titulo:"Cómo iniciar un chat que funcione desde el primer mensaje",
+      urgencia:nivel<=1?"Empieza aquí":"Útil recordatorio",
+      color:nivel<=1?"var(--red)":"var(--ink-muted)",
       secciones:[
-        {
-          subtitulo:"El error mas comun",
-          texto:"La mayoria de las personas abre ChatGPT y escribe lo primero qué se le ocurre, cómo si le enviara un mensaje a un colega que ya sabe todo el contexto. El resultado: una respuesta generica que no sirve. La razón es simple — ChatGPT no sabe nada de ti hasta que se lo dices."
-        },
-        {
-          subtitulo:"La formula de los 3 elementos",
-          texto:"Antes de hacer cualquier pregunta, dale estos tres datos: (1) quien eres y en qué contexto trabajas, (2) qué necesitas exactamente, (3) cómo quieres que te lo entregue. No en tres mensajes separados — en uno solo, antes de preguntar.",
+        { subtitulo:"El error más común",
+          texto:"La mayoría de personas abre ChatGPT y escribe lo primero que se le ocurre, como si le enviara un mensaje a un colega que ya sabe todo el contexto. El resultado: una respuesta genérica que no sirve. ChatGPT no sabe nada de ti hasta que se lo dices." },
+        { subtitulo:"La fórmula de los 3 elementos",
+          texto:"Antes de preguntar, dale estos tres datos en un solo mensaje: (1) quién eres y en qué contexto trabajas, (2) qué necesitas exactamente, (3) cómo quieres que te lo entregue.",
           ejemplo:true,
           malo:"Hazme un correo para un cliente",
-          bueno:"Soy del area comercial de ML Studio, empresa de confeccion en Colombia. Necesito escribirle a un cliente de dotaciones que lleva 3 semanas sin responder. El tono debe ser profesional pero cercano, no presionarlo. Máximo 5 lineas."
-        },
-        {
-          subtitulo:"Una cosa que cambia todo",
-          texto:"Al final de cada solicitud agrega: 'Si necesitas mas información para darme una mejor respuesta, preguntame antes de responder.' Esto le dice a ChatGPT que puede pedir aclaraciones en lugar de asumir — y la calidad de la respuesta sube notablemente."
-        }
+          bueno:"Soy del area comercial de ML Studio. Necesito escribirle a un cliente de dotaciones que lleva 3 semanas sin responder. Tono profesional pero cercano. Máximo 5 líneas." },
+        { subtitulo:"Una cosa que cambia todo",
+          texto:"Al final de cada solicitud agrega: 'Si necesitas más información para darme una mejor respuesta, pregúntame antes de responder.' Esto reduce las respuestas genéricas y sube notablemente la calidad del resultado." }
       ]
     });
   }
 
   if(needsPrompts){
     modulos.push({
-      num:"01",
-      titulo:"Por qué tus prompts no dan lo que quieres — y cómo arreglarlo",
-      urgencia:"Prioridad según tu diagnóstico",
-      color:"var(--accent)",
+      num:"01", titulo:"Por qué tus prompts no dan lo que quieres — y cómo arreglarlo",
+      urgencia:"Prioridad según tu diagnóstico", color:"var(--accent)",
       secciones:[
-        {
-          subtitulo:"Lo que detectamos en tu diagnóstico",
+        { subtitulo:"Lo que detectamos en tu diagnóstico",
           texto: friccion.indexOf("contexto")>-1
-            ? "Tu friccion principal es explicar el contexto correctamente. Eso significa que ChatGPT no tiene suficiente información para responder bien — no porque sea malo, sino porque el contexto que le das no es suficiente. La solución no es escribir mas — es escribir mejor."
+            ? "Tu fricción principal es explicar el contexto. ChatGPT no responde mal — es que no tiene suficiente información. La solución no es escribir más — es escribir mejor."
             : friccion.indexOf("Revisar")>-1||friccion.indexOf("Ajustar")>-1
-            ? "Tienes qué revisar y ajustar lo qué genera con frecuencia. Eso generalmente significa que el prompt original no especificaba el formato, el tono o el nivel de detalle esperado. Si se lo dices desde el inicio, la primera respuesta ya llega bien."
-            : "Llevas tiempo usando la IA pero hay margen para mejorar la calidad de lo que obtienes. La diferencia entre un resultado bueno y uno excelente esta en el nivel de detalle del prompt."
-        },
-        {
-          subtitulo:"Los 4 elementos de un prompt efectivo",
-          texto:"Rol: quien eres y en qué contexto. Tarea: que necesitas que haga exactamente. Formato: cómo quieres que te lo entregue (lista, parrafo, tabla, máximo X palabras). Restriccion: algo que NO debe hacer o incluir. No siempre necesitas los cuatro — pero entre más los uses, mejor el resultado.",
+            ? "Revisas y ajustas con frecuencia lo que genera. Eso suele significar que el prompt original no especificaba el formato, el tono o el nivel de detalle. Si lo dices desde el inicio, la primera respuesta ya llega bien."
+            : "Hay margen para mejorar la calidad de lo que obtienes. La diferencia entre un resultado bueno y uno excelente está en el nivel de detalle del prompt." },
+        { subtitulo:"Los 4 elementos de un prompt efectivo",
+          texto:"Rol — quién eres y en qué contexto. Tarea — qué necesitas exactamente. Formato — cómo quieres que te lo entregue (lista, párrafo, tabla, máximo X palabras). Restricción — algo que NO debe hacer. No siempre necesitas los cuatro, pero entre más los uses mejor el resultado.",
           ejemplo:true,
           malo:"Resume esto",
-          bueno:"Soy gerente de ML Studio. Resume este informe de ventas en 3 puntos clave para presentar en reunion ejecutiva. Usa vietas cortas. No incluyas porcentajes — solo tendencias."
-        },
-        {
-          subtitulo:"Cuando la respuesta no es lo qué esperabas",
-          texto:"No empieces de cero. En el mismo chat escribe exactamente qué esta mal y cómo lo quieres diferente. 'Muy largo, dejalo en 3 lineas', 'Más formal', 'El punto 2 no aplica, cambialo por X'. ChatGPT recuerda toda la conversación y corrige sobre lo qué ya tiene — no vuelve a empezar."
-        }
+          bueno:"Soy gerente de ML Studio. Resume este informe de ventas en 3 puntos clave para reunión ejecutiva. Usa viñetas cortas. No incluyas porcentajes — solo tendencias." },
+        { subtitulo:"Cuando la respuesta no es lo que esperabas",
+          texto:"No empieces de cero. En el mismo chat escribe qué está mal y cómo lo quieres diferente. 'Muy largo, déjalo en 3 líneas.' 'Más formal.' 'El punto 2 no aplica, cámbialo por X.' ChatGPT corrige sobre lo que ya tiene — no vuelve a empezar." }
       ]
     });
   }
 
   if(needsProyectos){
-    var instrArea={
-      "Direccion / Gerencia": "Trabajo en ML Studio. Soy de Gerencia. Me ayudas con analisis de equipo, reportes ejecutivos y toma de decisiones. Responde en formato ejecutivo, sin introducciones largas.",
-      "Administracion":       "Trabajo en ML Studio, area Administrativa. Me ayudas con procesos internos, comunicaciones y documentación. Lenguaje claro y directo.",
-      "Produccion":           "Trabajo en ML Studio, area de Producción. Me ayudas con pedidos, reportes de planta y comunicación con proveedores. Lenguaje operativo.",
-      "Diseno / Desarrollo de producto": "Trabajo en ML Studio, area de Diseño. Me ayudas con briefs, colecciones e imagenes de moda. Tono creativo y preciso.",
-      "Marketing / Contenido":"Trabajo en ML Studio, area de Marketing. Me ayudas con contenido de marca y redes. Adapta el tono según la marca.",
-      "Comercial / Ventas":   "Trabajo en ML Studio, linea de dotaciones. Me ayudas con propuestas y seguimiento de clientes. Lenguaje comercial y directo."
-    };
-    var instr = instrArea[area]||"Trabajo en ML Studio. Ayudame con las tareas de mi area de forma clara y directa.";
-
     modulos.push({
-      num:"03",
-      titulo:"Proyectos en ChatGPT: el contexto que no se pierde",
-      urgencia: rep==="Siempre"||rep==="Muchas veces"?"Esto resuelve tu principal friccion":"Cambia tu forma de trabajar",
-      color: rep==="Siempre"||rep==="Muchas veces"?"var(--red)":"var(--accent)",
+      num:"03", titulo:"Proyectos en ChatGPT: el contexto que no se pierde",
+      urgencia:rep==="Siempre"||rep==="Muchas veces"?"Resuelve tu fricción principal":"Cambia tu forma de trabajar",
+      color:rep==="Siempre"||rep==="Muchas veces"?"var(--red)":"var(--accent)",
       secciones:[
-        {
-          subtitulo:"El problema que resuelve",
-          texto:"Cada vez que abres un chat nuevo en ChatGPT estás empezando desde cero. La herramienta no sabe quien eres, en qué empresa trabajas, ni cómo prefieres que te responda — hasta que se lo repites de nuevo. Si lo haces 5 veces al dia, son 5 veces que pierdes tiempo explicando lo mismo."
-        },
-        {
-          subtitulo:"Qué es un Proyecto y por qué importa",
-          texto:"Un Proyecto es un espacio de trabajo dentro de ChatGPT que recuerda tu contexto de forma permanente. Le configuras una instrucción una sola vez — quien eres, qué haces, cómo quieres que te responda — y esa instrucción aplica automáticamente en cada conversación que tengas dentro de ese Proyecto. De forma permanente, sin repetir nada."
-        },
-        {
-          subtitulo:"Cómo crearlo ahora mismo",
-          texto:"Si tienes ChatGPT abierto: Panel izquierdo → Proyectos → Nuevo proyecto. Ponle el nombre de tu area. En el campo de instrucciones pega el texto de abajo. Listo — desde ese momento ChatGPT ya sabe quien eres.",
-          prompt_copiable: instr,
-          prompt_id: "proy-mod-"+Math.floor(Math.random()*999)
-        },
-        {
-          subtitulo:"El siguiente nivel",
-          texto:"Dentro del Proyecto puedes subir archivos que ChatGPT usará como referencia en todas tus conversaciones. Para producción: la lista de pedidos activos. Para administración: el directorio de proveedores. Para diseño: el brief de la coleccion actual. Una vez subido, ChatGPT lo puede leer, analizar y citar sin que vuelvas a subirlo."
-        }
+        { subtitulo:"El problema que resuelve",
+          texto:"Cada vez que abres un chat nuevo en ChatGPT empiezas desde cero. La herramienta no sabe quién eres ni en qué empresa trabajas — hasta que se lo repites. Si lo haces 5 veces al día, son 5 veces que pierdes tiempo explicando lo mismo." },
+        { subtitulo:"Qué es un Proyecto y por qué importa",
+          texto:"Un Proyecto es un espacio de trabajo dentro de ChatGPT que recuerda tu contexto de forma permanente. Configuras la instrucción una sola vez y aplica en cada conversación de ese Proyecto, de forma automática y sin repetirla." },
+        { subtitulo:"Cómo crearlo ahora mismo",
+          texto:"Panel izquierdo → Proyectos → Nuevo proyecto. Ponle el nombre de tu área. Pega la instrucción de abajo en el campo de instrucciones. Desde ese momento ChatGPT ya sabe quién eres.",
+          prompt_copiable:instr,
+          prompt_id:"proy-mod-"+Math.floor(Math.random()*9999) },
+        { subtitulo:"El siguiente nivel",
+          texto:"Dentro del Proyecto puedes subir archivos que ChatGPT usa como referencia permanente — lista de pedidos, directorio de proveedores, brief de colección. Una vez subido, lo lee, analiza y cita sin que vuelvas a cargarlo." }
       ]
     });
   }
 
   if(needsGPTs){
-    var gptDesc={
-      "Direccion / Gerencia": "el GPT Administrativo para procesos y el GPT Financiero para analisis de números",
-      "Administracion":       "el GPT Administrativo",
-      "Produccion":           "el GPT Administrativo para comunicaciones y reportes",
-      "Diseno / Desarrollo de producto": "el GPT de tu marca",
-      "Marketing / Contenido":"el GPT de tu marca",
-      "Comercial / Ventas":   "el GPT Administrativo"
-    };
-    var miGPT = gptDesc[area]||"el GPT de tu area";
-
     modulos.push({
-      num:"04",
-      titulo:"GPT interno vs ChatGPT general: la diferencia que nadie explica",
-      urgencia: gpts==="No sabia que existian"?"Tenias herramientas que no conocias":"Hay herramientas subutilizadas",
-      color: gpts==="No sabia que existian"?"var(--amber)":"var(--ink-muted)",
+      num:"04", titulo:"GPT interno vs ChatGPT general: la diferencia que nadie explica",
+      urgencia:gpts==="No sabia que existian"?"Tenías herramientas que no conocías":"Herramientas subutilizadas",
+      color:gpts==="No sabia que existian"?"var(--amber)":"var(--ink-muted)",
       secciones:[
-        {
-          subtitulo:"No son lo mismo",
-          texto:"ChatGPT general es cómo preguntarle a alguien muy inteligente que nunca ha oído hablar de ML Studio. Te responde bien en general, pero no conoce el contexto de la empresa, el tono que manejan, ni los procesos internos. El GPT interno de tu area es cómo preguntarle a alguien que lleva años en la empresa y ya tiene todo el contexto cargado."
-        },
-        {
-          subtitulo:"Lo que tienes disponible en ML Studio",
-          texto:"La empresa tiene GPTs personalizados creados específicamente para el trabajo interno: GPT Juridico para contratos y documentos legales, GPT Financiero para analisis de números y reportes, GPT Administrativo para procesos y comunicaciones, y GPTs por marca para contenido y diseño. Para tu area, el mas útil es "+(miGPT||"el de tu área")+".",
-          accion:"Para acceder: en ChatGPT busca 'Explorar GPTs' o preguntale directamente a tu asesor el link de acceso de cada uno."
-        },
-        {
-          subtitulo:"Cuando usar cual",
-          texto:"GPT interno: cuando la tarea tiene que ver con el contexto específico de la empresa — procesos, comunicaciones formales, analisis de datos del negocio, contenido de marca. ChatGPT general: cuando necesitas algo de conocimiento general — investigación, redacción creativa sin restricciones de marca, aprender algo nuevo. La regla práctica: si mencionas ML Studio en el prompt, usa el GPT interno.",
+        { subtitulo:"No son lo mismo",
+          texto:"ChatGPT general es como preguntarle a alguien muy inteligente que nunca oyó hablar de ML Studio. Te responde bien en general, pero no conoce el contexto, el tono ni los procesos de la empresa. El GPT interno de tu área ya tiene ese contexto cargado." },
+        { subtitulo:"Lo que tienes disponible en ML Studio",
+          texto:"GPT Jurídico — contratos y documentos legales. GPT Financiero — análisis de números y reportes. GPT Administrativo — procesos y comunicaciones. GPTs por marca — contenido y diseño. Para tu área, el más útil es "+miGPT+".",
+          accion:"Para acceder: en ChatGPT busca 'Explorar GPTs' o pídele el link a tu asesor." },
+        { subtitulo:"Cuándo usar cuál",
+          texto:"GPT interno: tareas con contexto específico de la empresa — procesos, comunicaciones formales, datos del negocio, contenido de marca. ChatGPT general: conocimiento general, investigación, redacción creativa sin restricciones de marca. Regla práctica: si mencionas ML Studio en el prompt, usa el GPT interno.",
           ejemplo:true,
-          malo:"ChatGPT general para redactar una propuesta de dotaciones para un cliente",
-          bueno:"GPT Administrativo: ya sabe los argumentos de ML Studio, los tiempos de entrega y el tono comercial de la empresa"
-        },
-        {
-          subtitulo:"Cómo probarlo ahora mismo",
-          texto:"Abrelo y escribe directamente: 'Para que fuiste creado y qué tipo de tareas puedes ayudarme a resolver en ML Studio?' La respuesta te dice exactamente para que sirve y cómo sacarle el mayor provecho. Es el primer paso para no volver a usar ChatGPT general para tareas que debería hacer el GPT interno."
-        }
+          malo:"ChatGPT general para redactar propuesta de dotaciones",
+          bueno:"GPT Administrativo — ya conoce los argumentos, tiempos de entrega y tono comercial de ML Studio" },
+        { subtitulo:"Cómo probarlo ahora mismo",
+          texto:"Ábrelo y escríbele: '¿Para qué fuiste creado y qué tareas puedes ayudarme a resolver en ML Studio?' La respuesta te dice exactamente para qué sirve y cómo sacarle provecho." }
       ]
     });
   }
 
   if(needsEnterprise){
     modulos.push({
-      num:"05",
-      titulo:"Herramientas Enterprise que probablemente no estás usando",
-      urgencia:"Disponibles en tu cuenta — sin costo adicional",
-      color:"var(--green)",
+      num:"05", titulo:"Herramientas Enterprise que probablemente no estás usando",
+      urgencia:"Disponibles en tu cuenta — sin costo adicional", color:"var(--green)",
       secciones:[
-        {
-          subtitulo:"Análisis de archivos — la más subutilizada",
-          texto:"Puedes subir directamente a ChatGPT archivos en Excel, PDF, Word o CSV y pedirle que los analice, resuma, compare o calcule. Para ML Studio: subir un reporte de ventas para que identifique tendencias, una lista de pedidos para que detecte retrasos, un contrato para que marque los puntos de riesgo. Sin fórmulas ni macros.",
-          accion:"Ícono de clip en el chat → sube el archivo → escribe tu solicitud. En segundos tienes el análisis."
-        },
-        {
-          subtitulo:"Deep Research — investigación profunda en minutos",
-          texto:"Le das un tema y ChatGPT revisa decenas de fuentes en internet y entrega un informe estructurado con conclusiones. Lo que tomaría horas de búsqueda manual se resuelve en minutos. Útil para: analizar un proveedor nuevo, investigar tendencias del mercado textil, evaluar competidores, revisar normativas de importación.",
-          accion:"Escribe tu solicitud y antes de enviar selecciona la opción Deep Research en el menú de herramientas del chat."
-        },
-        {
-          subtitulo:"Canvas — edición en tiempo real con IA",
-          texto:"En lugar de copiar y pegar entre apps, Canvas abre un editor donde ChatGPT trabaja el documento contigo. Puedes pedirle que mejore párrafos específicos, cambie el tono de una sección o reformatee el contenido — todo sin salir de ChatGPT. Ideal para documentos que requieren varias rondas de revisión.",
-          accion:"Pídele a ChatGPT: 'Abramos un Canvas para trabajar este documento.' O busca el ícono de Canvas en la barra de herramientas."
-        },
-        {
-          subtitulo:"Generación de imágenes",
+        { subtitulo:"Análisis de archivos — la más subutilizada",
+          texto:"Sube directamente a ChatGPT archivos Excel, PDF, Word o CSV y pídele que los analice, resuma o compare. Para ML Studio: reporte de ventas para identificar tendencias, lista de pedidos para detectar retrasos, contrato para marcar puntos de riesgo. Sin fórmulas ni macros.",
+          accion:"Clip en el chat → sube el archivo → escribe tu solicitud. El análisis llega en segundos." },
+        { subtitulo:"Deep Research — investigación profunda",
+          texto:"Le das un tema y ChatGPT revisa decenas de fuentes reales y entrega un informe estructurado. Útil para: analizar un proveedor nuevo, investigar tendencias textiles, evaluar competidores, revisar normativas de importación. Nota: puede estar en versión beta según tu plan — verifica disponibilidad.",
+          accion:"Activa la opción Deep Research en el menú de herramientas antes de enviar tu mensaje." },
+        { subtitulo:"Canvas — edición en tiempo real",
+          texto:"Canvas abre un editor donde ChatGPT trabaja el documento contigo. Pídele que mejore párrafos específicos, cambie el tono de una sección o reformatee el contenido — todo sin salir de ChatGPT. Ideal para documentos con varias rondas de revisión.",
+          accion:"Escribe: 'Abramos un Canvas para trabajar este documento.' O busca el ícono de Canvas en la barra de herramientas." },
+        { subtitulo:"Generación de imágenes",
           texto: area==="Diseno / Desarrollo de producto"||area==="Marketing / Contenido"
-            ? "Para tu área es especialmente valioso. Genera referencias visuales de prendas, variaciones de color, mockups de uniformes o imágenes para contenido de marca directamente desde ChatGPT. Prompt clave: describe la prenda con material, color, corte, vista y contexto fotográfico. Agrega detalles de bordado, logo o acabados específicos."
-            : "Genera imágenes de referencia sin salir de ChatGPT. Para uniformes: describe la prenda, el color, el corte y la vista. Para presentaciones: describe la escena y el contexto. Útil para tener una referencia visual antes de ir a diseño formal o producción.",
+            ? "Especialmente valioso para tu área. Genera referencias visuales de prendas, variaciones de color, mockups o imágenes de contenido de marca. Describe la prenda con material, color, corte, vista y contexto fotográfico. Agrega detalles de bordado o acabados."
+            : "Genera referencias visuales sin salir de ChatGPT. Para uniformes: describe prenda, color, corte y vista. Para presentaciones: describe la escena. Útil antes de ir a diseño formal.",
           ejemplo:true,
           malo:"Genera un uniforme negro",
-          bueno:"Uniforme de operario en drill negro, manga larga, cuello redondo, logo bordado en pecho izquierdo, vista frontal y posterior, fondo blanco, estilo fotográfico de catálogo industrial"
-        },
-        {
-          subtitulo:"Modo voz y conectores — requieren activación del admin",
-          texto:"El modo voz avanzado funciona como asistente de voz: dicta correos en movimiento, pide resúmenes mientras revisas planta, piensa en voz alta y ChatGPT lo estructura. Los conectores a Google Drive, SharePoint y otros están disponibles en Enterprise pero desactivados por defecto — el administrador del workspace los activa.",
-          accion:"Si no tienes acceso a estas funciones, el administrador de ChatGPT las activa desde el panel de administración del workspace."
-        }
+          bueno:"Uniforme de operario en drill negro, manga larga, cuello redondo, logo bordado en pecho izquierdo, vista frontal y posterior, fondo blanco, estilo fotográfico de catálogo industrial" },
+        { subtitulo:"Modo voz y conectores — requieren activación",
+          texto:"El modo voz avanzado permite dictar correos o solicitudes en movimiento. Los conectores a Google Drive y SharePoint están disponibles en Enterprise pero desactivados por defecto.",
+          accion:"Si no tienes acceso, el administrador del workspace los activa desde el panel de administración." }
       ]
     });
   }
 
   if(needsConectores){
     modulos.push({
-      num:"06",
-      titulo:"Automatización: que pase solo, sin que tengas que iniciarlo",
-      urgencia: nivel>=3?"El siguiente nivel para tu perfil":"Oportunidad identificada en tu diagnóstico",
+      num:"06", titulo:"Automatización: que pase solo, sin que tengas que iniciarlo",
+      urgencia:nivel>=3?"El siguiente nivel para tu perfil":"Oportunidad en tu diagnóstico",
       color:"var(--green)",
       secciones:[
-        {
-          subtitulo:"La diferencia entre usar IA y automatizar con IA",
-          texto:"Usar la IA significa que tú inicias cada tarea: abres ChatGPT, escribes, obtienes el resultado. Automatizar con IA significa que algunas tareas se ejecutan solas cuando pasa algo — llega un correo, alguien llena un formulario, se actualiza una celda en Sheets. Tu defines la regla una vez y despues no tienes que hacer nada."
-        },
-        {
-          subtitulo:"Lo que quieres automatizar según tu diagnóstico",
-          texto:"Dijiste que te gustaría automatizar: "+(auto||"procesos repetitivos")+". Eso es exactamente lo que se puede conectar con herramientas como Zapier o Make — que son plataformas visuales para conectar aplicaciones sin saber programar. Una automatización tipica: cuando llega un correo de un cliente → ChatGPT genera el borrador de respuesta → aparece en Drafts listo para revisar y enviar."
-        },
-        {
-          subtitulo:"Por dónde empezar",
-          texto:"Identifica una sola tarea que siempre se dispara por lo mismo — el mismo tipo de correo, el mismo tipo de solicitud, el mismo reporte de cada semana. Esa es tu primera automatización. No tiene que ser compleja. Incluso una automatización simple — que te ahorra 15 minutos al dia — son más de 60 horas al año.",
-          accion:"En la sesion de asesoria lo configuramos juntos. Llega con esa tarea identificada y en menos de una hora puede estar funcionando."
-        }
+        { subtitulo:"La diferencia entre usar IA y automatizar con IA",
+          texto:"Usar la IA: tú inicias cada tarea. Automatizar: las tareas se ejecutan solas cuando se cumple una condición — llega un correo, alguien llena un formulario, se actualiza una celda. Herramientas como Zapier o Make conectan tus aplicaciones sin necesidad de programar." },
+        { subtitulo:"Lo que quieres automatizar según tu diagnóstico",
+          texto:"Mencionaste que te gustaría automatizar: "+(auto||"procesos repetitivos")+". Eso es exactamente lo que se puede conectar con estas herramientas. Ejemplo: correo de cliente → ChatGPT genera borrador de respuesta → aparece en Drafts listo para revisar." },
+        { subtitulo:"Por dónde empezar",
+          texto:"Identifica una sola tarea que siempre empieza por lo mismo — el mismo tipo de correo, la misma solicitud, el mismo reporte semanal. Esa es tu primera automatización. Una que ahorre 15 minutos diarios son más de 60 horas al año.",
+          accion:"En la sesión de asesoría lo configuramos juntos. Llega con esa tarea identificada — muchas se configuran en menos de una hora." }
       ]
     });
   }
 
-  // Si no hay modulos relevantes (nivel 4 sin brechas), mensaje especial
-  if(modulos.length===0){
-    el.innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);border-radius:var(--radius-sm);padding:16px 18px;margin-top:14px">'
-      +'<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px">Uso estrategico consolidado</div>'
-      +'<div style="font-size:13px;color:var(--ink-soft);line-height:1.6">Con un nivel estrategico ya tienes las bases bien asentadas. El siguiente paso no es aprender mas herramientas — es sistematizar lo que ya funciona y escalar al equipo. La sesion de asesoria puede enfocarse en eso.</div>'
-      +'</div>';
-    return;
+  // ══════════════════════════════════════════════════════════════════
+  // MÓDULOS OPCIONALES — colapsados, "Por curiosidad"
+  // Solo módulos NO seleccionados. Sin contenido de otras áreas.
+  // Contenido condensado y verificable según documentación de OpenAI.
+  // ══════════════════════════════════════════════════════════════════
+
+  if(!needsPrompts){
+    // Solo para quien ya promptea bien — técnicas avanzadas verificadas
+    modulosOpcionales.push({
+      num:"01", titulo:"Técnicas de prompting para llevar tus resultados al siguiente nivel",
+      secciones:[
+        { subtitulo:"Prompting encadenado",
+          texto:"En lugar de pedir todo en un solo prompt, divídelo en pasos. Primero pide el análisis, luego las recomendaciones basadas en ese análisis, luego el formato final. Cada respuesta alimenta la siguiente — el resultado es notablemente más preciso que intentar todo de una vez." },
+        { subtitulo:"El prompt de rol avanzado",
+          texto:"No solo dices quién eres tú — le indicas a ChatGPT qué rol debe asumir. 'Actúa como consultor de operaciones textil con experiencia en empresas medianas en Colombia.' Eso calibra el vocabulario, el nivel de detalle y las suposiciones de la respuesta.",
+          ejemplo:true,
+          malo:"Ayúdame a mejorar mis tiempos de entrega",
+          bueno:"Actúa como consultor de operaciones textil. Analiza este proceso de despacho e identifica los 3 cuellos de botella más comunes en confección de mediana escala en Colombia." },
+        { subtitulo:"Iterar en lugar de rehacer",
+          texto:"Cuando la respuesta no es lo que esperabas, no abras un chat nuevo. Escribe en el mismo: exactamente qué está mal y cómo lo quieres diferente. ChatGPT mantiene todo el contexto de la conversación y corrige sobre lo que ya tiene — no empieza de cero." }
+      ]
+    });
   }
 
-  // Render
-  var sectionDiv = '<div style="margin-top:24px;padding-top:20px;border-top:2px solid var(--border)">'
-    +'<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px">Contenido de la guia adaptado a tu perfil</div>'
-    +'<div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:16px">Lo que más te conviene saber — en el orden que te conviene leerlo</div>';
+  if(!needsChat){
+    // Para quien ya inicia chats efectivos — gestión del historial
+    modulosOpcionales.push({
+      num:"02", titulo:"Cómo gestionar y reutilizar tus mejores conversaciones",
+      secciones:[
+        { subtitulo:"El problema del historial desordenado",
+          texto:"Cuando usas ChatGPT a diario el historial se llena rápido y es difícil encontrar algo útil de hace dos semanas. La solución es un hábito: renombra las conversaciones al terminar. En lugar de 'New chat', ponle 'Propuesta cliente X — octubre' o 'Análisis pedidos semana 42'." },
+        { subtitulo:"Reutilizar sin reescribir",
+          texto:"Si una conversación funcionó bien, no la repliques desde cero. Ábrela y continúa desde donde la dejaste — ChatGPT mantiene todo el contexto. Para plantillas que usas siempre, guarda el prompt inicial en un documento compartido del equipo." },
+        { subtitulo:"Compartir sin perder el formato",
+          texto:"Cuando ChatGPT genera algo que quieres compartir, no copies directo al chat de WhatsApp — el formato se pierde. Copia a un Google Doc primero, ajusta y comparte desde ahí. Para tablas, pide que las genere en formato de texto plano si van a un correo." }
+      ]
+    });
+  }
 
-  modulos.forEach(function(mod){
-    sectionDiv+='<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden">'
-      // Header del módulo — num arriba, título, badge abajo
-      +'<div style="background:var(--surface-inv);padding:14px 18px">'
-        +'<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.1em;display:block;margin-bottom:5px">MOD '+mod.num+'</span>'
-        +'<div style="font-size:15px;font-weight:600;color:#fff;line-height:1.35;margin-bottom:8px">'+mod.titulo+'</div>'
-        +'<span style="display:inline-block;font-size:10px;font-weight:700;color:'+mod.color+';border:1px solid '+mod.color+';padding:2px 10px;border-radius:100px;opacity:.9">'+mod.urgencia+'</span>'
-      +'</div>'
-      // Secciones del módulo
-      +'<div style="padding:18px 20px">';
+  if(!needsProyectos){
+    // Para quien ya usa Proyectos — nivel siguiente
+    modulosOpcionales.push({
+      num:"03", titulo:"Sacar más provecho a los Proyectos que ya tienes configurados",
+      secciones:[
+        { subtitulo:"Múltiples Proyectos para múltiples contextos",
+          texto:"Puedes tener un Proyecto por cliente importante, uno por línea de negocio, uno para tareas creativas y otro para análisis. Cada uno mantiene su contexto independiente — lo que configures en el Proyecto de un cliente no afecta al de otro." },
+        { subtitulo:"Archivos como base de conocimiento",
+          texto:"El siguiente nivel es subir documentos que ChatGPT usa como referencia permanente. Para ML Studio: catálogo de productos, procedimientos internos, fichas técnicas de colección. ChatGPT los lee, recuerda y cita en cada conversación del Proyecto sin que vuelvas a cargarlos.",
+          accion:"Dentro del Proyecto → Archivos → Subir. Formatos: PDF, Word, Excel, CSV, texto plano." },
+        { subtitulo:"Instrucciones que evolucionan",
+          texto:"Las instrucciones de un Proyecto no son permanentes. Si cambias de rol, hay un cliente nuevo con condiciones específicas, o encuentras una forma mejor de pedir las cosas — edítalas. ChatGPT aplica el cambio desde la próxima conversación dentro de ese Proyecto." }
+      ]
+    });
+  }
 
-    mod.secciones.forEach(function(sec){
-      sectionDiv+='<div style="margin-bottom:14px">'
-        +'<div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:5px">'+sec.subtitulo+'</div>'
-        +'<div style="font-size:13px;color:var(--ink-soft);line-height:1.7">'+sec.texto+'</div>';
+  if(!needsGPTs){
+    // Para quien ya usa GPTs — profundidad
+    modulosOpcionales.push({
+      num:"04", titulo:"Cómo sacarle el máximo a los GPTs internos que ya usas",
+      secciones:[
+        { subtitulo:"Entender qué tiene cargado cada GPT",
+          texto:"Cada GPT interno tiene instrucciones y documentos que definen cómo responde. Para saber exactamente qué sabe, pregúntale: '¿Qué documentos o contexto tienes disponible para responder mis preguntas?' La respuesta te dice hasta dónde puede llegar.",
+          accion:"Si el GPT no puede responder algo que esperabas, ese documento probablemente no está cargado. Notifícalo al asesor para actualizarlo." },
+        { subtitulo:"Combinar GPT interno con tu contexto específico",
+          texto:"Aunque el GPT ya tiene el contexto de la empresa, puedes agregar el de tu situación puntual. 'Estoy preparando propuesta para el cliente X, que ya nos compró en 2023 y tuvo problema de tallas — ten esto en cuenta.' El GPT combina su base con lo que le das en el chat.",
+          ejemplo:true,
+          malo:"Redacta una propuesta de dotaciones",
+          bueno:"Redacta una propuesta para empresa de construcción, 80 operarios, ya compraron antes con demoras. Resalta los tiempos actuales y el proceso de seguimiento post-entrega." }
+      ]
+    });
+  }
 
-      if(sec.ejemplo){
-        sectionDiv+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px">'
-          +'<div style="background:var(--red-bg);border-radius:6px;padding:10px 12px">'
-            +'<div style="font-size:9px;font-weight:700;color:var(--red);letter-spacing:.06em;margin-bottom:4px">❌ DEBIL</div>'
-            +'<div style="font-size:12px;color:var(--ink-soft);line-height:1.5;font-family:monospace">'+sec.malo+'</div>'
-          +'</div>'
-          +'<div style="background:var(--green-bg);border-radius:6px;padding:10px 12px">'
-            +'<div style="font-size:9px;font-weight:700;color:var(--green);letter-spacing:.06em;margin-bottom:4px">✅ EFECTIVO</div>'
-            +'<div style="font-size:12px;color:var(--ink-soft);line-height:1.5;font-family:monospace">'+sec.bueno+'</div>'
-          +'</div>'
-        +'</div>';
-      }
+  if(!needsEnterprise){
+    // Para nivel 1 que aún no accede a Enterprise — plantado la semilla
+    modulosOpcionales.push({
+      num:"05", titulo:"Funciones Enterprise que estarán disponibles cuando las necesites",
+      secciones:[
+        { subtitulo:"Análisis de archivos — sin fórmulas ni macros",
+          texto:"Puedes subir archivos Excel, PDF o CSV a ChatGPT y pedirle que los analice. Para ML Studio: reporte de ventas para ver qué referencias tienen mayor rotación, o lista de pedidos para detectar los que llevan más de 15 días sin actualización.",
+          accion:"Clip en el chat → sube el archivo → describe lo que necesitas. El análisis llega en segundos." },
+        { subtitulo:"Deep Research — cuando necesitas investigar a fondo",
+          texto:"Actívalo cuando necesites información verificada de múltiples fuentes: investigar un proveedor nuevo, tendencias de color para la próxima colección, precios de mercado o normativas. ChatGPT revisa fuentes reales y entrega un informe estructurado. Puede estar en beta según el plan.",
+          accion:"Activa Deep Research en el menú de herramientas antes de enviar. El proceso tarda 2-5 minutos más que una respuesta normal." }
+      ]
+    });
+  }
 
-      if(sec.prompt_copiable){
-        var pid=sec.prompt_id||"mod-proy";
-        sectionDiv+='<div style="background:var(--accent-bg);border-radius:6px;padding:12px 14px;margin-top:10px">'
-          +'<div style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-bottom:6px">INSTRUCCION LISTA PARA COPIAR</div>'
-          +'<div id="'+pid+'" style="font-size:12px;font-family:monospace;color:var(--ink);line-height:1.6;white-space:pre-wrap">'+sec.prompt_copiable+'</div>'
-          +'<button class="copy-btn" id="'+pid+'-btn" onclick="copiarTextoElemento(\''+pid+'\',\''+pid+'-btn\')" style="margin-top:8px">'
-            +'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar instrucción'
-          +'</button>'
-        +'</div>';
-      }
+  if(!needsConectores){
+    // Para quien aún no llega a automatización — explicar qué es posible
+    modulosOpcionales.push({
+      num:"06", titulo:"Automatización con IA: qué es posible cuando estés listo",
+      secciones:[
+        { subtitulo:"La diferencia entre usar IA y automatizar",
+          texto:"Usar la IA: tú inicias cada tarea. Automatizar: algunas tareas se ejecutan solas cuando pasa algo — sin que tengas que abrir ChatGPT. Herramientas como Zapier o Make conectan tus aplicaciones sin necesidad de programar. Son el puente entre ChatGPT y el resto de tu trabajo." },
+        { subtitulo:"Ejemplos concretos para ML Studio",
+          texto:"Cuando llega un correo de proveedor con la palabra 'retraso' → ChatGPT redacta borrador de respuesta y lo guarda en Drafts. Cuando alguien llena el formulario de pedido → se crea automáticamente la fila en el Sheet de seguimiento. Cuando se actualiza inventario → se genera el reporte semanal.",
+          accion:"Si identificas una tarea que siempre empieza por lo mismo, anótala. En la sesión de asesoría lo evaluamos — muchas se configuran en menos de una hora." },
+        { subtitulo:"Por qué puede no ser prioritario aún",
+          texto:"La automatización rinde más cuando ya tienes hábitos de IA consolidados. El orden recomendado: primero dominar el prompt, luego los Proyectos, luego los GPTs internos, y finalmente automatizar lo que ya funciona bien. Construir sobre base sólida evita automatizar el caos." }
+      ]
+    });
+  }
 
-      if(sec.accion){
-        sectionDiv+=renderAccion(sec.accion);
-      }
+  // ══════════════════════════════════════════════════════════════════
+  // RENDER — Helper para secciones internas (compartido por ambos tipos)
+  // ══════════════════════════════════════════════════════════════════
 
-      sectionDiv+='</div>';
+  /* renderSeccion(sec)
+     Genera el HTML de una sección individual de un módulo.
+     Soporta: texto, ejemplo débil/efectivo, prompt copiable, acción. */
+  function renderSeccion(sec){
+    var s='<div style="margin-bottom:14px">'
+      +'<div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:5px">'+sec.subtitulo+'</div>'
+      +'<div style="font-size:13px;color:var(--ink-soft);line-height:1.7">'+sec.texto+'</div>';
+
+    if(sec.ejemplo){
+      s+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:10px">'
+        +'<div style="background:var(--red-bg);border-radius:6px;padding:10px 12px">'
+          +'<div style="font-size:9px;font-weight:700;color:var(--red);letter-spacing:.08em;margin-bottom:4px;text-transform:uppercase">Menos efectivo</div>'
+          +'<div style="font-size:12px;color:var(--ink-soft);line-height:1.5;font-family:monospace">'+sec.malo+'</div>'
+        +'</div>'
+        +'<div style="background:var(--green-bg);border-radius:6px;padding:10px 12px">'
+          +'<div style="font-size:9px;font-weight:700;color:var(--green);letter-spacing:.08em;margin-bottom:4px;text-transform:uppercase">Más efectivo</div>'
+          +'<div style="font-size:12px;color:var(--ink-soft);line-height:1.5;font-family:monospace">'+sec.bueno+'</div>'
+        +'</div>'
+      +'</div>';
+    }
+    if(sec.prompt_copiable){
+      var pid=sec.prompt_id||"mod-proy";
+      s+='<div style="background:var(--accent-bg);border-radius:6px;padding:12px 14px;margin-top:10px">'
+        +'<div style="font-size:9px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin-bottom:6px">INSTRUCCIÓN LISTA PARA COPIAR</div>'
+        +'<div id="'+pid+'" style="font-size:12px;font-family:monospace;color:var(--ink);line-height:1.6;white-space:pre-wrap">'+sec.prompt_copiable+'</div>'
+        +'<button class="copy-btn" id="'+pid+'-btn" onclick="copiarTextoElemento(\''+pid+'\',\''+pid+'-btn\')" style="margin-top:8px">'
+          +'<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copiar instrucción'
+        +'</button>'
+      +'</div>';
+    }
+    if(sec.accion){ s+=renderAccion(sec.accion); }
+    s+='</div>';
+    return s;
+  }
+
+  // ── Render: módulos prioritarios ─────────────────────────────────
+
+  // Si no hay módulos prioritarios (Estratega sin brechas)
+  if(modulos.length===0){
+    el.innerHTML='<div style="background:var(--green-bg);border:1px solid var(--green);border-radius:var(--radius-sm);padding:16px 18px;margin-top:14px">'
+      +'<div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:4px">Uso estratégico consolidado</div>'
+      +'<div style="font-size:13px;color:var(--ink-soft);line-height:1.6">Con un nivel estratégico ya tienes las bases asentadas. El siguiente paso no es aprender más herramientas — es sistematizar lo que ya funciona y escalar al equipo. La sesión de asesoría puede enfocarse en eso.</div>'
+    +'</div>';
+  } else {
+    var html='<div style="margin-top:24px;padding-top:20px;border-top:2px solid var(--border)">'
+      +'<div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px">Contenido de la guía adaptado a tu perfil</div>'
+      +'<div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:16px">Lo que más te conviene saber — en el orden que te conviene leerlo</div>';
+
+    modulos.forEach(function(mod){
+      html+='<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden">'
+        +'<div class="mod-header-shimmer" style="background:var(--surface-inv);padding:14px 18px">'
+          +'<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.1em;display:block;margin-bottom:5px">MOD '+mod.num+'</span>'
+          +'<div style="font-size:15px;font-weight:600;color:#fff;line-height:1.35;margin-bottom:8px">'+mod.titulo+'</div>'
+          +'<span style="display:inline-block;font-size:10px;font-weight:700;color:'+mod.color+';background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:2px 10px;border-radius:100px">'+mod.urgencia+'</span>'
+        +'</div>'
+        +'<div style="padding:18px 20px">';
+      mod.secciones.forEach(function(sec){ html+=renderSeccion(sec); });
+      html+='</div></div>';
     });
 
-    sectionDiv+='</div></div>';
+    html+='</div>';
+    el.innerHTML=html;
+  }
+
+  // ── Render: módulos opcionales "Por curiosidad" ───────────────────
+
+  if(modulosOpcionales.length===0) return;
+
+  var optHtml='<div class="opt-section-header">'
+    +'<div class="opt-section-eyebrow">Contenido adicional</div>'
+    +'<div class="opt-section-title">Por curiosidad — disponible si lo necesitas</div>'
+    +'<div class="opt-section-desc">Estos módulos no eran prioritarios según tu diagnóstico, pero están aquí si quieres explorarlos. Tócalos para abrirlos.</div>'
+  +'</div>';
+
+  modulosOpcionales.forEach(function(mod, idx){
+    var bid='opt-book-'+idx;
+    optHtml+='<div class="opt-book" id="'+bid+'">'+'<div class="opt-book-header" onclick="var b=this.closest(`.opt-book`),o=b.classList.contains(`open`);document.querySelectorAll(`.opt-book.open`).forEach(function(x){x.classList.remove(`open`)});if(!o)b.classList.add(`open`)">' +'<span class="opt-book-num">MOD '+mod.num+'</span>'
+        +'<span class="opt-book-title">'+mod.titulo+'</span>'
+        +'<span class="opt-book-badge">Por curiosidad</span>'
+        +'<svg class="opt-book-chevron" width="14" height="14" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>'
+      +'</div>'
+      +'<div class="opt-book-body">';
+    mod.secciones.forEach(function(sec){ optHtml+=renderSeccion(sec); });
+    optHtml+='</div></div>';
   });
 
-  sectionDiv+='</div>';
-  el.innerHTML=sectionDiv;
+  // Insertar los opcionales después del contenido existente en modules-wrap
+  var existing=el.innerHTML;
+  el.innerHTML=existing+optHtml;
 }
+
+
 function copiarPrompt(btnId, texto){
   var btn=document.getElementById(btnId);
   navigator.clipboard.writeText(texto).then(function(){
@@ -1630,8 +1964,7 @@ function openPopover(modNum, triggerEl, e) {
   var goBtn = document.getElementById("pop-go");
   goBtn.onclick = function() {
     closePopover();
-    goTo(modNum);
-    // Scroll al tope del módulo destino
+    goTo(modNum, true); // true = viene del diagnóstico
     setTimeout(function(){ window.scrollTo({top:0,behavior:"smooth"}); }, 50);
   };
 
