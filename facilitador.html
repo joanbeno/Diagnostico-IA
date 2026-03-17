@@ -188,8 +188,8 @@ body{
   user-select:none;
   letter-spacing:.01em;
 }
-.btn-primary{background:var(--accent);color:#fff;width:100%}
-.btn-primary:hover{background:var(--accent-2)}
+.btn-primary{background:linear-gradient(135deg,var(--accent) 0%,var(--accent) 100%);color:#fff;width:100%;transition:background .3s ease,transform .2s ease}
+.btn-primary:hover{background:linear-gradient(135deg,var(--accent) 0%,#1a6bb5 100%);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,26,255,.2)}
 .btn-ghost{
   background:transparent;
   color:var(--ink-muted);
@@ -940,6 +940,109 @@ tbody td{padding:10px 14px;vertical-align:middle}
   .tab-btn{padding:0 14px}
   .tab-btn svg{width:14px;height:14px}
 }
+
+/* ── MINI SPINNER (refresh silencioso) ──────────────────── */
+.spinner-mini{
+  width:13px;height:13px;
+  border:1.5px solid rgba(0,135,90,.2);
+  border-top-color:var(--green);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+  flex-shrink:0;
+}
+.spinner-mini.show{display:block}
+
+/* ── APPLY CHANGES BUTTON ───────────────────────────────── */
+.apply-bar{
+  display:none;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  background:var(--amber-bg);
+  border:1px solid var(--amber);
+  border-radius:var(--radius-sm);
+  margin-bottom:12px;
+  animation:panelIn .2s ease both;
+}
+.apply-bar.show{display:flex}
+.apply-bar-text{font-size:12px;color:var(--amber);font-weight:600;flex:1}
+.apply-bar-count{font-size:11px;color:var(--amber);opacity:.7}
+
+/* ── FONDO DASHBOARD EMPRESARIAL ────────────────────────────
+   Gradiente muy sutil — da profundidad sin ser llamativo.
+   Modo claro: gris frío casi blanco → levemente más azulado.
+   Modo oscuro: negro azulado → negro profundo.
+   ──────────────────────────────────────────────────────────── */
+body{
+  background: linear-gradient(160deg, #f5f5f7 0%, #eeeef5 100%) !important;
+  min-height:100vh;
+}
+:root[data-theme="dark"] body{
+  background: linear-gradient(160deg, #080810 0%, #0a0a1c 100%) !important;
+}
+
+/* ── FECHA CHIP EN TABLA ─────────────────────────────────────
+   Muestra dd/mm. Al hacer click abre popover con detalle
+   completo: fecha, hora, dispositivo, navegador.
+   ──────────────────────────────────────────────────────────── */
+.fecha-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--ink-muted);
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:2px 8px;
+  cursor:pointer;
+  position:relative;
+  transition:var(--t);
+  white-space:nowrap;
+  user-select:none;
+}
+.fecha-chip:hover{
+  background:var(--accent-bg);
+  color:var(--accent);
+  border-color:var(--accent);
+}
+/* Popover de detalle de fecha */
+.fecha-popover{
+  display:none;
+  position:absolute;
+  top:calc(100% + 6px);
+  left:50%;
+  transform:translateX(-50%);
+  min-width:200px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  box-shadow:0 8px 24px rgba(0,0,0,.14);
+  padding:12px 14px;
+  z-index:200;
+  animation:panelIn .15s ease both;
+}
+.fecha-popover.show{ display:block }
+.fecha-popover-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:11px;
+  color:var(--ink-soft);
+  margin-bottom:6px;
+  line-height:1.4;
+}
+.fecha-popover-row:last-child{ margin-bottom:0 }
+.fecha-popover-label{
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--ink-muted);
+  min-width:60px;
+}
 </style>
 </head>
 <body>
@@ -975,8 +1078,8 @@ tbody td{padding:10px 14px;vertical-align:middle}
   <div class="topbar-divider"></div>
   <span class="topbar-label">Facilitador</span>
   <div class="topbar-right">
-    <span class="refresh-indicator"><span class="status-dot"></span><span id="refresh-label">En vivo</span></span>
-    <button class="btn btn-ghost btn-sm" onclick="loadData()">
+    <span class="refresh-indicator"><span class="status-dot" id="status-dot"></span><div class="spinner-mini" id="spinner-mini"></div><span id="refresh-label">En vivo</span></span>
+    <button class="btn btn-ghost btn-sm" onclick="loadData(false)">
       <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4.95"/></svg>Actualizar
     </button>
     <button class="btn btn-ghost btn-sm" onclick="exportCSV()">
@@ -1188,6 +1291,15 @@ tbody td{padding:10px 14px;vertical-align:middle}
   <!-- TAB: DATOS -->
   <div class="tab-panel" id="panel-datos">
 
+    <!-- APPLY CHANGES BAR — visible cuando hay cambios pendientes -->
+    <div class="apply-bar" id="apply-bar">
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--amber);fill:none;stroke-width:2;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span class="apply-bar-text">Tienes cambios sin guardar <span class="apply-bar-count" id="pending-count"></span></span>
+      <button class="btn btn-sm" style="background:var(--amber);color:#fff;border:none" onclick="applyPendingChanges()">
+        <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><polyline points="20 6 9 17 4 12"/></svg>
+        Aplicar cambios
+      </button>
+    </div>
     <div class="controls-bar">
       <span class="control-label">Excluir filas #</span>
       <input style="flex:1;min-width:140px;padding:7px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:var(--t)" id="exclude-input" placeholder="ej: 1, 3" oninput="applyFilters()"/>
@@ -1228,6 +1340,7 @@ tbody td{padding:10px 14px;vertical-align:middle}
           <thead>
             <tr>
               <th>#</th>
+              <th>Fecha</th>
               <th>Area</th>
               <th>Perfil</th>
               <th>Nivel</th>
@@ -1249,6 +1362,37 @@ tbody td{padding:10px 14px;vertical-align:middle}
 <div class="fac-footer">Joan Nicolas Benavides &nbsp;·&nbsp; IAsolutions</div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════
+   FACILITADOR.HTML — Dashboard Asesor · ML Studio × IAsolutions
+   ═══════════════════════════════════════════════════════════════════
+   PROPÓSITO: Dashboard privado del asesor Joan Nicolas Benavides.
+   Muestra diagnósticos en tiempo real, análisis grupal y plan de sesión.
+
+   ACCESO:
+     URL:       /facilitador.html
+     Usuario:   Jancob
+     Contraseña: ConfeIA
+     Clave API: ConfeIA-Jancob-2025
+
+   PESTAÑAS:
+     Resumen   — KPIs, gráficas de perfiles (barras) y niveles (doughnut)
+     Análisis  — Patrones del grupo, automatización deseada, recomendación
+     Plan      — Plan de sesión 60min auto-generado, exportable a PDF
+     Datos     — Tabla individual, toggle Real/Prueba, notas, lookup
+
+   REFRESH:
+     - Al login y "Actualizar" manual: overlay completo
+     - Automático cada 60s: spinner mini discreto en topbar
+     - Cambios de prueba: cola local → "Aplicar cambios" → Sheet
+
+   DATOS DEMO:
+     Sin conexión al Sheet carga DEMO_DATA (6 diagnósticos hardcodeados).
+     El indicador "En vivo" cambia a ámbar con texto "Demo".
+
+   DEPENDENCIAS: Chart.js 4.4.2 (CDN)
+   AUTOR: Joan Nicolas Benavides · IAsolutions
+   ═══════════════════════════════════════════════════════════════ */
+
 // -- TEMA OSCURO / CLARO -----------------------------------
 (function(){
   var saved=localStorage.getItem('fac_theme');
@@ -1289,11 +1433,16 @@ var DEMO_DATA = [
 var allData      = [];   // todos los registros del Sheet
 var filtered     = [];   // solo los no marcados como prueba y no excluidos
 var charts       = {};
-var refreshTimer = null;
+var refreshTimer    = null;
+var isFirstLoad     = true;    // true = mostrar overlay, false = refresh silencioso
+var pendingChanges  = {};      // {id_respuesta: "0"|"1"} — cambios sin aplicar al Sheet
+var expandedRow     = null;    // id_respuesta de la fila expandida actualmente
 var privateNotes = {};   // notas privadas por id_respuesta - en localStorage
 var activeTab    = "resumen";
 
 // -- LOGIN ---------------------------------------------
+/* doLogin() — Valida credenciales y muestra el dashboard.
+   Inicia loadData() y el intervalo de refresh automático. */
 function doLogin() {
   var u = document.getElementById("login-user").value.trim();
   var p = document.getElementById("login-pass").value.trim();
@@ -1311,6 +1460,7 @@ function doLogin() {
   }
 }
 
+/* doLogout() — Cierra sesión, limpia datos y regresa al login. */
 function doLogout() {
   clearInterval(refreshTimer);
   document.getElementById("login-shell").style.display = "flex";
@@ -1323,6 +1473,8 @@ function doLogout() {
 }
 
 // -- TABS ----------------------------------------------
+/* switchTab(name) — Activa la pestaña indicada.
+   name: "resumen" | "analisis" | "plan" | "datos" */
 function switchTab(name) {
   activeTab = name;
   document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
@@ -1332,23 +1484,48 @@ function switchTab(name) {
 }
 
 // -- INIT ---------------------------------------------
+/* startDashboard() — Primera carga con overlay completo.
+   Inicia el intervalo de refresh silencioso cada 60s. */
 function startDashboard() {
+  isFirstLoad = true;
   loadData();
-  refreshTimer = setInterval(loadData, AUTO_REFRESH_MS);
+  refreshTimer = setInterval(function(){ silentRefresh(); }, AUTO_REFRESH_MS);
 }
 
 // -- FETCH DATA ----------------------------------------
-function loadData() {
+/* loadData(silent)
+   silent=false → muestra overlay completo (login / botón actualizar)
+   silent=true  → solo spinner mini en topbar, no interrumpe la vista */
+/* loadData(silent)
+   Carga datos del Sheet vía Apps Script.
+   silent=false → overlay completo (login / botón actualizar)
+   silent=true  → spinner mini, sin interrumpir la vista
+   Preserva: pestaña activa, fila expandida, campo de exclusión.
+   Aplica pendingChanges locales encima de los datos frescos. */
+function loadData(silent) {
   var overlay = document.getElementById("loading-overlay");
   var label   = document.getElementById("refresh-label");
-  overlay.classList.remove("hidden");
-  label.textContent = "Actualizando...";
+  var mini    = document.getElementById("spinner-mini");
+  var dot     = document.getElementById("status-dot");
+
+  if(!silent){
+    // Overlay completo — primera carga o actualización manual
+    overlay.classList.remove("hidden");
+    label.textContent = "Actualizando...";
+    if(mini) mini.classList.remove("show");
+  } else {
+    // Silencioso — spinner mini, sin overlay
+    if(mini) mini.classList.add("show");
+    if(dot)  dot.style.display = "none";
+    label.textContent = "Actualizando...";
+  }
 
   var safetyTimer = setTimeout(function() {
     overlay.classList.add("hidden");
+    if(mini) mini.classList.remove("show");
+    if(dot)  dot.style.display = "";
     label.textContent = "Tiempo agotado";
-    // Si no hay datos cargados, usar demo
-    if(!allData.length) { useDemoData(label); }
+    if(!allData.length) useDemoData(label);
   }, 10000);
 
   fetch(SCRIPT_URL + "?action=data&key=" + encodeURIComponent(FACILITATOR_KEY), {
@@ -1358,6 +1535,8 @@ function loadData() {
     .then(function(text) {
       clearTimeout(safetyTimer);
       overlay.classList.add("hidden");
+      if(mini) mini.classList.remove("show");
+      if(dot)  dot.style.display = "";
       var res;
       try { res = JSON.parse(text); } catch(e) {
         label.textContent = "Error de formato";
@@ -1365,11 +1544,45 @@ function loadData() {
         return;
       }
       if (res.status === "ok") {
-        allData = res.data || [];
+        // Preservar estado antes de reemplazar datos
+        var activeTabSaved   = activeTab;
+        var expandedSaved    = expandedRow;
+        var excludeSaved     = document.getElementById("exclude-input").value;
+
+        // Nuevos datos del Sheet
+        var newData = res.data || [];
+
+        // Aplicar cambios pendientes locales encima de los datos frescos
+        // (evita que un refresh borre lo que el facilitador marcó sin aplicar)
+        newData.forEach(function(row){
+          var id = row.id_respuesta||"";
+          if(pendingChanges.hasOwnProperty(id)){
+            row.es_prueba = pendingChanges[id];
+          }
+        });
+
+        allData = newData;
         document.getElementById("last-update").textContent =
           "Actualizado: " + new Date().toLocaleTimeString("es-CO", {hour:"2-digit",minute:"2-digit"});
         label.textContent = "En vivo";
+        label.style.color = "";
+
+        // Restaurar estado UI
+        document.getElementById("exclude-input").value = excludeSaved;
         applyFilters();
+
+        // Restaurar pestaña activa
+        if(activeTabSaved && activeTabSaved !== activeTab) switchTab(activeTabSaved);
+
+        // Restaurar fila expandida
+        if(expandedSaved){
+          setTimeout(function(){
+            var row = document.querySelector("tr[data-id='"+expandedSaved+"'] .detail-toggle");
+            if(row) row.click();
+          }, 100);
+        }
+
+        isFirstLoad = false;
       } else {
         label.textContent = "Error: " + (res.message || "inesperado");
         if(!allData.length) useDemoData(label);
@@ -1378,11 +1591,21 @@ function loadData() {
     .catch(function(err) {
       clearTimeout(safetyTimer);
       overlay.classList.add("hidden");
-      // Sin conexión → cargar datos demo para visualizar
+      if(mini) mini.classList.remove("show");
+      if(dot)  dot.style.display = "";
       useDemoData(label);
     });
 }
 
+/* silentRefresh — llamado por el intervalo automático */
+/* silentRefresh() — Llamado por el intervalo automático.
+   Wrapper de loadData(true). */
+function silentRefresh(){
+  loadData(true);
+}
+
+/* useDemoData(label) — Carga DEMO_DATA cuando no hay conexión.
+   Muestra indicador ámbar "Demo" en el topbar. */
 function useDemoData(label) {
   allData = DEMO_DATA;
   if(label) {
@@ -1398,6 +1621,8 @@ function useDemoData(label) {
 
 // -- FILTROS -------------------------------------------
 // Excluye: filas marcadas como es_prueba=1 Y filas excluidas por numero
+/* applyFilters() — Filtra allData excluyendo filas marcadas
+   como prueba y las excluidas por número en el input. */
 function applyFilters() {
   var raw      = document.getElementById("exclude-input").value;
   var excluded = raw.split(",").map(function(s) { return parseInt(s.trim(),10); })
@@ -1412,6 +1637,8 @@ function applyFilters() {
   renderAll();
 }
 
+/* renderAll() — Llama a todas las funciones de render en orden:
+   KPIs, Charts, Bars, Patterns, Plan, Table. */
 function renderAll() {
   renderKPIs();
   renderCharts();
@@ -1422,6 +1649,8 @@ function renderAll() {
 }
 
 // -- KPIs ----------------------------------------------
+/* renderKPIs() — Actualiza los 4 KPIs del strip superior:
+   diagnósticos reales, score promedio, perfil y fricción dominante. */
 function renderKPIs() {
   var total  = filtered.length;
   var prueba = allData.filter(function(r) { return (r.es_prueba||"").toString()==="1"; }).length;
@@ -1454,6 +1683,9 @@ function renderKPIs() {
 }
 
 // -- CHARTS --------------------------------------------
+/* renderCharts() — Genera/actualiza las 2 gráficas Chart.js:
+   Perfiles (barras horizontales) y Niveles (doughnut).
+   Se adapta al tema claro/oscuro. */
 function renderCharts() {
   var isDark = document.documentElement.getAttribute("data-theme") === "dark";
   var textColor   = isDark ? "rgba(160,160,192,.7)" : "rgba(100,100,120,.7)";
@@ -1588,6 +1820,8 @@ function renderCharts() {
 }
 
 // -- BARRAS (fricciones + GPTs + automatizacion) -------
+/* renderBars() — Genera las barras de progreso de:
+   fricciones, GPTs internos y automatización deseada. */
 function renderBars() {
   var total = filtered.length || 1;
 
@@ -1656,6 +1890,9 @@ function renderBars() {
 }
 
 // -- PATRONES ------------------------------------------
+/* renderPatterns() — Calcula y muestra 6 patrones del grupo:
+   fricción dominante, automatización, GPT más usado, etc.
+   Genera recomendación de arranque automáticamente. */
 function renderPatterns() {
   var total = filtered.length;
   if (!total) { document.getElementById("patterns-grid").innerHTML=""; document.getElementById("pattern-rec").innerHTML=""; return; }
@@ -1699,6 +1936,9 @@ function renderPatterns() {
 }
 
 // -- PLAN DE SESION ------------------------------------
+/* renderPlan() — Auto-genera el plan de sesión de 60 minutos
+   adaptado a los datos reales del grupo (fricciones, automatización,
+   repetición de contexto, adopción de GPTs). */
 function renderPlan() {
   var total=filtered.length;
   if(!total)return;
@@ -1808,6 +2048,9 @@ function copyPrompt(){
   navigator.clipboard.writeText(el.textContent).then(function(){showToast("Prompt copiado — pegalo en Claude o ChatGPT");}).catch(function(){showToast("Selecciona el texto y copia manualmente");});
 }
 
+/* printPlan() — Abre ventana con el plan formateado y lanza
+   el diálogo de impresión/PDF del navegador.
+   Incluye portada ML Studio, 5 bloques y firma IAsolutions. */
 function printPlan(){
   var empresa=document.getElementById("plan-empresa")?document.getElementById("plan-empresa").textContent:"ML Studio";
   var total=document.getElementById("plan-total")?document.getElementById("plan-total").textContent:"";
@@ -1882,6 +2125,9 @@ function copyPlan(){
 }
 
 // -- TABLA ---------------------------------------------
+/* renderTable() — Genera la tabla de respuestas individuales.
+   Incluye: fecha chip (click = popover detalle), área, perfil,
+   nivel, score, fricciones, GPTs, toggle Real/Prueba, detalle. */
 function renderTable() {
   var html="";
   allData.forEach(function(row,i){
@@ -1892,8 +2138,32 @@ function renderTable() {
     var noteKey="note_"+row.id_respuesta;
     var savedNote=privateNotes[noteKey]||"";
 
+    // Formatear timestamp — corto para tabla, completo para popover
+    var ts = row.timestamp||"";
+    var fechaCorta = "—";
+    var fechaLarga = "—";
+    var horaStr   = "—";
+    if(ts){
+      try{
+        var d = new Date(ts);
+        fechaCorta = (d.getDate()+"").padStart(2,"0")+"/"+(d.getMonth()+1+"").padStart(2,"0");
+        fechaLarga = d.toLocaleDateString("es-CO",{day:"2-digit",month:"long",year:"numeric"});
+        horaStr    = d.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+      }catch(e){}
+    }
+    var popId = "fpop-"+(i+1);
+
     html+='<tr class="'+rowClass+'">'
       +'<td style="color:var(--ink-muted);font-size:12px">'+(i+1)+'</td>'
+      // Fecha chip — click abre popover con detalle completo
+      +'<td><div class="fecha-chip" onclick="toggleFechaPopover(\"'+popId+'\")" >'+fechaCorta
+        +'<div class="fecha-popover" id="'+popId+'">'
+          +'<div class="fecha-popover-row"><span class="fecha-popover-label">Fecha</span>'+fechaLarga+'</div>'
+          +'<div class="fecha-popover-row"><span class="fecha-popover-label">Hora</span>'+horaStr+'</div>'
+          +'<div class="fecha-popover-row"><span class="fecha-popover-label">Dispositivo</span>'+(row.dispositivo||"—")+'</div>'
+          +'<div class="fecha-popover-row"><span class="fecha-popover-label">Navegador</span>'+(row.navegador||"—")+'</div>'
+        +'</div>'
+      +'</div></td>'
       +'<td><strong>'+(row.area_trabajo||"—")+'</strong></td>'
       +'<td><span class="tag tag-'+profile+'">'+(row.perfil_usuario||"—")+'</span></td>'
       +'<td><span class="tag tag-nivel">'+(row.nivel_madurez_ia||"—").split(" — ")[0]+'</span></td>'
@@ -1908,7 +2178,7 @@ function renderTable() {
       +'<td><button class="expand-btn" onclick="toggleDetail('+(i+1)+')">Ver</button></td>'
       +'</tr>'
       +'<tr class="detail-row" id="detail-'+(i+1)+'">'
-      +'<td colspan="9" class="detail-cell">'
+      +'<td colspan="10" class="detail-cell">'
       +'<div class="detail-inner">'
       +'<div><div class="detail-block-label">Si la IA pudiera ahorrarle tiempo</div><div class="detail-block-text">'+(row.respuesta_abierta_1||"Sin respuesta")+'</div></div>'
       +'<div><div class="detail-block-label">Que mejoraria del uso de IA</div><div class="detail-block-text">'+(row.respuesta_abierta_2||"Sin respuesta")+'</div></div>'
@@ -1934,6 +2204,13 @@ function toggleDetail(idx){
 }
 
 // -- TOGGLE TEST ---------------------------------------
+/* toggleTest(idx, btn)
+   Marca/desmarca fila como prueba. El cambio es inmediato en local
+   y se agrega a pendingChanges. Se envía al Sheet solo al presionar
+   "Aplicar cambios" para evitar el problema del refresh que borra el estado. */
+/* toggleTest(idx, btn) — Marca/desmarca fila como prueba.
+   Cambio inmediato en local → agrega a pendingChanges.
+   NO envía al Sheet hasta que se presione "Aplicar cambios". */
 function toggleTest(idx, btn) {
   var row     = allData[idx];
   if (!row) return;
@@ -1941,7 +2218,7 @@ function toggleTest(idx, btn) {
   var isPrueba= (row.es_prueba||"").toString()==="1";
   var newVal  = isPrueba ? "0" : "1";
 
-  // Actualizar local inmediatamente para feedback rapido
+  // Actualizar local inmediatamente
   allData[idx].es_prueba = newVal;
   btn.textContent = newVal==="1" ? "Prueba" : "Real";
   btn.className   = "test-toggle " + (newVal==="1" ? "prueba" : "real");
@@ -1949,12 +2226,9 @@ function toggleTest(idx, btn) {
   if(tr){ if(newVal==="1") tr.classList.add("is-test"); else tr.classList.remove("is-test"); }
   applyFilters();
 
-  // Persistir en el Sheet
-  fetch(SCRIPT_URL+"?action=toggle_test&key="+encodeURIComponent(FACILITATOR_KEY)+"&id="+encodeURIComponent(id)+"&value="+newVal,{
-    method:"GET",redirect:"follow"
-  }).then(function(r){return r.text();}).then(function(text){
-    try{var res=JSON.parse(text);if(res.status!=="ok")console.warn("toggle_test:",res.message);}catch(e){}
-  }).catch(function(e){console.error("toggle_test error:",e);});
+  // Agregar a cola de pendientes
+  pendingChanges[id] = newVal;
+  updateApplyBar();
 }
 
 function markAllTest(){
@@ -1964,6 +2238,7 @@ function markAllTest(){
   });
   renderTable();
   applyFilters();
+  updateApplyBar();
 }
 
 function clearAllTest(){
@@ -1972,14 +2247,106 @@ function clearAllTest(){
   });
   renderTable();
   applyFilters();
+  updateApplyBar();
 }
 
 function toggleTestSilent(idx, value){
   var row=allData[idx]; if(!row)return;
   allData[idx].es_prueba=value;
   var id=row.id_respuesta||"";
-  fetch(SCRIPT_URL+"?action=toggle_test&key="+encodeURIComponent(FACILITATOR_KEY)+"&id="+encodeURIComponent(id)+"&value="+value,{method:"GET",redirect:"follow"}).catch(function(){});
+  pendingChanges[id]=value;
 }
+
+
+/* ─────────────────────────────────────────────────────────────
+   updateApplyBar()
+   Muestra u oculta la barra de cambios pendientes según
+   cuántos toggles están en cola sin enviar al Sheet.
+   ─────────────────────────────────────────────────────────── */
+/* updateApplyBar() — Muestra/oculta la barra ámbar de cambios
+   pendientes según el contenido de pendingChanges. */
+function updateApplyBar(){
+  var bar   = document.getElementById("apply-bar");
+  var count = document.getElementById("pending-count");
+  var n     = Object.keys(pendingChanges).length;
+  if(!bar) return;
+  if(n > 0){
+    bar.classList.add("show");
+    if(count) count.textContent = "("+n+" fila"+(n!==1?"s":"")+" pendiente"+(n!==1?"s":"")+")";
+  } else {
+    bar.classList.remove("show");
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   applyPendingChanges()
+   Envía todos los cambios pendientes al Sheet en paralelo.
+   Muestra "Guardando...", luego "✓ Guardado" o error.
+   Si un cambio falla queda en pendingChanges para reintentar.
+   ─────────────────────────────────────────────────────────── */
+/* applyPendingChanges() — Envía todos los cambios pendientes
+   al Sheet en paralelo. Muestra confirmación o error. */
+function applyPendingChanges(){
+  var ids = Object.keys(pendingChanges);
+  if(!ids.length) return;
+
+  var btn = document.querySelector(".apply-bar .btn");
+  if(btn){ btn.textContent="Guardando..."; btn.disabled=true; }
+
+  var promises = ids.map(function(id){
+    var val = pendingChanges[id];
+    return fetch(
+      SCRIPT_URL+"?action=toggle_test&key="+encodeURIComponent(FACILITATOR_KEY)
+        +"&id="+encodeURIComponent(id)+"&value="+val,
+      {method:"GET",redirect:"follow"}
+    ).then(function(r){return r.text();})
+     .then(function(text){
+       try{
+         var res=JSON.parse(text);
+         if(res.status==="ok") delete pendingChanges[id];
+         else console.warn("toggle_test:",id,res.message);
+       }catch(e){}
+     }).catch(function(e){ console.error("toggle_test failed:",id,e); });
+  });
+
+  Promise.all(promises).then(function(){
+    var remaining = Object.keys(pendingChanges).length;
+    if(btn){ btn.textContent="Aplicar cambios"; btn.disabled=false; }
+    if(remaining === 0){
+      showToast("Cambios guardados en el Sheet");
+      updateApplyBar();
+    } else {
+      showToast("Algunos cambios no se guardaron — reintenta");
+    }
+  });
+}
+
+
+/* toggleFechaPopover(id)
+   Abre o cierra el popover de detalle de fecha en la tabla.
+   Cierra todos los demás al abrir uno nuevo.
+   Se cierra también al hacer click fuera (via document listener). */
+/* toggleFechaPopover(id) — Abre/cierra el popover de detalle
+   de fecha en la tabla (fecha completa, hora, dispositivo, navegador). */
+function toggleFechaPopover(id){
+  var pop = document.getElementById(id);
+  if(!pop) return;
+  var isOpen = pop.classList.contains("show");
+  // Cerrar todos los popovers de fecha abiertos
+  document.querySelectorAll(".fecha-popover.show").forEach(function(p){
+    p.classList.remove("show");
+  });
+  if(!isOpen) pop.classList.add("show");
+}
+
+// Cerrar popover de fecha al hacer click fuera
+document.addEventListener("click", function(e){
+  if(!e.target.closest(".fecha-chip")){
+    document.querySelectorAll(".fecha-popover.show").forEach(function(p){
+      p.classList.remove("show");
+    });
+  }
+});
 
 // -- NOTAS PRIVADAS ------------------------------------
 function saveNote(id, text){
@@ -1991,6 +2358,8 @@ function loadPrivateNotes(){
 }
 
 // -- LOOKUP --------------------------------------------
+/* lookupCode() — Busca diagnóstico por código ML-XXXX
+   y muestra detalle en el panel de lookup. */
 function lookupCode(){
   var code=document.getElementById("lookup-code").value.trim().toUpperCase();
   var err=document.getElementById("lookup-err");
@@ -2021,6 +2390,7 @@ function lookupCode(){
 }
 
 // -- EXPORT --------------------------------------------
+/* exportCSV() — Exporta los datos filtrados como archivo CSV. */
 function exportCSV(){
   if(!allData.length)return;
   var cols=["area_trabajo","perfil_usuario","nivel_madurez_ia","score_total","frecuencia_uso_ia","tipo_uso","friccion_principal","repeticion_contexto","organizacion_conocimiento","uso_gpts","gpt_preferido","impacto_productividad","automatizacion_deseada","alertas_detectadas","respuesta_abierta_1","respuesta_abierta_2","es_prueba","timestamp"];
