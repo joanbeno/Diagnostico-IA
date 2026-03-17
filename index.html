@@ -27,7 +27,7 @@
       --red:#c0392b; --red-bg:#fdecea;
       --surface-inv:#0d0d18;
       --radius:12px; --radius-sm:6px; --radius-xs:4px;
-      --shadow:0 1px 3px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
+      --shadow:0 1px 4px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.07);
       --shadow-lg:0 8px 40px rgba(0,0,0,.10);
       --t:.2s cubic-bezier(.4,0,.2,1);
     }
@@ -68,8 +68,19 @@
 
     /* BUTTONS */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 28px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;border:none;transition:var(--t);text-decoration:none;white-space:nowrap;user-select:none}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-primary:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,26,255,.25)}
+    /* btn-primary — gradiente base azul IAsolutions.
+       Hover: transición hacia azul-turquesa (identidad IAsolutions).
+       Motivado por interacción del usuario. */
+    .btn-primary{
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%);
+      color:#fff;
+      transition:background .3s ease, transform .2s ease, box-shadow .2s ease;
+    }
+    .btn-primary:hover{
+      background:linear-gradient(135deg, var(--accent) 0%, #1a6bb5 100%);
+      transform:translateY(-1px);
+      box-shadow:0 4px 20px rgba(26,26,255,.22);
+    }
     .btn-primary:active{transform:translateY(0) scale(.98)}
     .option-card:active{transform:scale(.993)}
     .btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border)}
@@ -163,7 +174,7 @@
     .gauge-label{font-size:10px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:600}
 
     /* SCORE HERO */
-    .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:0 4px 28px rgba(0,0,0,.22)}
+    .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:0 6px 32px rgba(0,0,0,.28)}
     .score-context{flex:1;min-width:180px}
     .score-context-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
     .score-context-text{font-size:17px;color:#fff;font-weight:400;line-height:1.4}
@@ -407,53 +418,14 @@
   content:'';
   position:absolute;inset:0;border-radius:inherit;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg stroke='%23ffffff' stroke-width='0.6' fill='none'%3E%3Cline x1='9' y1='24' x2='24' y2='9'/%3E%3Cline x1='24' y1='9' x2='39' y2='18'/%3E%3Cline x1='39' y1='18' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='39' y2='18' opacity='.35'/%3E%3Cline x1='24' y1='9' x2='33' y2='39' opacity='.25'/%3E%3C/g%3E%3Ccircle cx='9' cy='24' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='24' cy='9' r='1.8' fill='%23ffffff'/%3E%3Ccircle cx='39' cy='18' r='1.2' fill='%23ffffff'/%3E%3Ccircle cx='33' cy='39' r='2' fill='%23ffffff'/%3E%3C/svg%3E");
-  background-size:48px 48px;
+  background-size:22px 22px;
   opacity:var(--pat-op);
   pointer-events:none;z-index:0;
 }
 
-/* Capa 2: shimmer suave — barrido diagonal muy lento */
-.with-pattern::after {
-  content:'';
-  position:absolute;
-  top:-20%;left:-120%;
-  width:40%;height:140%;
-  background:linear-gradient(
-    112deg,
-    transparent 0%,
-    rgba(255,255,255,.0) 35%,
-    rgba(255,255,255,.055) 50%,
-    rgba(255,255,255,.0) 65%,
-    transparent 100%
-  );
-  animation:shimmer-sweep 9s cubic-bezier(.45,0,.55,1) infinite;
-  animation-delay:2s;
-  pointer-events:none;z-index:0;
-  will-change:transform;
-}
-
-@keyframes shimmer-sweep {
-  0%   { transform:translateX(0);    opacity:0 }
-  8%   { opacity:1 }
-  92%  { opacity:1 }
-  100% { transform:translateX(560%); opacity:0 }
-}
-
-/* Fondos claros usan SVG oscuro */
-.with-pattern.light-bg::before {
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg stroke='%230a0a12' stroke-width='0.6' fill='none'%3E%3Cline x1='9' y1='24' x2='24' y2='9'/%3E%3Cline x1='24' y1='9' x2='39' y2='18'/%3E%3Cline x1='39' y1='18' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='39' y2='18' opacity='.35'/%3E%3Cline x1='24' y1='9' x2='33' y2='39' opacity='.25'/%3E%3C/g%3E%3Ccircle cx='9' cy='24' r='1.5' fill='%230a0a12'/%3E%3Ccircle cx='24' cy='9' r='1.8' fill='%230a0a12'/%3E%3Ccircle cx='39' cy='18' r='1.2' fill='%230a0a12'/%3E%3Ccircle cx='33' cy='39' r='2' fill='%230a0a12'/%3E%3C/svg%3E");
-}
-/* En fondos claros el shimmer es aún más sutil */
-.with-pattern.light-bg::after {
-  background:linear-gradient(
-    112deg,
-    transparent 0%,
-    rgba(0,0,0,.0) 35%,
-    rgba(0,0,0,.02) 50%,
-    rgba(0,0,0,.0) 65%,
-    transparent 100%
-  );
-}
+/* Shimmer eliminado — animación no motivada por interacción.
+   Se conserva ::before (patrón de nodos estático). */
+.with-pattern::after { content:none }
 
 .with-pattern > * { position:relative;z-index:1 }
 
@@ -483,7 +455,7 @@ charset="UTF-8" />
       --red:#c0392b; --red-bg:#fdecea;
       --surface-inv:#0d0d18;
       --radius:12px; --radius-sm:6px; --radius-xs:4px;
-      --shadow:0 1px 3px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
+      --shadow:0 1px 4px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.07);
       --shadow-lg:0 8px 40px rgba(0,0,0,.10);
       --t:.2s cubic-bezier(.4,0,.2,1);
     }
@@ -524,8 +496,19 @@ charset="UTF-8" />
 
     /* BUTTONS */
     .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 28px;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;border:none;transition:var(--t);text-decoration:none;white-space:nowrap;user-select:none}
-    .btn-primary{background:var(--accent);color:#fff}
-    .btn-primary:hover{background:var(--accent-2);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,26,255,.25)}
+    /* btn-primary — gradiente base azul IAsolutions.
+       Hover: transición hacia azul-turquesa (identidad IAsolutions).
+       Motivado por interacción del usuario. */
+    .btn-primary{
+      background:linear-gradient(135deg, var(--accent) 0%, var(--accent) 100%);
+      color:#fff;
+      transition:background .3s ease, transform .2s ease, box-shadow .2s ease;
+    }
+    .btn-primary:hover{
+      background:linear-gradient(135deg, var(--accent) 0%, #1a6bb5 100%);
+      transform:translateY(-1px);
+      box-shadow:0 4px 20px rgba(26,26,255,.22);
+    }
     .btn-primary:active{transform:translateY(0) scale(.98)}
     .option-card:active{transform:scale(.993)}
     .btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border)}
@@ -619,7 +602,7 @@ charset="UTF-8" />
     .gauge-label{font-size:10px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:600}
 
     /* SCORE HERO */
-    .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:0 4px 28px rgba(0,0,0,.22)}
+    .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:0 6px 32px rgba(0,0,0,.28)}
     .score-context{flex:1;min-width:180px}
     .score-context-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
     .score-context-text{font-size:17px;color:#fff;font-weight:400;line-height:1.4}
@@ -861,7 +844,7 @@ charset="UTF-8" />
       inset:0;
       border-radius:inherit;
       background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg stroke='%23ffffff' stroke-width='0.75' fill='none'%3E%3Cline x1='15' y1='40' x2='40' y2='15'/%3E%3Cline x1='40' y1='15' x2='65' y2='30'/%3E%3Cline x1='65' y1='30' x2='55' y2='65'/%3E%3Cline x1='15' y1='40' x2='55' y2='65'/%3E%3Cline x1='15' y1='40' x2='65' y2='30' opacity='.4'/%3E%3Cline x1='40' y1='15' x2='55' y2='65' opacity='.3'/%3E%3C/g%3E%3Ccircle cx='15' cy='40' r='2.5' fill='%23ffffff'/%3E%3Ccircle cx='40' cy='15' r='3' fill='%23ffffff'/%3E%3Ccircle cx='65' cy='30' r='2' fill='%23ffffff'/%3E%3Ccircle cx='55' cy='65' r='3.5' fill='%23ffffff'/%3E%3C/svg%3E");
-      background-size:80px 80px;
+      background-size:22px 22px;
       opacity:var(--pat-op);
       pointer-events:none;
       z-index:0;
@@ -1004,9 +987,9 @@ charset="UTF-8" />
 
   <!-- WELCOME -->
   <section class="screen active" id="screen-welcome">
-    <div class="welcome-inner with-pattern" style="padding:20px 24px;border-radius:var(--radius)">
+    <div class="welcome-inner" style="padding:20px 24px;border-radius:var(--radius)">
       <div class="badge"><div class="badge-dot"></div>Diagnóstico estratégico</div>
-      <h1 class="welcome-title">Conoce el estado real de la<br /><em>IA en tu empresa</em></h1>
+      <h1 class="welcome-title">¿Qué tan bien estás<br />aprovechando la <em>IA?</em></h1>
       <p class="welcome-desc">No mide si usas IA — mide qué tan bien la estás aprovechando. Identifica fricciones reales y oportunidades de automatización en tu área de trabajo.</p>
       <div class="welcome-promise">Al finalizar recibirás fricciones detectadas y acciones concretas para los próximos 30 días.</div>
       <div class="welcome-meta">
@@ -1500,6 +1483,29 @@ charset="UTF-8" />
 <div class="toast" id="toast"></div>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════
+   INDEX.HTML — Diagnóstico de Adopción IA · ML Studio × IAsolutions
+   ═══════════════════════════════════════════════════════════════════
+   PROPÓSITO: Formulario de diagnóstico de 12 pasos. Calcula el nivel
+   de madurez en IA del colaborador y genera un perfil personalizado.
+
+   FLUJO PRINCIPAL:
+   1. Pantalla de bienvenida  (screen-welcome)
+   2. Formulario paso a paso  (screen-form) → 12 steps
+   3. Enviando resultados     (screen-sending)
+   4. Pantalla de resultados  (screen-results)
+
+   VARIABLES DE CONFIGURACIÓN (sección "CONFIG"):
+     APPS_SCRIPT_URL  — Endpoint Google Apps Script
+     EMPRESA_NOMBRE   — Nombre del cliente
+     CODIGO_PREFIJO   — Prefijo del código (ej: "ML")
+     WA_NUMBER        — Número WhatsApp del asesor
+     GUIA_URL         — URL de la guía interactiva
+
+   DEPENDENCIAS: Chart.js 4.4.2 (CDN)
+   AUTOR: Joan Nicolas Benavides · IAsolutions
+   ═══════════════════════════════════════════════════════════════ */
+
 // ══ CONFIG — cambia esto para adaptar a otro cliente ══════
 // ── TEMA OSCURO / CLARO ───────────────────────────────────
 (function(){
@@ -1546,11 +1552,15 @@ var utmParams=parseUTM();
 var SECTION_LABELS={1:'Contexto del rol',2:'Frecuencia de uso',3:'Tipo de uso',4:'Fricciones operativas',5:'Repetición de contexto',6:'Gestión del conocimiento',7:'Adopción de GPTs internos',8:'Impacto percibido',9:'Automatización',10:'Perspectiva abierta',11:'Perspectiva abierta',12:'GPT preferido'};
 
 function generateUUID(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16)});}
+/* generateCodigo() — Genera código único ML-XXXX para el usuario. */
 function generateCodigo(){var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';var code='';for(var i=0;i<4;i++)code+=chars.charAt(Math.floor(Math.random()*chars.length));return CODIGO_PREFIJO+'-'+code;}
 function detectBrowser(){var ua=navigator.userAgent;if(ua.indexOf('Edg')>-1)return 'Edge';if(ua.indexOf('Chrome')>-1)return 'Chrome';if(ua.indexOf('Firefox')>-1)return 'Firefox';if(ua.indexOf('Safari')>-1)return 'Safari';return 'Otro';}
 function detectDevice(){if(/Mobi|Android/i.test(navigator.userAgent))return 'mobile';if(/Tablet|iPad/i.test(navigator.userAgent))return 'tablet';return 'desktop';}
 function parseUTM(){var p={},s=window.location.search.substring(1);if(!s)return p;s.split('&').forEach(function(pair){var kv=pair.split('=');p[decodeURIComponent(kv[0])]=decodeURIComponent(kv[1]||'');});return{utm_source:p.utm_source||'',utm_medium:p.utm_medium||'',utm_campaign:p.utm_campaign||'',empresa:p.empresa||''};}
+/* showToast(msg, duration) — Muestra notificación temporal en la parte inferior. */
 function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+/* showScreen(id) — Activa una pantalla ocultando las demás.
+   id: "screen-welcome" | "screen-form" | "screen-sending" | "screen-results" */
 function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});document.getElementById(id).classList.add('active');}
 function updateCharCounter(tid,cid,max){var len=document.getElementById(tid).value.length;document.getElementById(cid).textContent=len+' / '+max;}
 
@@ -1560,6 +1570,7 @@ function loadFromLocal(){try{var d=localStorage.getItem('diagnostico_ia');return
 function clearLocal(){try{localStorage.removeItem('diagnostico_ia');}catch(e){}}
 
 // ── Copiar código al portapapeles ─────────────────────────
+/* copiarCodigo() — Copia el código ML-XXXX al portapapeles. */
 function copiarCodigo(){
   navigator.clipboard.writeText(codigoAcceso).then(function(){
     showToast('Código copiado: '+codigoAcceso);
@@ -1594,6 +1605,8 @@ window.addEventListener('DOMContentLoaded',function(){
   }
 });
 
+/* recoverDiagnosis() — Recupera diagnóstico anterior vía código
+   guardado en localStorage. */
 function recoverDiagnosis(){
   var saved=loadFromLocal();
   if(!saved)return;
@@ -1616,6 +1629,7 @@ function dismissRecovery(){
 }
 
 // ── WhatsApp ──────────────────────────────────────────────
+/* openWhatsApp() — Abre WhatsApp con mensaje pre-escrito al asesor. */
 function openWhatsApp(){
   var msg=encodeURIComponent('Hola Joan, acabo de completar el diagnóstico de IA. Mi código personal es: *'+codigoAcceso+'*. Quedo pendiente de la sesión.');
   window.open('https://wa.me/'+WA_NUMBER+'?text='+msg,'_blank');
@@ -1644,6 +1658,8 @@ function toggleMulti(step,value,el){
   if(btn)btn.textContent=arr.length>0?'Continuar ('+arr.length+' seleccionada'+(arr.length!==1?'s':'')+')':'Continuar';
 }
 
+/* validateStep(step) — Valida que el paso actual tenga respuesta.
+   Retorna true si válido, false si no. */
 function validateStep(step){
   if(MULTI_STEPS.indexOf(step)>-1){if(!multiAnswers[step]||multiAnswers[step].length===0){document.getElementById('err-'+step).classList.add('visible');return false;}return true;}
   if(step<=9){if(!answers['step'+step]){document.getElementById('err-'+step).classList.add('visible');return false;}return true;}
@@ -1652,6 +1668,8 @@ function validateStep(step){
   return true;
 }
 
+/* nextStep() — Avanza al siguiente paso del formulario.
+   Valida la respuesta actual antes de avanzar. */
 function nextStep(){
   if(!validateStep(currentStep))return;
   if(currentStep>=TOTAL_STEPS)return;
@@ -1663,6 +1681,7 @@ function nextStep(){
   updateProgress();window.scrollTo({top:0,behavior:'smooth'});
 }
 
+/* prevStep() — Retrocede al paso anterior. */
 function prevStep(){
   if(currentStep<=1)return;
   var cur=document.getElementById('step-'+currentStep);
@@ -1673,6 +1692,7 @@ function prevStep(){
   updateProgress();window.scrollTo({top:0,behavior:'smooth'});
 }
 
+/* updateProgress() — Actualiza la barra de progreso y el contador de pasos. */
 function updateProgress(){
   var pct=Math.round(((currentStep-1)/TOTAL_STEPS)*100);
   document.getElementById('progress-fill').style.width=pct+'%';
@@ -1683,6 +1703,9 @@ function updateProgress(){
 
 function getMaxScore(arr,map){if(!arr||!arr.length)return 0;var max=0;arr.forEach(function(v){if(map[v]&&map[v]>max)max=map[v];});return max;}
 
+/* calculateScores() — Motor de scoring principal.
+   Calcula 5 ejes: intensity, sophistication, friction, knowledge, automation.
+   Retorna objeto {axes, total, profile, maturity}. */
 function calculateScores(){
   var s={intensity:0,sophistication:0,friction:0,knowledge:0,automation:0};
   var freqMap={'Varias veces al día':5,'Todos los días':4,'Algunas veces a la semana':2,'Solo cuando no tengo otra opción':1};
@@ -1742,6 +1765,8 @@ function generateRecommendations(profile){
   return recs;
 }
 
+/* submitDiagnostic() — Valida paso 12, muestra pantalla de envío,
+   calcula scores, envía al Sheet y muestra resultados. */
 function submitDiagnostic(){
   if(!validateStep(12))return;
   showScreen('screen-sending');window.scrollTo({top:0,behavior:'smooth'});
@@ -1780,6 +1805,9 @@ function submitDiagnostic(){
   setTimeout(function(){renderResults(profile,maturity,alerts,recs,scoring);showScreen('screen-results');window.scrollTo({top:0,behavior:'smooth'});document.getElementById('topbar-step-counter').textContent='';},1800);
 }
 
+/* renderResults(profile, maturity, alerts, recs, scoring)
+   Puebla la pantalla de resultados: gauge, perfil, alertas,
+   recomendaciones, panel visual y gráficas. */
 function renderResults(profile,maturity,alerts,recs,scoring){
   document.getElementById('results-subtitle').textContent='Área: '+(answers.step1||'—')+'  ·  '+maturity.label;
   var cd=document.getElementById('codigo-display');if(cd)cd.textContent=codigoAcceso;
@@ -1831,6 +1859,8 @@ function renderResults(profile,maturity,alerts,recs,scoring){
   renderVisualPanel(scoring);
 }
 
+/* renderVisualPanel(scoring) — Renderiza el panel de 5 ejes
+   y los indicadores de uso, fricciones e impacto. */
 function renderVisualPanel(scoring) {
   var axes = scoring.axes || {};
   var axisMax = {intensity:10,sophistication:10,friction:9,knowledge:5,automation:5};
@@ -1897,6 +1927,9 @@ function renderVisualPanel(scoring) {
   if(impactVal) impactVal.textContent = iLabels[iVal] || '—';
 }
 
+/* renderCharts(scoring) — Genera las 4 gráficas Chart.js
+   (doughnut score, barras uso, fricciones, impacto).
+   Usa CanvasGradient para dar profundidad visual. */
 function renderCharts(scoring){
   var isDark=document.documentElement.getAttribute('data-theme')==='dark';
   var ACCENT=isDark?'#7b7fff':'#1a1aff';
@@ -1907,16 +1940,27 @@ function renderCharts(scoring){
   var MUTED=isDark?'rgba(160,160,192,.6)':'#909098';
   var bf={family:"'DM Sans',sans-serif",size:11};
   var ctx1=document.getElementById('chart-maturity').getContext('2d');
-  new Chart(ctx1,{type:'doughnut',data:{labels:['Score','Restante'],datasets:[{data:[scoring.total,50-scoring.total],backgroundColor:[ACCENT,SOFT],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}},plugins:[{id:'c',afterDraw:function(chart){var ctx=chart.ctx,cx=chart.chartArea.left+(chart.chartArea.right-chart.chartArea.left)/2,cy=chart.chartArea.top+(chart.chartArea.bottom-chart.chartArea.top)/2;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 26px DM Sans,sans-serif';ctx.fillStyle=TEXT;ctx.fillText(scoring.total,cx,cy-8);ctx.font='12px DM Sans,sans-serif';ctx.fillStyle=MUTED;ctx.fillText('de 50',cx,cy+14);ctx.restore();}}]});
+  // Gradiente en doughnut — del acento hacia turquesa, da profundidad visual
+  var grad1=ctx1.createLinearGradient(0,0,200,200);
+  grad1.addColorStop(0,ACCENT);
+  grad1.addColorStop(1,isDark?'#1a6bb5':'#1a5fa8');
+  new Chart(ctx1,{type:'doughnut',data:{labels:['Score','Restante'],datasets:[{data:[scoring.total,50-scoring.total],backgroundColor:[grad1,SOFT],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}},plugins:[{id:'c',afterDraw:function(chart){var ctx=chart.ctx,cx=chart.chartArea.left+(chart.chartArea.right-chart.chartArea.left)/2,cy=chart.chartArea.top+(chart.chartArea.bottom-chart.chartArea.top)/2;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 26px DM Sans,sans-serif';ctx.fillStyle=TEXT;ctx.fillText(scoring.total,cx,cy-8);ctx.font='12px DM Sans,sans-serif';ctx.fillStyle=MUTED;ctx.fillText('de 50',cx,cy+14);ctx.restore();}}]});
   var tLabels=['Redacción','Organización','Análisis','Creativo','Operativo'],tKeys=['Redacción de textos','Organización de información','Análisis o toma de decisiones','Ideas creativas','Resolver problemas operativos'],tData=tKeys.map(function(k){return(multiAnswers[3]||[]).indexOf(k)>-1?1:0;});
   var ctx2=document.getElementById('chart-usage').getContext('2d');
-  new Chart(ctx2,{type:'bar',data:{labels:tLabels,datasets:[{data:tData,backgroundColor:tData.map(function(v){return v?ACCENT:SOFT;}),borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{ticks:{font:bf,color:MUTED},grid:{display:false},border:{display:false}},y:{display:false,max:1.5}}}});
+  // Gradiente vertical en barras activas — da profundidad sin perder legibilidad
+  var grad2=ctx2.createLinearGradient(0,0,0,140);
+  grad2.addColorStop(0,ACCENT);
+  grad2.addColorStop(1,isDark?'#1a6bb5':'#1a5fa8');
+  new Chart(ctx2,{type:'bar',data:{labels:tLabels,datasets:[{data:tData,backgroundColor:tData.map(function(v){return v?grad2:SOFT;}),borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{ticks:{font:bf,color:MUTED},grid:{display:false},border:{display:false}},y:{display:false,max:1.5}}}});
   var fKeys=['Explicar el contexto correctamente','Ajustar el prompt varias veces','Revisar o corregir lo que genera','Encontrar conversaciones anteriores','Organizar la información generada'],fData=fKeys.map(function(k){return(multiAnswers[4]||[]).indexOf(k)>-1?1:0;});
   var ctx3=document.getElementById('chart-friction').getContext('2d');
   new Chart(ctx3,{type:'bar',data:{labels:['Contexto','Prompts','Revisión','Historial','Organizar'],datasets:[{data:fData,backgroundColor:fData.map(function(v){return v?AMBER:SOFT;}),borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{ticks:{font:bf,color:MUTED},grid:{display:false},border:{display:false}},y:{display:false,max:1.5}}}});
   var iMap={'Casi nada':1,'Poco':2,'Bastante':3,'Mucho':4},iVal=iMap[answers.step8]||2;
   var ctx4=document.getElementById('chart-impact').getContext('2d');
-  new Chart(ctx4,{type:'bar',data:{labels:['Casi\nnada','Poco','Bastante','Mucho'],datasets:[{data:[1,2,3,4],backgroundColor:[1,2,3,4].map(function(v){return v===iVal?GREEN:SOFT;}),borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{ticks:{font:bf,color:MUTED},grid:{display:false},border:{display:false}},y:{display:false,max:5}}}});
+  var grad4=ctx4.createLinearGradient(0,0,0,140);
+  grad4.addColorStop(0,GREEN);
+  grad4.addColorStop(1,isDark?'#059669':'#047857');
+  new Chart(ctx4,{type:'bar',data:{labels:['Casi\nnada','Poco','Bastante','Mucho'],datasets:[{data:[1,2,3,4],backgroundColor:[1,2,3,4].map(function(v){return v===iVal?grad4:SOFT;}),borderRadius:6,borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{ticks:{font:bf,color:MUTED},grid:{display:false},border:{display:false}},y:{display:false,max:5}}}});
 }
 
 function downloadJSON(){
@@ -1933,6 +1977,8 @@ function copyDiagnosis(){
   navigator.clipboard.writeText(text).then(function(){showToast('Diagnóstico copiado al portapapeles');}).catch(function(){showToast('Usa el botón de descarga como alternativa');});
 }
 
+/* restartDiagnostic() — Reinicia el formulario desde cero
+   generando nuevo UUID y código de acceso. */
 function restartDiagnostic(){
   currentStep=1;answers={};multiAnswers={3:[],4:[],9:[],12:[]};diagnosis={};
   codigoAcceso=generateCodigo();
