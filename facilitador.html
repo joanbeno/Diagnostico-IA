@@ -1043,6 +1043,69 @@ body{
   color:var(--ink-muted);
   min-width:60px;
 }
+
+/* ── TABLA MÓVIL — scroll horizontal estilo iOS ─────────────
+   Barra fina y redondeada debajo de la tabla.
+   Botón expandir/contraer para ver todas las columnas.
+   ──────────────────────────────────────────────────────────── */
+.table-wrap{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+  /* Scrollbar estilo iOS — fina y elegante */
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.table-wrap::-webkit-scrollbar{
+  height:4px;
+}
+.table-wrap::-webkit-scrollbar-track{
+  background:transparent;
+  border-radius:100px;
+}
+.table-wrap::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:100px;
+}
+.table-wrap::-webkit-scrollbar-thumb:hover{
+  background:var(--ink-muted);
+}
+/* Botón expandir tabla */
+.table-expand-btn{
+  display:none;
+  align-items:center;
+  gap:6px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--ink-muted);
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:4px 12px;
+  cursor:pointer;
+  margin-bottom:8px;
+  transition:var(--t);
+  -webkit-tap-highlight-color:transparent;
+}
+.table-expand-btn:hover{
+  background:var(--accent-bg);
+  color:var(--accent);
+  border-color:var(--accent);
+}
+/* En móvil mostrar el botón */
+@media(max-width:768px){
+  .table-expand-btn{ display:inline-flex }
+  /* Tabla contraída: columnas principales solo */
+  .table-wrap:not(.expanded) th.col-optional,
+  .table-wrap:not(.expanded) td.col-optional{
+    display:none;
+  }
+  /* Tabla expandida: todas las columnas */
+  .table-wrap.expanded th.col-optional,
+  .table-wrap.expanded td.col-optional{
+    display:table-cell;
+  }
+}
 </style>
 </head>
 <body>
@@ -1335,7 +1398,15 @@ body{
     <!-- TABLA -->
     <div class="section-label" style="margin-bottom:10px">Respuestas individuales <span id="table-count-tag" style="font-weight:400;letter-spacing:0;text-transform:none;color:var(--ink-muted)"></span></div>
     <div class="table-card">
-      <div class="table-wrap">
+      <!-- Botón expandir/contraer tabla en móvil -->
+      <button class="table-expand-btn" id="table-expand-btn" onclick="toggleTableExpand()">
+        <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2">
+          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
+        </svg>
+        <span id="expand-label">Ver todas las columnas</span>
+      </button>
+      <div class="table-wrap" id="table-wrap">
         <table>
           <thead>
             <tr>
@@ -1345,8 +1416,8 @@ body{
               <th>Perfil</th>
               <th>Nivel</th>
               <th>Score</th>
-              <th>Fricciones</th>
-              <th>GPTs usados</th>
+              <th class="col-optional">Fricciones</th>
+              <th class="col-optional">GPTs usados</th>
               <th>Estado</th>
               <th></th>
             </tr>
@@ -2145,10 +2216,15 @@ function renderTable() {
     var horaStr   = "—";
     if(ts){
       try{
+        // El Sheet puede enviar timestamp como string ISO, string legible
+        // o número (ms epoch). new Date() maneja los tres casos.
         var d = new Date(ts);
-        fechaCorta = (d.getDate()+"").padStart(2,"0")+"/"+(d.getMonth()+1+"").padStart(2,"0");
-        fechaLarga = d.toLocaleDateString("es-CO",{day:"2-digit",month:"long",year:"numeric"});
-        horaStr    = d.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+        // Validar que la fecha sea razonable (año > 2020)
+        if(!isNaN(d.getTime()) && d.getFullYear() > 2020){
+          fechaCorta = (d.getDate()+"").padStart(2,"0")+"/"+(d.getMonth()+1+"").padStart(2,"0");
+          fechaLarga = d.toLocaleDateString("es-CO",{day:"2-digit",month:"long",year:"numeric"});
+          horaStr    = d.toLocaleTimeString("es-CO",{hour:"2-digit",minute:"2-digit"});
+        }
       }catch(e){}
     }
     var popId = "fpop-"+(i+1);
@@ -2156,7 +2232,7 @@ function renderTable() {
     html+='<tr class="'+rowClass+'">'
       +'<td style="color:var(--ink-muted);font-size:12px">'+(i+1)+'</td>'
       // Fecha chip — click abre popover con detalle completo
-      +'<td><div class="fecha-chip" onclick="toggleFechaPopover(\"'+popId+'\")" >'+fechaCorta
+      +'<td><div class="fecha-chip" onclick="toggleFechaPopover(event,\"'+popId+'\")" >'+fechaCorta
         +'<div class="fecha-popover" id="'+popId+'">'
           +'<div class="fecha-popover-row"><span class="fecha-popover-label">Fecha</span>'+fechaLarga+'</div>'
           +'<div class="fecha-popover-row"><span class="fecha-popover-label">Hora</span>'+horaStr+'</div>'
@@ -2167,9 +2243,14 @@ function renderTable() {
       +'<td><strong>'+(row.area_trabajo||"—")+'</strong></td>'
       +'<td><span class="tag tag-'+profile+'">'+(row.perfil_usuario||"—")+'</span></td>'
       +'<td><span class="tag tag-nivel">'+(row.nivel_madurez_ia||"—").split(" — ")[0]+'</span></td>'
-      +'<td><strong>'+(row.score_total||"—")+'</strong><span style="color:var(--ink-muted);font-size:11px"> /50</span></td>'
-      +'<td style="font-size:12px;color:var(--ink-soft);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(row.friccion_principal||"—")+'</td>'
-      +'<td style="font-size:12px;color:var(--ink-soft);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(row.gpt_preferido||"—")+'</td>'
+      +'<td><strong>'+(
+  // Validar que score sea 0-50. Si es mayor, probable error de columna.
+  parseFloat(row.score_total) >= 0 && parseFloat(row.score_total) <= 50
+    ? row.score_total
+    : "—"
+)+'</strong><span style="color:var(--ink-muted);font-size:11px"> /50</span></td>'
+      +'<td class="col-optional" style="font-size:12px;color:var(--ink-soft);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(row.friccion_principal||"—")+'</td>'
+      +'<td class="col-optional" style="font-size:12px;color:var(--ink-soft);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+(row.gpt_preferido||"—")+'</td>'
       +'<td>'
         +'<button class="test-toggle '+(isPrueba?"prueba":"real")+'" onclick="toggleTest('+(i)+',this)">'
         +(isPrueba?'Prueba':'Real')
@@ -2328,11 +2409,29 @@ function applyPendingChanges(){
    Se cierra también al hacer click fuera (via document listener). */
 /* toggleFechaPopover(id) — Abre/cierra el popover de detalle
    de fecha en la tabla (fecha completa, hora, dispositivo, navegador). */
-function toggleFechaPopover(id){
+
+/* toggleTableExpand()
+   Expande o contrae la tabla en móvil.
+   Muestra/oculta columnas opcionales (fricciones, GPTs).
+   Actualiza el label del botón. */
+function toggleTableExpand(){
+  var wrap = document.getElementById("table-wrap");
+  var btn  = document.getElementById("expand-label");
+  if(!wrap) return;
+  var isExpanded = wrap.classList.contains("expanded");
+  wrap.classList.toggle("expanded");
+  if(btn) btn.textContent = isExpanded ? "Ver todas las columnas" : "Contraer tabla";
+}
+
+/* toggleFechaPopover(e, id)
+   Abre/cierra el popover de detalle de fecha.
+   e.stopPropagation() evita que el document listener lo cierre
+   inmediatamente — compatible con iOS Safari y Android Chrome. */
+function toggleFechaPopover(e, id){
+  if(e && e.stopPropagation) e.stopPropagation();
   var pop = document.getElementById(id);
   if(!pop) return;
   var isOpen = pop.classList.contains("show");
-  // Cerrar todos los popovers de fecha abiertos
   document.querySelectorAll(".fecha-popover.show").forEach(function(p){
     p.classList.remove("show");
   });
