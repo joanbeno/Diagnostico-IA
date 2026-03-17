@@ -26,7 +26,7 @@
   --purple:#5b21b6;--purple-bg:#f3f0ff;
   --surface-inv:#0d0d18;
   --radius:12px;--radius-sm:6px;--radius-xs:4px;
-  --shadow:0 1px 3px rgba(0,0,0,.05),0 2px 8px rgba(0,0,0,.04);
+  --shadow:0 1px 4px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.07);
   --t:.2s cubic-bezier(.4,0,.2,1);
 }
 /* MODO OSCURO */
@@ -62,52 +62,14 @@
 .with-pattern::before {
   content:'';
   position:absolute;inset:0;border-radius:inherit;
-  background-size:48px 48px;
+  background-size:22px 22px;
   opacity:var(--pat-op);
   pointer-events:none;z-index:0;
 }
 
-/* Capa 2: shimmer suave — barrido diagonal muy lento */
-.with-pattern::after {
-  content:'';
-  position:absolute;
-  top:-20%;left:-120%;
-  width:40%;height:140%;
-  background:linear-gradient(
-    112deg,
-    transparent 0%,
-    rgba(255,255,255,.0) 35%,
-    rgba(255,255,255,.055) 50%,
-    rgba(255,255,255,.0) 65%,
-    transparent 100%
-  );
-  animation:shimmer-sweep 9s cubic-bezier(.45,0,.55,1) infinite;
-  animation-delay:2s;
-  pointer-events:none;z-index:0;
-  will-change:transform;
-}
-
-@keyframes shimmer-sweep {
-  0%   { transform:translateX(0);    opacity:0 }
-  8%   { opacity:1 }
-  92%  { opacity:1 }
-  100% { transform:translateX(560%); opacity:0 }
-}
-
-/* Fondos claros usan SVG oscuro */
-.with-pattern.light-bg::before {
-}
-/* En fondos claros el shimmer es aún más sutil */
-.with-pattern.light-bg::after {
-  background:linear-gradient(
-    112deg,
-    transparent 0%,
-    rgba(0,0,0,.0) 35%,
-    rgba(0,0,0,.02) 50%,
-    rgba(0,0,0,.0) 65%,
-    transparent 100%
-  );
-}
+/* Shimmer eliminado — animación no motivada por interacción.
+   Se conserva ::before (patrón de nodos estático). */
+.with-pattern::after { content:none }
 
 .with-pattern > * { position:relative;z-index:1 }
 
@@ -207,7 +169,7 @@ body{
   min-height:100vh;
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
-  background-size:48px 48px;
+  background-size:22px 22px;
 }
 
 
@@ -299,11 +261,11 @@ body{
 
 /* TOOL CARDS */
 .tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow)}
+.tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);transition:box-shadow var(--t)}
 .tool-tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;margin-bottom:6px;letter-spacing:.04em}
-.tag-ent{background:var(--accent-bg);color:var(--accent)}
-.tag-con{background:var(--amber-bg);color:var(--amber)}
-.tag-adv{background:var(--purple-bg);color:var(--purple)}
+.tag-ent{background:rgba(53,53,204,.18);color:var(--accent);border:1px solid rgba(53,53,204,.25)}
+.tag-con{background:rgba(146,101,10,.18);color:var(--amber);border:1px solid rgba(146,101,10,.25)}
+.tag-adv{background:rgba(91,33,182,.18);color:var(--purple);border:1px solid rgba(91,33,182,.25)}
 .tool-name{font-size:14px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .tool-what{font-size:11px;color:var(--ink-muted);margin-bottom:6px}
 .tool-impact{font-size:12px;color:var(--ink-soft);line-height:1.5}
@@ -429,8 +391,8 @@ body{
 
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 22px;border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer;border:none;transition:var(--t);white-space:nowrap;user-select:none}
-.btn-primary{background:var(--accent);color:#fff}
-.btn-primary:hover{background:var(--accent-2);transform:translateY(-1px)}
+.btn-primary{background:linear-gradient(135deg,var(--accent) 0%,var(--accent) 100%);color:#fff;transition:background .3s ease,transform .2s ease}
+.btn-primary:hover{background:linear-gradient(135deg,var(--accent) 0%,#1a6bb5 100%);transform:translateY(-1px);box-shadow:0 4px 16px rgba(26,26,255,.2)}
 .btn-ghost{background:transparent;color:var(--ink-soft);border:1px solid var(--border)}
 .btn-ghost:hover{background:var(--bg);color:var(--ink)}
 .btn-sm{padding:8px 16px;font-size:13px}
@@ -527,24 +489,13 @@ body{
   position:relative;
   overflow:hidden;
 }
-.mod-header-shimmer::after{
-  content:'';
-  position:absolute;
-  top:-20%;left:-120%;
-  width:35%;height:140%;
-  background:linear-gradient(
-    112deg,
-    transparent 0%,
-    rgba(255,255,255,0) 35%,
-    rgba(255,255,255,.045) 50%,
-    rgba(255,255,255,0) 65%,
-    transparent 100%
-  );
-  animation:shimmer-sweep 11s cubic-bezier(.45,0,.55,1) infinite;
-  animation-delay:3s;
-  pointer-events:none;
-  will-change:transform;
-}
+/* Shimmer de mod-header eliminado — animación no motivada */
+.mod-header-shimmer::after{ content:none }
+
+/* Badges en dark mode — más visibles sobre fondos oscuros */
+:root[data-theme="dark"] .tag-ent{background:rgba(123,127,255,.2);color:var(--accent);border-color:rgba(123,127,255,.3)}
+:root[data-theme="dark"] .tag-con{background:rgba(251,191,36,.15);color:var(--amber);border-color:rgba(251,191,36,.25)}
+:root[data-theme="dark"] .tag-adv{background:rgba(167,139,250,.15);color:var(--purple);border-color:rgba(167,139,250,.25)}
 </style>
 </head>
 <body>
@@ -889,6 +840,37 @@ body{
 </button>
 
 <script>
+/* ═══════════════════════════════════════════════════════════════════
+   GUIA.HTML — Guía de Adopción IA · ML Studio × IAsolutions
+   ═══════════════════════════════════════════════════════════════════
+   PROPÓSITO: Guía interactiva de 8 módulos para capacitar al equipo
+   de ML Studio en el uso de ChatGPT Enterprise.
+
+   ESTRUCTURA DE MÓDULOS:
+     gs-0  — Pantalla de inicio con grid de módulos y campo de código
+     gs-1  — Cómo hacer un buen prompt
+     gs-2  — Iniciar un chat efectivo
+     gs-3  — Proyectos en ChatGPT
+     gs-4  — GPT interno vs general
+     gs-5  — Herramientas Enterprise
+     gs-6  — Conectores y automatización
+     gs-7  — Preguntas frecuentes
+     gs-8  — Diagnóstico personalizado (requiere código ML-XXXX)
+
+   MÓDULO 8 — Personalización:
+     El usuario ingresa su código ML-XXXX → se consulta el Sheet →
+     se renderizan contenidos adaptados a su perfil, nivel y área.
+     Al final aparecen módulos "Por curiosidad" (colapsados) con
+     el contenido que el algoritmo no seleccionó como prioritario.
+
+   VARIABLES DE CONFIGURACIÓN:
+     SCRIPT_URL  — Endpoint Google Apps Script (lookup por código)
+     WA_NUMBER   — Número WhatsApp del asesor
+
+   DEPENDENCIAS: ninguna (CSS + JS vanilla)
+   AUTOR: Joan Nicolas Benavides · IAsolutions
+   ═══════════════════════════════════════════════════════════════ */
+
 var SCRIPT_URL="https://script.google.com/macros/s/AKfycbxZd9u3ijKqlSHzv-AjpZf3hgaHzxLYwmshhRFyJA6EkbcBWyWlJ-N_tdFMrFuQvW0sUQ/exec";
 var WA="573124365854";
 var TOTAL=8;
@@ -899,6 +881,8 @@ var foundData=null;
 var TITLES={1:"Cómo hacer un buen prompt",2:"Iniciar un chat efectivo",3:"Proyectos en ChatGPT",4:"GPT interno vs general",5:"Herramientas Enterprise",6:"Conectores y automatización",7:"Preguntas frecuentes",8:"Tu diagnóstico personalizado"};
 
 // ── NAVIGATION ────────────────────────────────────────────
+/* toggleBook(id) — Abre/cierra acordeón de módulo prioritario
+   en el módulo 8. Un libro a la vez. */
 function toggleBook(id){
   var el=document.getElementById(id);
   if(!el)return;
@@ -911,6 +895,9 @@ function toggleBook(id){
 // Track origin module for back navigation
 var prevModule = 0;
 
+/* goTo(n, fromDiag)
+   Navega al módulo n. Si fromDiag=true viene del módulo 8
+   y activa el banner "Volver a tu diagnóstico" en el módulo destino. */
 function goTo(n, fromDiag){
   document.getElementById("gs-"+current).classList.remove("active");
   var prev = current;
@@ -938,6 +925,8 @@ function goTo(n, fromDiag){
   }
 }
 
+/* goBackToDiag() — Regresa al módulo 8 desde cualquier módulo
+   al que se llegó desde el diagnóstico personalizado. */
 function goBackToDiag(){
   prevModule = 0;
   goTo(8);
@@ -946,7 +935,10 @@ function goBackToDiag(){
   if(res && !res.classList.contains("show")) res.classList.add("show");
 }
 function nextScreen(){if(current<TOTAL)goTo(current+1);}
+/* prevScreen() / nextScreen() — Navegan entre módulos. */
 function prevScreen(){if(current>1)goTo(current-1);}
+/* updateNav() — Actualiza la barra de navegación inferior:
+   progreso, título del módulo, botones Anterior/Siguiente. */
 function updateNav(){
   var nav=document.getElementById("guide-nav"),wa=document.getElementById("wa-float");
   if(current===0){nav.style.display="none";wa.style.display="none";return;}
@@ -979,6 +971,8 @@ function waPersonal(){
 }
 
 // ── LOOKUP ────────────────────────────────────────────────
+/* lookupIntro() — Busca el diagnóstico por código en la pantalla de inicio.
+   Si lo encuentra navega directo al módulo 8 con los datos. */
 function lookupIntro(){
   var code=document.getElementById("intro-code").value.trim().toUpperCase();
   var err=document.getElementById("intro-err");
@@ -1017,6 +1011,9 @@ function lookupMain(){
     res.classList.add("show");
   });
 }
+/* fetchDiag(code, onSuccess, onError)
+   Consulta el Apps Script por el código ML-XXXX.
+   En modo demo carga datos hardcodeados sin red. */
 function fetchDiag(code,cb){
   // ── Código de demo — datos hardcodeados, no va al Sheet ──
   if(code.toUpperCase()==="ML-DEMO"){
@@ -1061,6 +1058,9 @@ function fetchDiag(code,cb){
 }
 
 // ── RENDER RESULTADOS PERSONALES ─────────────────────────
+/* fillPersonalResult(d)
+   Puebla el perfil del usuario en el módulo 8:
+   perfil, nivel, score, área, GPT, fricción, automatización. */
 function fillPersonalResult(d){
   // 1. Mostrar contenedor PRIMERO
   var res=document.getElementById("personal-result");
@@ -1089,6 +1089,8 @@ function fillPersonalResult(d){
 }
 
 // ── PLAN POR PERFIL + NIVEL ───────────────────────────────
+/* renderPlan(d) — Genera el plan de acción de 3 semanas
+   personalizado según nivel, fricción y área del usuario. */
 function renderPlan(d){
   var perfil = d.perfil_usuario||"";
   var nivel  = parseInt((d.nivel_madurez_ia||"1").replace(/\D/g,'').charAt(0))||1;
@@ -1208,6 +1210,8 @@ function renderPlan(d){
 
 // ── INSIGHT PERSONALIZADO POR FRICCION ────────────────────
 // Conecta las fricciones del diagnóstico con el contenido de los modulos
+/* renderInsight(d) — Genera el insight diagnóstico:
+   por qué tiene esa fricción, instrucción de Proyecto por área. */
 function renderInsight(d){
   var friccion = d.friccion_principal||"";
   var org      = d.organizacion_conocimiento||"";
@@ -1342,6 +1346,11 @@ function renderInsight(d){
      repeticion_contexto, organizacion_conocimiento, uso_gpts,
      automatizacion_deseada, area_trabajo, frecuencia_uso_ia
    ═════════════════════════════════════════════════════════════════ */
+/* renderModulosPersonalizados(d)
+   Función principal del módulo 8. Genera dos bloques:
+   1. modulos[]          — Prioritarios, expandidos, header oscuro
+   2. modulosOpcionales[] — "Por curiosidad", colapsados, header gris
+   Lógica de gating: nivel, fricción, repetición, GPTs, automatización. */
 function renderModulosPersonalizados(d){
   var el=document.getElementById("modules-wrap");
   if(!el)return;
@@ -1771,6 +1780,8 @@ function copiarPrompt(btnId, texto){
 }
 
 // Lee el texto de un elemento del DOM — evita problemás de escaping en onclick
+/* copiarTextoElemento(id, btnId) — Copia al portapapeles
+   el texto del elemento con id y actualiza el botón. */
 function copiarTextoElemento(elId, btnId){
   var el=document.getElementById(elId);
   var texto=el?el.textContent||el.innerText:"";
@@ -1829,6 +1840,8 @@ var TEMPLATES={
   }
 };
 
+/* renderTemplate(d) — Muestra la plantilla de prompt copiable
+   adaptada al área y perfil del usuario. */
 function renderTemplate(d){
   var area=d.area_trabajo||"";
   var tmpl=TEMPLATES[area];
@@ -1866,6 +1879,8 @@ function renderTemplate(d){
 }
 
 // ── CAMINOS (solo Direccion/Gerencia) ─────────────────────
+/* renderCaminos(d) — Muestra los siguientes pasos recomendados
+   según el nivel de madurez detectado. */
 function renderCaminos(d){
   var area=d.area_trabajo||"";
   if(area!=="Direccion / Gerencia"){document.getElementById("caminos-wrap").innerHTML="";return;}
@@ -1943,6 +1958,9 @@ var MOD_PREVIEW = {
 
 var popTarget = null; // número de módulo activo
 
+/* openPopover(modNum, triggerEl, e)
+   Muestra el popover de preview de un módulo.
+   Posicionamiento diferenciado móvil/desktop. */
 function openPopover(modNum, triggerEl, e) {
   if (e) e.stopPropagation();
   var mod = MOD_PREVIEW[modNum];
@@ -2004,6 +2022,7 @@ function openPopover(modNum, triggerEl, e) {
   popTarget = modNum;
 }
 
+/* closePopover() — Cierra el popover de preview activo. */
 function closePopover() {
   var pop = document.getElementById("mod-popover");
   pop.classList.remove("show");
@@ -2032,6 +2051,8 @@ function detectModRef(texto) {
 }
 
 // Genera el HTML del campo accion — link con popover si hay módulo, texto plano si no
+/* renderAccion(texto) — Renderiza un bloque de acción.
+   Detecta referencias a módulos y genera botón con popover. */
 function renderAccion(texto) {
   var modNum = detectModRef(texto);
   if (modNum && MOD_PREVIEW[modNum]) {
