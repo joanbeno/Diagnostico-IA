@@ -203,7 +203,7 @@ body{
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 /* CONTENT */
-.guide-content{max-width:740px;margin:0 auto;width:100%;padding:44px 28px 120px}
+.guide-content{max-width:880px;margin:0 auto;width:100%;padding:44px 20px 120px}
 
 /* TYPOGRAPHY */
 .guide-badge{display:inline-flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border);color:var(--ink-muted);font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:4px 12px;border-radius:100px;margin-bottom:16px}
@@ -496,6 +496,154 @@ body{
 :root[data-theme="dark"] .tag-ent{background:rgba(123,127,255,.2);color:var(--accent);border-color:rgba(123,127,255,.3)}
 :root[data-theme="dark"] .tag-con{background:rgba(251,191,36,.15);color:var(--amber);border-color:rgba(251,191,36,.25)}
 :root[data-theme="dark"] .tag-adv{background:rgba(167,139,250,.15);color:var(--purple);border-color:rgba(167,139,250,.25)}
+
+/* Hipervínculo "completa el diagnóstico" — azul con saltito al hover */
+.diag-link{
+  color:var(--accent);
+  font-weight:600;
+  text-decoration:underline;
+  text-underline-offset:2px;
+  transition:transform .2s cubic-bezier(.34,1.56,.64,1), color .2s ease;
+  display:inline-block;
+}
+.diag-link:hover{
+  transform:translateY(-2px);
+  color:var(--accent-2);
+}
+
+/* ── STICKY SIDEBAR MÓDULO 8 — solo desktop ─────────────────
+   Al cargar: perfil centrado full-width.
+   Al hacer scroll: perfil sticky a la izquierda,
+   contenido principal a la derecha.
+   En móvil: todo apilado sin sidebar.
+   ──────────────────────────────────────────────────────────── */
+@media(min-width:769px){
+  /* Contenedor que divide sidebar + main */
+  .personal-result.show{
+    display:grid !important;
+    grid-template-columns:260px 1fr;
+    gap:24px;
+    align-items:start;
+  }
+  /* Sidebar — sticky */
+  .pr-sidebar{
+    position:sticky;
+    top:72px; /* debajo del topbar */
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:20px;
+    box-shadow:var(--shadow);
+  }
+  /* Ocultar el pr-header y pr-data-grid originales en desktop
+     — los reemplaza el sidebar */
+  .pr-header-original{ display:none }
+  .pr-data-grid{ display:none !important }
+  /* Contenido principal */
+  .pr-main{ min-width:0 }
+}
+@media(max-width:768px){
+  .pr-sidebar{ display:none }
+  .pr-header-original{ display:block }
+}
+
+/* Círculo de score en sidebar */
+.pr-score-circle{
+  width:72px;height:72px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent) 0%,#1a6bb5 100%);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  margin:0 auto 16px;
+  box-shadow:0 4px 16px rgba(53,53,204,.25);
+}
+.pr-score-circle-num{
+  font-family:"DM Serif Display",serif;
+  font-size:22px;color:#fff;line-height:1;
+}
+.pr-score-circle-label{
+  font-size:9px;color:rgba(255,255,255,.7);
+  font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;margin-top:2px;
+}
+.pr-sidebar-profile{
+  font-family:"DM Serif Display",serif;
+  font-size:20px;color:var(--accent);
+  text-align:center;margin-bottom:4px;line-height:1.2;
+}
+.pr-sidebar-level{
+  font-size:11px;color:var(--ink-muted);
+  text-align:center;margin-bottom:16px;
+}
+.pr-sidebar-divider{
+  height:1px;background:var(--border);margin:12px 0;
+}
+.pr-sidebar-row{
+  margin-bottom:12px;
+}
+.pr-sidebar-label{
+  font-size:9px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-muted);margin-bottom:3px;
+}
+.pr-sidebar-value{
+  font-size:12px;color:var(--ink-soft);line-height:1.5;
+}
+
+/* ── ANIMACIÓN DE ENTRADA — pantalla inicio guía ────────────
+   Fade-in + translateY, escalonado, una sola vez al cargar.
+   ──────────────────────────────────────────────────────────── */
+@keyframes enterUp{
+  from{opacity:0;transform:translateY(18px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.anim-enter{
+  opacity:0;
+  animation:enterUp .55s cubic-bezier(.22,1,.36,1) both;
+}
+.anim-enter:nth-child(1){animation-delay:.05s}
+.anim-enter:nth-child(2){animation-delay:.15s}
+.anim-enter:nth-child(3){animation-delay:.25s}
+.anim-enter:nth-child(4){animation-delay:.35s}
+.anim-enter:nth-child(5){animation-delay:.42s}
+.anim-enter:nth-child(6){animation-delay:.48s}
+
+/* ── WATERMARK IASOLUTIONS — pie de módulo en guía ─────────
+   Aparece al final del contenido de cada módulo.
+   Discreto, no fijo — parte del flujo del contenido.
+   ──────────────────────────────────────────────────────────── */
+.ia-watermark{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:24px 0 8px;
+  opacity:.35;
+  margin-top:8px;
+}
+.ia-watermark .ia-wordmark{
+  font-family:"DM Serif Display",serif;
+  font-size:12px;
+  font-style:italic;
+  color:var(--accent);
+}
+.ia-watermark .ia-wordmark span{
+  font-family:"DM Sans",sans-serif;
+  font-style:normal;
+  font-size:10px;
+  font-weight:600;
+  color:var(--ink-muted);
+}
+.ia-watermark .ia-name{
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+  color:var(--ink-muted);
+}
+.ia-watermark .ia-divider-v{
+  width:1px;height:14px;
+  background:var(--border);
+}
 </style>
 </head>
 <body>
@@ -527,8 +675,8 @@ body{
 <!-- GS0: INTRO -->
 <div class="gscreen active" id="gs-0">
 <div class="intro-wrap">
-  <div class="intro-badge">ML Studio &nbsp;·&nbsp; IAsolutions</div>
-  <h1 class="intro-title">Tu guia practica de<br/><em>Inteligencia Artificial</em></h1>
+  <div class="intro-badge anim-enter">ML Studio &nbsp;·&nbsp; IAsolutions</div>
+  <h1 class="intro-title anim-enter">Tu guia practica de<br/><em>Inteligencia Artificial</em></h1>
   <p class="intro-desc">Todo lo que necesitas para aprovechar mejor las herramientas de IA que ya tienes. Explicado con ejemplos reales de tu trabajo.</p>
 
   <div class="code-block">
@@ -537,7 +685,7 @@ body{
       <input class="code-input" id="intro-code" placeholder="ML-XXXX" maxlength="7" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')lookupIntro()"/>
       <button class="btn btn-primary btn-sm" onclick="lookupIntro()">Ver mis resultados</button>
     </div>
-    <div class="code-desc">Tu codigo es personal. Si no lo tienes, completa el diagnostico primero.</div>
+    <div class="code-desc">Tu codigo es personal. Si no lo tienes, <a href="https://joanbeno.github.io/Diagnostico-IA/" class="diag-link">completa el diagnóstico</a> primero.</div>
     <div class="lookup-error" id="intro-err">Codigo no encontrado. Verifica que este bien escrito (ej: ML-4B2X).</div>
     <div class="lookup-spinner" id="intro-spin"><div class="spin-sm"></div>Buscando...</div>
   </div>
@@ -773,7 +921,7 @@ body{
   <h1 class="guide-title">Tu diagnostico<br/><em>personalizado</em></h1>
   <p class="guide-subtitle">Ingresa tu codigo para ver tu perfil, tu plan de accion y las plantillas especificas para tu area. Solo compartelo con tu asesor.</p>
 
-  <div class="lookup-wrap">
+  <div class="lookup-wrap anim-enter">
     <div class="card-label">Ingresa tu codigo</div>
     <div class="lookup-row">
       <input class="lookup-input" id="main-code" placeholder="ML-XXXX" maxlength="7" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')lookupMain()"/>
@@ -784,33 +932,79 @@ body{
 
     <div class="personal-result" id="personal-result">
 
-      <div class="pr-header">
-        <div><div class="pr-profile" id="pr-profile">-</div><div class="pr-level" id="pr-level">-</div><div class="pr-score" id="pr-score">-</div></div>
+      <!-- SIDEBAR (solo desktop) — perfil sticky a la izquierda -->
+      <div class="pr-sidebar" id="pr-sidebar">
+        <!-- Círculo de score -->
+        <div class="pr-score-circle" id="pr-score-circle">
+          <span class="pr-score-circle-num" id="pr-score-num">-</span>
+          <span class="pr-score-circle-label">/ 50</span>
+        </div>
+        <!-- Perfil y nivel -->
+        <div class="pr-sidebar-profile" id="pr-sidebar-profile">-</div>
+        <div class="pr-sidebar-level" id="pr-sidebar-level">-</div>
+        <div class="pr-sidebar-divider"></div>
+        <!-- Datos clave -->
+        <div class="pr-sidebar-row">
+          <div class="pr-sidebar-label">Área</div>
+          <div class="pr-sidebar-value" id="pr-sidebar-area">-</div>
+        </div>
+        <div class="pr-sidebar-row">
+          <div class="pr-sidebar-label">GPT que más usas</div>
+          <div class="pr-sidebar-value" id="pr-sidebar-gpt">-</div>
+        </div>
+        <div class="pr-sidebar-row">
+          <div class="pr-sidebar-label">Fricción principal</div>
+          <div class="pr-sidebar-value" id="pr-sidebar-friccion">-</div>
+        </div>
+        <div class="pr-sidebar-row">
+          <div class="pr-sidebar-label">Quieres automatizar</div>
+          <div class="pr-sidebar-value" id="pr-sidebar-auto">-</div>
+        </div>
+        <div class="pr-sidebar-divider"></div>
+        <div class="pr-sidebar-row">
+          <div class="pr-sidebar-label">Si la IA pudiera ahorrarte tiempo</div>
+          <div class="pr-sidebar-value" id="pr-sidebar-open1">-</div>
+        </div>
       </div>
-      <!-- Datos del diagnostico -->
-      <div class="pr-data-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-        <div class="pr-section"><div class="pr-section-label">Area</div><div class="pr-section-value" id="pr-area">-</div></div>
-        <div class="pr-section"><div class="pr-section-label">GPT que mas usas</div><div class="pr-section-value" id="pr-gpt">-</div></div>
-        <div class="pr-section"><div class="pr-section-label">Friccion principal</div><div class="pr-section-value" id="pr-friccion">-</div></div>
-        <div class="pr-section"><div class="pr-section-label">Quieres automatizar</div><div class="pr-section-value" id="pr-auto">-</div></div>
-        <div class="pr-section" style="grid-column:1/-1"><div class="pr-section-label">Si la IA pudiera ahorrarte tiempo en una cosa</div><div class="pr-section-value" id="pr-open1">-</div></div>
-      </div>
-      <!-- Plan personalizado -->
-      <div class="plan-wrap with-pattern" id="plan-wrap"></div>
-      <!-- Insight personalizado -->
-      <div id="insight-wrap" style="margin-top:14px"></div>
-      <!-- Plantilla personalizada -->
-      <div id="template-wrap"></div>
-      <!-- Caminos (solo para Direccion/Gerencia) -->
-      <div id="caminos-wrap"></div>
-      <!-- Modulos personalizados 1-7 -->
-      <div id="modules-wrap"></div>
-      <!-- CTA WhatsApp -->
-      <div style="margin-top:16px">
-        <button onclick="waPersonal()" style="display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t)">
-          <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
-          Hablar con mi asesor sobre este diagnostico
-        </button>
+
+      <!-- MAIN — contenido principal (plan, módulos, etc.) -->
+      <div class="pr-main">
+        <!-- Header original — solo visible en móvil -->
+        <div class="pr-header pr-header-original">
+          <div><div class="pr-profile" id="pr-profile">-</div><div class="pr-level" id="pr-level">-</div><div class="pr-score" id="pr-score">-</div></div>
+        </div>
+        <!-- Datos del diagnóstico — solo visible en móvil -->
+        <div class="pr-data-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+          <div class="pr-section"><div class="pr-section-label">Area</div><div class="pr-section-value" id="pr-area">-</div></div>
+          <div class="pr-section"><div class="pr-section-label">GPT que mas usas</div><div class="pr-section-value" id="pr-gpt">-</div></div>
+          <div class="pr-section"><div class="pr-section-label">Friccion principal</div><div class="pr-section-value" id="pr-friccion">-</div></div>
+          <div class="pr-section"><div class="pr-section-label">Quieres automatizar</div><div class="pr-section-value" id="pr-auto">-</div></div>
+          <div class="pr-section" style="grid-column:1/-1"><div class="pr-section-label">Si la IA pudiera ahorrarte tiempo en una cosa</div><div class="pr-section-value" id="pr-open1">-</div></div>
+        </div>
+        <!-- Plan personalizado -->
+        <div class="plan-wrap with-pattern" id="plan-wrap"></div>
+        <!-- Insight personalizado -->
+        <div id="insight-wrap" style="margin-top:14px"></div>
+        <!-- Plantilla personalizada -->
+        <div id="template-wrap"></div>
+        <!-- Caminos -->
+        <div id="caminos-wrap"></div>
+        <!-- Módulos personalizados -->
+        <div id="modules-wrap"></div>
+        <!-- CTA WhatsApp -->
+        <div style="margin-top:16px">
+          <button onclick="waPersonal()" style="display:flex;align-items:center;gap:10px;background:#25D366;color:#fff;border:none;border-radius:var(--radius-sm);padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t)">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:currentColor;flex-shrink:0"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
+            Hablar con mi asesor sobre este diagnostico
+          </button>
+        </div>
+
+        <!-- Watermark IAsolutions — pie del módulo -->
+        <div class="ia-watermark">
+          <div class="ia-wordmark"><em>IA</em><span>solutions</span></div>
+          <div class="ia-divider-v"></div>
+          <div class="ia-name">Joan Nicolas Benavides</div>
+        </div>
       </div>
     </div>
   </div>
@@ -1066,16 +1260,26 @@ function fillPersonalResult(d){
   var res=document.getElementById("personal-result");
   if(res)res.classList.add("show");
 
-  // 2. Datos básicos
+  // 2. Datos básicos — móvil y sidebar desktop
   var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"-";};
+  // Móvil: header original
   set("pr-profile",d.perfil_usuario);
   set("pr-level",d.nivel_madurez_ia);
   set("pr-score","Score: "+(d.score_total||"-")+" / 50");
   set("pr-area",d.area_trabajo);
-  set("pr-gpt",d.gpt_preferido||"No específicado");
+  set("pr-gpt",d.gpt_preferido||"No especificado");
   set("pr-friccion",d.friccion_principal);
   set("pr-auto",d.automatizacion_deseada);
   set("pr-open1",d.respuesta_abierta_1);
+  // Desktop: sidebar sticky
+  set("pr-score-num",d.score_total||"-");
+  set("pr-sidebar-profile",d.perfil_usuario);
+  set("pr-sidebar-level",d.nivel_madurez_ia);
+  set("pr-sidebar-area",d.area_trabajo);
+  set("pr-sidebar-gpt",d.gpt_preferido||"No especificado");
+  set("pr-sidebar-friccion",d.friccion_principal);
+  set("pr-sidebar-auto",d.automatizacion_deseada);
+  set("pr-sidebar-open1",d.respuesta_abierta_1);
 
   // 3. Cada seccion independiente — si una falla no bloquea las demas
   try{ renderPlan(d); }catch(e){ console.error("renderPlan:",e); }
