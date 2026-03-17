@@ -163,6 +163,32 @@
     /* GUIA BUTTON — texto adaptable */
     .guia-text-mobile{display:none}
     .guia-text-desktop{display:inline}
+
+    /* MODO OSCURO */
+    :root[data-theme="dark"]{
+      --ink:#f0f0f5;--ink-soft:#b8b8cc;--ink-muted:#666688;
+      --bg:#0f0f14;--bg-card:#1a1a24;--border:#2a2a38;
+      --accent:#6b7fff;--accent-2:#8b9fff;--accent-bg:#1a1a35;
+      --green:#34d399;--green-bg:#0d2a20;
+      --amber:#fbbf24;--amber-bg:#2a1f00;
+      --red:#f87171;--red-bg:#2a0f0f;
+      --shadow:0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.3);
+      --shadow-lg:0 8px 40px rgba(0,0,0,.4);
+    }
+    :root[data-theme="dark"] .page-loader{background:#0f0f14}
+    :root[data-theme="dark"] .topbar{background:rgba(15,15,20,.95)}
+    :root[data-theme="dark"] .recovery-banner{background:var(--ink)}
+    :root[data-theme="dark"] .score-hero{background:#1a1a24}
+    :root[data-theme="dark"] .option-btn:hover{background:#1a1a35}
+    :root[data-theme="dark"] .step-card{background:#1a1a24}
+    :root[data-theme="dark"] .facilitator-panel{background:#1a1a24}
+    /* Toggle */
+    .theme-toggle{width:32px;height:32px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--t);flex-shrink:0}
+    .theme-toggle:hover{background:var(--border)}
+    .theme-toggle svg{width:15px;height:15px;stroke:var(--ink-muted);fill:none;stroke-width:2}
+    .icon-sun{display:none}.icon-moon{display:block}
+    :root[data-theme="dark"] .icon-sun{display:block}
+    :root[data-theme="dark"] .icon-moon{display:none}
     @media(max-width:640px){
       .guia-text-mobile{display:inline}
       .guia-text-desktop{display:none}
@@ -326,15 +352,25 @@
 
     /* RESPONSIVE */
     @media(max-width:640px){
-      .topbar{padding:0 18px}
-      .form-body{padding:0 18px 80px}
-      .progress-bar-wrap{padding:76px 18px 0}
+      .topbar{padding:0 16px;gap:10px}
+      .topbar-label{display:none}
+      .form-body{padding:0 16px 80px}
+      .progress-bar-wrap{padding:76px 16px 0}
       .profile-strip{grid-template-columns:1fr}
       .charts-grid{grid-template-columns:1fr}
-      .result-section,.export-bar{padding:20px 18px}
-      #screen-results{padding:80px 16px 0}
-      .score-hero{padding:24px;gap:20px}
-      .score-number{font-size:56px}
+      .result-section,.export-bar{padding:18px 16px}
+      #screen-results{padding:80px 14px 0}
+      .score-hero{padding:20px 16px;gap:16px;flex-direction:column}
+      .score-context{order:-1}
+      .gauge-wrap{order:1}
+      .score-number{font-size:48px}
+      .welcome-title{font-size:28px}
+      .welcome-meta{gap:14px}
+      .export-bar{flex-wrap:wrap;gap:8px}
+      .export-bar .btn{flex:1;min-width:0;font-size:12px;padding:8px 10px}
+      .results-header{padding:80px 16px 0}
+      .step-options{gap:8px}
+      .option-btn{padding:12px 14px}
     }
   </style>
 </head>
@@ -365,8 +401,12 @@
     <span id="topbar-logo-fallback" class="topbar-logo-fallback" style="display:none;">ML Studio</span>
     <div class="topbar-divider"></div>
     <span class="topbar-label">Diagnóstico de IA</span>
-    <div class="topbar-right">
+    <div class="topbar-right" style="display:flex;align-items:center;gap:10px">
       <span class="step-counter" id="topbar-step-counter"></span>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Cambiar tema" title="Modo oscuro / claro">
+        <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
     </div>
   </header>
 
@@ -805,6 +845,21 @@
 
 <script>
 // ══ CONFIG — cambia esto para adaptar a otro cliente ══════
+// ── TEMA OSCURO / CLARO ───────────────────────────────────
+(function(){
+  var saved=localStorage.getItem('diag_theme');
+  var prefersDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;
+  var theme=saved||(prefersDark?'dark':'light');
+  if(theme==='dark')document.documentElement.setAttribute('data-theme','dark');
+})();
+function toggleTheme(){
+  var cur=document.documentElement.getAttribute('data-theme');
+  var next=cur==='dark'?'light':'dark';
+  if(next==='dark')document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  localStorage.setItem('diag_theme',next);
+}
+
 var APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbxZd9u3ijKqlSHzv-AjpZf3hgaHzxLYwmshhRFyJA6EkbcBWyWlJ-N_tdFMrFuQvW0sUQ/exec";
 var EMPRESA_NOMBRE ="ML Studio";
 var CODIGO_PREFIJO ="ML";
