@@ -34,7 +34,7 @@
   --border-strong:#c8c8d0;
 
   /* Acento — azul cobalto profundo */
-  --accent:#1a1aff;
+  --accent:#3535cc;
   --accent-2:#0d0dcc;
   --accent-bg:#f0f0ff;
   --accent-dim:rgba(26,26,255,.08);
@@ -235,12 +235,18 @@ body{
   border:1px solid var(--border);
 }
 .status-dot{
-  width:6px;height:6px;
+  width:7px;height:7px;
   border-radius:50%;
   background:var(--green);
-  animation:pulse 2.5s ease-in-out infinite;
+  box-shadow:0 0 0 2px rgba(0,135,90,.25);
+  animation:pulse-green 2s ease-in-out infinite;
+  flex-shrink:0;
 }
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pulse-green{
+  0%,100%{box-shadow:0 0 0 2px rgba(0,135,90,.25)}
+  50%{box-shadow:0 0 0 5px rgba(0,135,90,.0)}
+}
+.refresh-indicator{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--green);font-weight:600}
 
 /* ── TABS ────────────────────────────────────────────────── */
 .tabs-bar{
@@ -1167,6 +1173,10 @@ tbody td{padding:10px 14px;vertical-align:middle}
           <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copiar prompt
         </button>
+        <button class="btn btn-ghost btn-sm" onclick="printPlan()" style="gap:6px">
+          <svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          PDF
+        </button>
         <button class="btn btn-ghost btn-sm" onclick="copyPlan()">
           <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Copiar plan completo
@@ -1796,6 +1806,62 @@ function copyPrompt(){
   var el=document.getElementById("prompt-export");
   if(!el)return;
   navigator.clipboard.writeText(el.textContent).then(function(){showToast("Prompt copiado — pegalo en Claude o ChatGPT");}).catch(function(){showToast("Selecciona el texto y copia manualmente");});
+}
+
+function printPlan(){
+  var empresa=document.getElementById("plan-empresa")?document.getElementById("plan-empresa").textContent:"ML Studio";
+  var total=document.getElementById("plan-total")?document.getElementById("plan-total").textContent:"";
+  var nivel=document.getElementById("plan-nivel")?document.getElementById("plan-nivel").textContent:"";
+  var fecha=new Date().toLocaleDateString("es-CO",{day:"2-digit",month:"long",year:"numeric"});
+  var times=["0 – 10 min","10 – 25 min","25 – 40 min","40 – 55 min","55 – 60 min"];
+  var defaultTitles=["Apertura y contexto","Fricción principal","Herramienta clave","Oportunidad de automatización","Cierre y próximos pasos"];
+
+  var blocosHtml="";
+  for(var i=0;i<=4;i++){
+    var tEl=document.getElementById("bloque-"+i+"-title");
+    var titulo=tEl?tEl.textContent:defaultTitles[i];
+    var cEl=document.getElementById("bloque-"+i);
+    var contenido=cEl?(cEl.value||cEl.textContent):"";
+    contenido=contenido.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    blocosHtml+='<div class="block">'
+      +'<div class="block-header">'
+      +'<span class="block-time">'+times[i]+'</span>'
+      +'<span class="block-title">'+titulo+'</span>'
+      +'</div>'
+      +'<div class="block-body">'+contenido+'</div>'
+      +'</div>';
+  }
+
+  var html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/>'
+    +'<title>Plan de Sesion — '+empresa+'</title>'
+    +'<style>'
+    +'body{font-family:Calibri,Arial,sans-serif;margin:32px 40px;color:#0a0a12;line-height:1.6;font-size:14px}'
+    +'.cover{text-align:center;padding:32px 0 24px;border-bottom:3px solid #8C1C3A;margin-bottom:28px}'
+    +'.cover .company{font-size:13px;color:#6b6b88;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}'
+    +'.cover h1{font-size:26px;font-weight:700;color:#0a0a12;margin-bottom:6px}'
+    +'.cover .meta{font-size:12px;color:#909098}'
+    +'.block{margin-bottom:20px;border:1px solid #e2e2e8;border-radius:8px;overflow:hidden;page-break-inside:avoid}'
+    +'.block-header{background:#0d0d18;color:#fff;padding:10px 16px;display:flex;align-items:center;gap:14px}'
+    +'.block-time{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.35);min-width:80px}'
+    +'.block-title{font-size:14px;font-weight:600}'
+    +'.block-body{padding:14px 16px;font-size:13px;white-space:pre-wrap;color:#3a3a4a;min-height:40px}'
+    +'.footer{margin-top:32px;padding-top:14px;border-top:1px solid #e2e2e8;text-align:center;font-size:10px;color:#c0c0cc;letter-spacing:.08em;text-transform:uppercase}'
+    +'@media print{body{margin:16px 20px}}'
+    +'</style></head><body>'
+    +'<div class="cover">'
+    +'<div class="company">'+empresa+'</div>'
+    +'<h1>Plan de Sesión — Capacitación IA</h1>'
+    +'<div class="meta">'+total+' &nbsp;·&nbsp; Nivel promedio: '+nivel+' &nbsp;·&nbsp; '+fecha+'</div>'
+    +'</div>'
+    +blocosHtml
+    +'<div class="footer">Joan Nicolas Benavides &nbsp;·&nbsp; IAsolutions</div>'
+    +'</body></html>';
+
+  var win=window.open("","_blank","width=820,height=700");
+  if(!win){showToast("Activa las ventanas emergentes para generar el PDF");return;}
+  win.document.write(html);
+  win.document.close();
+  setTimeout(function(){win.print();},500);
 }
 
 function copyPlan(){
