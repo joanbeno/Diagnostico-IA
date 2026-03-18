@@ -1231,13 +1231,38 @@ charset="UTF-8" />
 .access-copy-btn:hover{background:rgba(255,255,255,.15);color:#fff}
 
 @media(max-width:640px){
-  .access-card-body{ gap:12px; align-items:flex-start; }
-  .access-top-row{ flex-wrap:wrap; }
+  /* 2x2: placa|texto / copiar|whatsapp */
+  .access-card-body{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    grid-template-rows:auto auto;
+    gap:8px 12px;
+    align-items:start;
+  }
+  /* A1: placa */
+  .access-plate{ grid-column:1; grid-row:1; align-self:center; }
+  /* B1: texto */
+  .access-right{ display:contents; }
+  .access-top-row{ display:contents; }
+  .access-card-desc{
+    grid-column:2; grid-row:1;
+    font-size:11px; line-height:1.4;
+    align-self:center;
+  }
+  /* A2: copiar */
+  .access-copy-btn{
+    grid-column:1; grid-row:2;
+    padding:7px 12px; font-size:10px;
+    justify-self:stretch; justify-content:center;
+  }
+  /* B2: whatsapp */
+  .access-wa-btn{
+    grid-column:2; grid-row:2;
+    padding:7px 12px; font-size:11px;
+    align-self:stretch; justify-content:center;
+  }
   .access-plate-inner{ padding:10px 12px; }
-  .access-plate-code{ font-size:16px; letter-spacing:.14em; }
-  .access-copy-btn{ padding:6px 12px; font-size:10px; flex-shrink:0; }
-  .access-wa-btn{ padding:8px 12px; font-size:11px; align-self:stretch; }
-  .access-card-desc{ font-size:11px; }
+  .access-plate-code{ font-size:15px; letter-spacing:.14em; }
 }
 
 /* Columna izquierda de la tarjeta — placa + copiar apilados */
