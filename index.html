@@ -1078,6 +1078,12 @@ charset="UTF-8" />
   font-size:13px;
   width:100%;
 }
+@media(min-width:641px){
+  .access-wa-btn{
+    width:66%;
+    align-self:flex-end;  /* pegado al margen derecho */
+  }
+}
 
 /* ── PLACA DE ACCESO — inspirada en composición placa colombiana ────
    Capas: borde metálico exterior → franja → recuadro relieve → fondo
@@ -1226,16 +1232,22 @@ charset="UTF-8" />
   font-size:12px;
 }
 .access-copy-btn{
-  display:inline-flex;align-items:center;gap:5px;
+  display:inline-flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:4px;
   background:rgba(255,255,255,.08);
   color:rgba(255,255,255,.7);
   border:1px solid rgba(255,255,255,.14);
   border-radius:var(--radius-sm);
-  padding:7px 14px;font-size:11px;font-weight:600;
+  padding:10px 14px;
+  font-size:10px;font-weight:600;
   cursor:pointer;font-family:'DM Sans',sans-serif;
   transition:var(--t);white-space:nowrap;
+  min-width:56px;
 }
-.access-copy-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.access-copy-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
 .access-copy-btn:hover{background:rgba(255,255,255,.15);color:#fff}
 
 @media(max-width:640px){
@@ -1252,9 +1264,11 @@ charset="UTF-8" />
   }
   .access-copy-btn{
     grid-column:1; grid-row:2;
+    flex-direction:row;  /* horizontal en móvil */
     padding:7px 12px; font-size:10px;
     width:100%; justify-content:center;
     align-self:start;
+    gap:5px;
   }
   .access-right{
     grid-column:2; grid-row:1/3;
