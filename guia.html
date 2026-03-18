@@ -795,56 +795,12 @@ body{
 }
 
 /* ── ESTADO FLOTANTE — cuando sale a la izquierda ─────────── */
-@media(min-width:769px){
-  .pr-profile-card.floating{
-    position:fixed;
-    top:80px;
-    /* Margen izquierdo del contenedor centrado de 880px */
-    left:max(8px, calc((100vw - 880px) / 2 - 248px - 16px));
-    width:236px;
-    flex-direction:column;
-    align-items:flex-start;
-    gap:12px;
-    padding:16px;
-    animation:slideToLeft .45s cubic-bezier(.22,1,.36,1) both;
-    z-index:80;
-    box-shadow:0 8px 32px rgba(0,0,0,.18);
-  }
-  .pr-profile-card.floating .pr-card-grid{
-    grid-template-columns:1fr;
-    gap:8px;
-  }
-  .pr-profile-card.floating .pr-card-nombre{
-    font-size:20px;
-  }
-  .pr-profile-card.floating .pr-score-ring{
-    width:48px;height:48px;
-  }
-  .pr-profile-card.floating .pr-score-ring-num{
-    font-size:15px;
-  }
+/* floating @media removed */
+
+
 }
 
-@keyframes slideToLeft{
-  from{
-    opacity:.6;
-    transform:translateX(0) scale(1);
-  }
-  to{
-    opacity:1;
-    transform:translateX(0) scale(1);
-  }
-}
 
-/* Spacer para cuando la tarjeta sale — evita salto de layout */
-.pr-card-spacer{
-  display:none;
-  height:0;
-  transition:height .45s cubic-bezier(.22,1,.36,1);
-}
-.pr-card-spacer.active{
-  display:block;
-}
 
 @media(max-width:768px){
   .pr-profile-card.floating{
@@ -853,6 +809,159 @@ body{
     left:auto !important;
     width:auto !important;
     animation:none !important;
+  }
+}
+
+/* ── TARJETA EMERGENTE — aparece en el margen izquierdo ─────────────
+   Cuando el plan entra en el viewport, la tarjeta del perfil
+   emerge con fade+slide en el margen izquierdo del contenedor.
+   Solo en desktop con margen suficiente (min-width: 1100px).
+   ──────────────────────────────────────────────────────────────────── */
+@media(min-width:1248px){
+  .pr-emergent{
+    position:fixed;
+    top:90px;
+    /* Justo a la izquierda del contenedor de 880px + pequeño gap */
+    left:max(4px, calc((100vw - 880px) / 2 - 180px - 12px));
+    width:172px;
+    background:var(--bg-card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    box-shadow:0 4px 24px rgba(0,0,0,.12);
+    z-index:80;
+    /* Estado inicial: invisible */
+    opacity:0;
+    transform:translateX(-16px);
+    pointer-events:none;
+    transition:
+      opacity .5s cubic-bezier(.22,1,.36,1),
+      transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  .pr-emergent.visible{
+    opacity:1;
+    transform:translateX(0);
+    pointer-events:all;
+  }
+  .pr-emergent .pr-card-nombre{
+    font-size:18px;margin-bottom:3px;
+  }
+  .pr-emergent .pr-card-nivel{
+    font-size:11px;margin-bottom:10px;
+  }
+  .pr-emergent .pr-score-ring{
+    width:44px;height:44px;
+  }
+  .pr-emergent .pr-score-ring-num{
+    font-size:14px;
+  }
+  .pr-emergent .pr-card-header{
+    gap:10px;margin-bottom:10px;
+  }
+  .pr-emergent .pr-card-grid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .pr-emergent .pr-card-fric{
+    grid-column:1;grid-row:auto;
+  }
+  .pr-emergent .pr-card-area{
+    grid-column:1;grid-row:auto;
+  }
+  .pr-emergent .pr-card-gpt{
+    grid-column:1;grid-row:auto;
+  }
+  .pr-emergent .pr-card-wide{
+    grid-column:1;
+  }
+  .pr-emergent .pr-card-item-label{
+    font-size:8px;
+  }
+  .pr-emergent .pr-card-item-val{
+    font-size:11px;
+  }
+}
+
+/* Animación de aparición de la tarjeta flotante */
+@keyframes emergeLeft{
+  from{
+    opacity:0;
+    transform:translateX(-16px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+@keyframes hideLeft{
+  from{
+    opacity:1;
+    transform:translateX(0);
+  }
+  to{
+    opacity:0;
+    transform:translateX(-12px);
+  }
+}
+
+/* ── TARJETA FLOTANTE — emerge en margen izquierdo ──────────
+   Cuando el plan entra al viewport, la tarjeta aparece
+   en el margen izquierdo con animación fade+slide.
+   Solo en desktop cuando hay margen suficiente (>1000px).
+   ──────────────────────────────────────────────────────────── */
+@media(min-width:1000px){
+  .pr-profile-card.floating{
+    position:fixed;
+    top:88px;
+    left:max(8px, calc(50vw - 440px - 260px));
+    width:240px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    padding:16px;
+    z-index:80;
+    box-shadow:0 4px 24px rgba(0,0,0,.14);
+    animation:emergeLeft .4s cubic-bezier(.22,1,.36,1) both;
+    border:1px solid var(--border);
+  }
+  .pr-profile-card.floating .pr-card-grid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .pr-profile-card.floating .pr-card-wide{
+    grid-column:1;
+  }
+  .pr-profile-card.floating .pr-card-nombre{
+    font-size:20px;
+  }
+  .pr-profile-card.floating .pr-card-header{
+    gap:10px;
+  }
+  .pr-profile-card.floating .pr-score-ring{
+    width:44px;height:44px;
+  }
+  .pr-profile-card.floating .pr-score-ring-num{
+    font-size:14px;
+  }
+}
+
+@keyframes emergeLeft{
+  from{ opacity:0; transform:translateX(-16px); }
+  to{   opacity:1; transform:translateX(0); }
+}
+
+/* Cuando la tarjeta flota, el spacer toma su lugar */
+.pr-card-spacer.active{
+  display:block;
+}
+
+@media(max-width:999px){
+  .pr-profile-card.floating{
+    position:relative !important;
+    animation:none !important;
+    top:auto !important; left:auto !important;
+    width:auto !important;
+    flex-direction:column !important;
   }
 }
 </style>
@@ -1144,7 +1253,7 @@ body{
     <div class="personal-result" id="personal-result">
 
       <!-- TARJETA DEL PERFIL — full width inicial, flotante al hacer scroll -->
-      <div class="pr-profile-card" id="pr-profile-card">
+      <div class="pr-profile-card pr-emergent" id="pr-profile-card">
         <!-- Fila superior: círculo + título -->
         <div class="pr-card-header">
           <div class="pr-score-ring" id="pr-score-ring">
@@ -1506,12 +1615,19 @@ function fillPersonalResult(d){
       .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
     ringEl.className = "pr-score-ring perf-"+perfSlug2;
   }
-  // Spacer height — guardar para el scroll trigger
-  var card = document.getElementById("pr-profile-card");
-  var spacer = document.getElementById("pr-card-spacer");
-  if(card && spacer){
-    spacer.style.height = card.offsetHeight + "px";
-  }
+  // Poblar tarjeta emergente (margen izquierdo desktop)
+  var perfSlug3 = (d.perfil_usuario||"").toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  set("pr-emergent-score", d.score_total||"-");
+  set("pr-emergent-nombre", d.perfil_usuario||"-");
+  set("pr-emergent-nivel", d.nivel_madurez_ia);
+  set("pr-emergent-area", d.area_trabajo);
+  set("pr-emergent-fric", d.friccion_principal);
+  set("pr-emergent-gpt", d.gpt_preferido||"No especificado");
+  var eRing = document.getElementById("pr-emergent-ring");
+  var eNom  = document.getElementById("pr-emergent-nombre");
+  if(eRing) eRing.className = "pr-score-ring perf-"+perfSlug3;
+  if(eNom)  eNom.className  = "pr-card-nombre perf-"+perfSlug3;
 
   // 3. Cada seccion independiente — si una falla no bloquea las demas
   try{ renderPlan(d); }catch(e){ console.error("renderPlan:",e); }
@@ -2538,39 +2654,38 @@ window.addEventListener("DOMContentLoaded",function(){
    la tarjeta del perfil pasa a floating — sale del recuadro y
    queda fija a la izquierda. El spacer mantiene el layout.
    Solo en desktop (min-width 769px). */
+/* initSidebarScroll()
+   Observa el plan-wrap. Cuando entra en el viewport,
+   la tarjeta emergente aparece en el margen izquierdo
+   con fade + slide. Solo en desktop ≥1100px. */
 function initSidebarScroll(){
-  if(window.innerWidth < 769) return;
-  var lookup  = document.querySelector('.lookup-wrap');
-  var card    = document.getElementById('pr-profile-card');
-  var spacer  = document.getElementById('pr-card-spacer');
-  var result  = document.getElementById('personal-result');
-  if(!lookup || !card || !result) return;
+  if(window.innerWidth < 1100) return;
 
-  // Guardar altura de la tarjeta para el spacer
-  var cardH = card.offsetHeight;
-  if(spacer) spacer.style.height = cardH + "px";
+  var planWrap = document.getElementById('plan-wrap');
+  var emergent = document.getElementById('pr-emergent');
+  if(!planWrap || !emergent) return;
 
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
-      if(!result.classList.contains('show')) return;
-      if(!entry.isIntersecting){
-        // Tarjeta sale del recuadro → flotante a la izquierda
-        card.classList.add('floating');
-        if(spacer) spacer.classList.add('active');
+      if(entry.isIntersecting){
+        emergent.classList.add('visible');
       } else {
-        // Lookup visible → tarjeta vuelve al recuadro
-        card.classList.remove('floating');
-        if(spacer) spacer.classList.remove('active');
+        // Ocultar solo si volvemos arriba completamente
+        var planRect = planWrap.getBoundingClientRect();
+        if(planRect.top > window.innerHeight){
+          emergent.classList.remove('visible');
+        }
       }
     });
-  },{rootMargin:'-64px 0px 0px 0px', threshold:0.1});
+  },{rootMargin:'0px 0px -20% 0px', threshold:0.1});
 
-  observer.observe(lookup);
+  observer.observe(planWrap);
 }
-window.addEventListener('resize',function(){
-  var card = document.getElementById('pr-profile-card');
-  if(card && window.innerWidth < 769){
-    card.classList.remove('floating');
+
+window.addEventListener('resize', function(){
+  var emergent = document.getElementById('pr-emergent');
+  if(emergent && window.innerWidth < 1100){
+    emergent.classList.remove('visible');
   }
 });
 
@@ -2612,5 +2727,33 @@ function toggleOptBook(id){
   </div>
 </div>
 
+
+  <!-- Tarjeta emergente — aparece en margen izquierdo al hacer scroll al plan -->
+  <div class="pr-emergent" id="pr-emergent">
+    <div class="pr-card-header">
+      <div class="pr-score-ring" id="pr-emergent-ring">
+        <span class="pr-score-ring-num" id="pr-emergent-score">-</span>
+        <span class="pr-score-ring-label">/ 50</span>
+      </div>
+      <div class="pr-card-info">
+        <div class="pr-card-nombre" id="pr-emergent-nombre">-</div>
+        <div class="pr-card-nivel" id="pr-emergent-nivel">-</div>
+      </div>
+    </div>
+    <div class="pr-card-grid">
+      <div class="pr-card-area">
+        <div class="pr-card-item-label">Área</div>
+        <div class="pr-card-item-val" id="pr-emergent-area">-</div>
+      </div>
+      <div class="pr-card-fric">
+        <div class="pr-card-item-label">Fricción</div>
+        <div class="pr-card-item-val" id="pr-emergent-fric">-</div>
+      </div>
+      <div class="pr-card-gpt">
+        <div class="pr-card-item-label">GPT</div>
+        <div class="pr-card-item-val" id="pr-emergent-gpt">-</div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
