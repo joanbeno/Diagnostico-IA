@@ -62,6 +62,7 @@
 .with-pattern::before {
   content:'';
   position:absolute;inset:0;border-radius:inherit;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg stroke='%23ffffff' stroke-width='0.6' fill='none'%3E%3Cline x1='9' y1='24' x2='24' y2='9'/%3E%3Cline x1='24' y1='9' x2='39' y2='18'/%3E%3Cline x1='39' y1='18' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='33' y2='39'/%3E%3Cline x1='9' y1='24' x2='39' y2='18' opacity='.35'/%3E%3Cline x1='24' y1='9' x2='33' y2='39' opacity='.25'/%3E%3C/g%3E%3Ccircle cx='9' cy='24' r='1.5' fill='%23ffffff'/%3E%3Ccircle cx='24' cy='9' r='1.8' fill='%23ffffff'/%3E%3Ccircle cx='39' cy='18' r='1.2' fill='%23ffffff'/%3E%3Ccircle cx='33' cy='39' r='2' fill='%23ffffff'/%3E%3C/svg%3E");
   background-size:22px 22px;
   opacity:var(--pat-op);
   pointer-events:none;z-index:0;
@@ -151,7 +152,7 @@
   stroke:rgba(255,255,255,.4);fill:none;stroke-width:2;
   transition:transform .25s cubic-bezier(.4,0,.2,1);
 }
-.mod-book.open .mod-book-chevron { transform:rotate(180deg) }
+/* .mod-book chevron — sistema anterior */
 .mod-book-body {
   display:none;
   padding:18px;
@@ -288,7 +289,7 @@ body{
 .with-pattern { position:relative }
 .with-pattern::before {
   content:'';position:absolute;inset:0;border-radius:inherit;
-  background-size:80px 80px;opacity:var(--pat-op);
+  background-size:22px 22px;opacity:var(--pat-op);
   pointer-events:none;z-index:0;
 }
 .with-pattern > * { position:relative;z-index:1 }
@@ -310,7 +311,6 @@ body{
 .personal-result.show{display:block;animation:fadeUp .3s cubic-bezier(.4,0,.2,1) both}
 .pr-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap}
 .pr-profile{font-family:"DM Serif Display",serif;font-size:32px;color:var(--accent);line-height:1}
-.pr-meta{flex:1}
 .pr-level{font-size:13px;color:var(--ink-muted);margin-bottom:4px}
 .pr-score{font-size:13px;font-weight:600;color:var(--ink)}
 .pr-section{margin-bottom:16px}
@@ -441,7 +441,6 @@ body{
   /* Copy btn wraps */
   .copy-btn{font-size:11px;padding:4px 10px}
   /* Modules wrap interno */
-  .modules-inner-grid{grid-template-columns:1fr !important}
 }
 /* POPOVER de módulo */
 .mod-ref{display:inline-flex;align-items:center;gap:5px;color:var(--accent);font-weight:600;font-size:12px;cursor:pointer;border:none;border-bottom:2px dashed rgba(26,26,255,.3);background:transparent;padding:0;font-family:"DM Sans",sans-serif;position:relative;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
@@ -644,6 +643,91 @@ body{
   width:1px;height:14px;
   background:var(--border);
 }
+
+/* Tap feedback móvil — acordeones "Por curiosidad"
+   En touch devices no hay hover, el :active da feedback visual */
+.opt-book-header:active{
+  background:var(--accent-bg);
+  border-bottom-color:var(--border);
+}
+@media(max-width:768px){
+  .opt-book-header{
+    padding:13px 16px; /* más área de toque */
+    -webkit-tap-highlight-color:transparent;
+  }
+  .opt-book-header:active{
+    background:var(--accent-bg);
+    transition:background .1s ease;
+  }
+}
+
+/* ── EFECTO SCROLL-TRIGGERED MÓDULO 8 ───────────────────────
+   Estado inicial: sidebar sticky dentro del recuadro blanco.
+   Estado scroll: sidebar sale como tarjeta flotante fija,
+   contenido principal aparece con animación de entrada.
+   Solo en desktop (min-width:769px).
+   ──────────────────────────────────────────────────────────── */
+@media(min-width:769px){
+
+  /* Transición del sidebar al salir del recuadro */
+  .pr-sidebar{
+    transition:
+      transform .45s cubic-bezier(.22,1,.36,1),
+      box-shadow .45s ease,
+      opacity .3s ease;
+  }
+
+  /* Estado flotante — activado por JS cuando scroll supera el lookup */
+  .personal-result.show.sidebar-float .pr-sidebar{
+    position:fixed;
+    top:80px;
+    left:max(24px, calc((100vw - 880px) / 2));
+    width:248px;
+    z-index:80;
+    box-shadow:0 8px 32px rgba(0,0,0,.14);
+  }
+
+  /* Cuando flota, el main necesita margen izquierdo */
+  .personal-result.show.sidebar-float .pr-main{
+    margin-left:272px;
+  }
+
+  /* Contenido principal — aparece con animación al activar sidebar-float */
+  .pr-main{
+    transition:margin-left .45s cubic-bezier(.22,1,.36,1);
+  }
+
+  /* Animación de entrada del plan al aparecer */
+  .personal-result.show.sidebar-float .plan-wrap,
+  .personal-result.show.sidebar-float #insight-wrap,
+  .personal-result.show.sidebar-float #modules-wrap{
+    animation:slideFromRight .4s cubic-bezier(.22,1,.36,1) both;
+  }
+  .personal-result.show.sidebar-float #insight-wrap{
+    animation-delay:.08s;
+  }
+  .personal-result.show.sidebar-float #modules-wrap{
+    animation-delay:.15s;
+  }
+}
+
+@keyframes slideFromRight{
+  from{ opacity:0; transform:translateX(16px) }
+  to{   opacity:1; transform:translateX(0) }
+}
+
+/* ── SNIPPET EN CARDS DE MÓDULOS ────────────────────────────
+   Frase corta debajo del título — da contexto sin abrir.
+   Aparece solo — no distrae del título principal.
+   ──────────────────────────────────────────────────────────── */
+.module-snippet{
+  font-size:10px;
+  color:var(--ink-muted);
+  line-height:1.4;
+  margin-top:4px;
+  font-style:italic;
+  opacity:.8;
+}
 </style>
 </head>
 <body>
@@ -691,14 +775,14 @@ body{
   </div>
 
   <div class="modules-grid">
-    <div class="module-card" onclick="goTo(1)" title="Ir al módulo 1"><div class="module-num">01</div><div class="module-title">Buen prompt</div></div>
-    <div class="module-card" onclick="goTo(2)" title="Ir al módulo 2"><div class="module-num">02</div><div class="module-title">Iniciar un chat</div></div>
-    <div class="module-card" onclick="goTo(3)" title="Ir al módulo 3"><div class="module-num">03</div><div class="module-title">Proyectos ChatGPT</div></div>
-    <div class="module-card" onclick="goTo(4)" title="Ir al módulo 4"><div class="module-num">04</div><div class="module-title">GPT interno vs general</div></div>
-    <div class="module-card" onclick="goTo(5)" title="Ir al módulo 5"><div class="module-num">05</div><div class="module-title">Enterprise</div></div>
-    <div class="module-card" onclick="goTo(6)" title="Ir al módulo 6"><div class="module-num">06</div><div class="module-title">Conectores</div></div>
-    <div class="module-card" onclick="goTo(7)" title="Ir al módulo 7"><div class="module-num">07</div><div class="module-title">Preguntas frecuentes</div></div>
-    <div class="module-card" onclick="goTo(8)" title="Ir al módulo 8"><div class="module-num">08</div><div class="module-title">Tu diagnóstico</div></div>
+    <div class="module-card" onclick="goTo(1)" title="Ir al módulo 1"><div class="module-num">01</div><div class="module-title">Buen prompt</div><div class="module-snippet">Rol, tarea, formato, restricción</div></div>
+    <div class="module-card" onclick="goTo(2)" title="Ir al módulo 2"><div class="module-num">02</div><div class="module-title">Iniciar un chat</div><div class="module-snippet">El primer mensaje define todo</div></div>
+    <div class="module-card" onclick="goTo(3)" title="Ir al módulo 3"><div class="module-num">03</div><div class="module-title">Proyectos ChatGPT</div><div class="module-snippet">Contexto que no se pierde</div></div>
+    <div class="module-card" onclick="goTo(4)" title="Ir al módulo 4"><div class="module-num">04</div><div class="module-title">GPT interno vs general</div><div class="module-snippet">Cuándo usar cada uno</div></div>
+    <div class="module-card" onclick="goTo(5)" title="Ir al módulo 5"><div class="module-num">05</div><div class="module-title">Enterprise</div><div class="module-snippet">Lo que ya tienes disponible</div></div>
+    <div class="module-card" onclick="goTo(6)" title="Ir al módulo 6"><div class="module-num">06</div><div class="module-title">Conectores</div><div class="module-snippet">Que pase solo, sin iniciarlo</div></div>
+    <div class="module-card" onclick="goTo(7)" title="Ir al módulo 7"><div class="module-num">07</div><div class="module-title">Preguntas frecuentes</div><div class="module-snippet">Dudas comunes sin rodeos</div></div>
+    <div class="module-card" onclick="goTo(8)" title="Ir al módulo 8"><div class="module-num">08</div><div class="module-title">Tu diagnóstico</div><div class="module-snippet">Plan y plantillas para tu área</div></div>
   </div>
   <button class="btn btn-primary" style="font-size:16px;padding:14px 36px" onclick="goTo(1)">Comenzar<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></button>
 </div>
@@ -1034,6 +1118,8 @@ body{
 </button>
 
 <script>
+
+
 /* ═══════════════════════════════════════════════════════════════════
    GUIA.HTML — Guía de Adopción IA · ML Studio × IAsolutions
    ═══════════════════════════════════════════════════════════════════
@@ -1082,7 +1168,7 @@ function toggleBook(id){
   if(!el)return;
   var isOpen=el.classList.contains('open');
   // Close all others
-  document.querySelectorAll('.mod-book.open').forEach(function(b){b.classList.remove('open');});
+  // .mod-book sistema anterior — reemplazado por opt-book
   if(!isOpen) el.classList.add('open');
 }
 
@@ -1234,9 +1320,10 @@ function fetchDiag(code,cb){
   }
   // ── Lookup real al Sheet ──────────────────────────────────
   var safetyTimer=setTimeout(function(){
-    spin.classList.remove("show");
-    err.classList.add("show");
-    err.textContent="Sin respuesta del servidor. Intenta de nuevo.";
+    try{
+      if(typeof spin!=="undefined")spin.classList.remove("show");
+      if(typeof err!=="undefined"){err.classList.add("show");err.textContent="Sin respuesta del servidor. Intenta de nuevo.";}
+    }catch(e){}
   },12000);
   fetch(SCRIPT_URL+"?action=lookup&codigo="+encodeURIComponent(code),{
     method:"GET",redirect:"follow"
@@ -1290,6 +1377,8 @@ function fillPersonalResult(d){
 
   var mainInput=document.getElementById("main-code");
   if(mainInput&&!mainInput.value)mainInput.value=foundCode;
+  // Iniciar observer de scroll para sidebar flotante
+  setTimeout(initSidebarScroll, 100);
 }
 
 // ── PLAN POR PERFIL + NIVEL ───────────────────────────────
@@ -1613,6 +1702,7 @@ function renderModulosPersonalizados(d){
     || friccion.indexOf("Revisar")>-1
     || friccion.indexOf("Ajustar")>-1
     || friccion.indexOf("corregir")>-1;
+  // "Prompts débiles" se muestra via needsPrompts — corrección aplicada
 
   var needsChat = nivel<=1
     || frec==="Rara vez"
@@ -1927,7 +2017,7 @@ function renderModulosPersonalizados(d){
 
     modulos.forEach(function(mod){
       html+='<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:14px;overflow:hidden">'
-        +'<div class="mod-header-shimmer" style="background:var(--surface-inv);padding:14px 18px">'
+        +'<div class="mod-header-shimmer with-pattern" style="background:var(--surface-inv);padding:14px 18px">'
           +'<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.1em;display:block;margin-bottom:5px">MOD '+mod.num+'</span>'
           +'<div style="font-size:15px;font-weight:600;color:#fff;line-height:1.35;margin-bottom:8px">'+mod.titulo+'</div>'
           +'<span style="display:inline-block;font-size:10px;font-weight:700;color:'+mod.color+';background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);padding:2px 10px;border-radius:100px">'+mod.urgencia+'</span>'
@@ -2296,6 +2386,39 @@ window.addEventListener("DOMContentLoaded",function(){
     }
   }catch(e){}
 });
+
+/* initSidebarScroll() — IntersectionObserver para sidebar flotante en desktop */
+function initSidebarScroll(){
+  if(window.innerWidth < 769) return;
+  var lookup = document.querySelector('.lookup-wrap');
+  var result = document.getElementById('personal-result');
+  if(!lookup || !result) return;
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(!result.classList.contains('show')) return;
+      if(!entry.isIntersecting){ result.classList.add('sidebar-float'); }
+      else { result.classList.remove('sidebar-float'); }
+    });
+  },{rootMargin:'-72px 0px 0px 0px',threshold:0});
+  observer.observe(lookup);
+}
+window.addEventListener('resize',function(){
+  var r=document.getElementById('personal-result');
+  if(r && window.innerWidth<769) r.classList.remove('sidebar-float');
+});
+
+/* toggleOptBook(id)
+   Abre/cierra acordeón "Por curiosidad" en módulo 8.
+   Cierra los demás al abrir uno nuevo. */
+function toggleOptBook(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  var isOpen=el.classList.contains('open');
+  document.querySelectorAll('.opt-book.open').forEach(function(b){
+    b.classList.remove('open');
+  });
+  if(!isOpen) el.classList.add('open');
+}
 </script>
 
 <!-- FOOTER -->
