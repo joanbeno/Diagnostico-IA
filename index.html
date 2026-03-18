@@ -1073,8 +1073,10 @@ charset="UTF-8" />
   line-height:1.6;margin-bottom:14px;
 }
 .access-wa-btn{
-  width:100%;justify-content:center;
-  padding:11px 20px;font-size:13px;
+  justify-content:center;
+  padding:11px 20px;
+  font-size:13px;
+  width:100%;
 }
 
 /* ── PLACA DE ACCESO — inspirada en composición placa colombiana ────
@@ -1198,11 +1200,17 @@ charset="UTF-8" />
   flex:1;
   min-width:0;
   gap:8px;
+  /* Respeta padding derecho de la tarjeta (24px) */
+  padding-right:0;
+}
+.access-wa-btn{
+  align-self:stretch;
 }
 .access-top-row{
   display:flex;
   align-items:center;
   gap:10px;
+  width:100%;
 }
 .access-card-desc{
   font-size:12px;
