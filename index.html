@@ -1193,7 +1193,7 @@ charset="UTF-8" />
 }
 .access-left-col{
   display:flex;
-  flex-direction:row;   /* desktop: placa y copiar en fila */
+  flex-direction:row;
   align-items:center;
   gap:10px;
   flex-shrink:0;
@@ -1201,10 +1201,10 @@ charset="UTF-8" />
 .access-right{
   display:flex;
   flex-direction:column;
-  justify-content:center;
+  justify-content:space-between;
   flex:1;
   min-width:0;
-  gap:10px;
+  gap:8px;
 }
 .access-card-desc{
   font-size:12px;
@@ -1213,9 +1213,9 @@ charset="UTF-8" />
   margin:0;
 }
 .access-wa-btn{
-  width:100%;
+  align-self:flex-start;  /* no full width en desktop */
   justify-content:center;
-  padding:9px 16px;
+  padding:8px 20px;
   font-size:12px;
 }
 .access-copy-btn{
@@ -1240,7 +1240,7 @@ charset="UTF-8" />
   .access-plate-inner{ padding:10px 12px; }
   .access-plate-code{ font-size:16px; letter-spacing:.14em; }
   .access-copy-btn{ padding:6px 12px; font-size:10px; }
-  .access-wa-btn{ padding:8px 12px; font-size:11px; }
+  .access-wa-btn{ padding:8px 12px; font-size:11px; align-self:stretch; width:100%; }
   .access-card-desc{ font-size:11px; }
 }
 
