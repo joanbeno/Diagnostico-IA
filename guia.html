@@ -819,7 +819,7 @@ body{
    Solo en desktop con margen suficiente (min-width: 1100px).
    ──────────────────────────────────────────────────────────────────── */
 @media(max-width:1247px){
-  .pr-emergent{ display:none !important; }
+  .pr-emergent{ display:none; }
 }
 @media(min-width:1248px){
   .pr-emergent{
@@ -1259,7 +1259,7 @@ body{
     <div class="personal-result" id="personal-result">
 
       <!-- TARJETA DEL PERFIL — full width inicial, flotante al hacer scroll -->
-      <div class="pr-profile-card pr-emergent" id="pr-profile-card">
+      <div class="pr-profile-card" id="pr-profile-card">
         <!-- Fila superior: círculo + título -->
         <div class="pr-card-header">
           <div class="pr-score-ring" id="pr-score-ring">
@@ -2665,7 +2665,7 @@ window.addEventListener("DOMContentLoaded",function(){
    la tarjeta emergente aparece en el margen izquierdo
    con fade + slide. Solo en desktop ≥1100px. */
 function initSidebarScroll(){
-  if(window.innerWidth < 1100) return;
+  if(window.innerWidth < 1248) return;
 
   var lookupWrap = document.querySelector('.lookup-wrap');
   var emergent   = document.getElementById('pr-emergent');
