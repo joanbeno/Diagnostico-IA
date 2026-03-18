@@ -167,17 +167,17 @@
     /* GAUGE */
     .gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
     .gauge-svg{overflow:visible}
-    .gauge-track{fill:none;stroke:rgba(255,255,255,.12);stroke-linecap:round}
+    .gauge-track{fill:none;stroke:rgba(255,255,255,.08);stroke-linecap:round}
     .gauge-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1) .3s,stroke .4s ease}
-    .gauge-num{font-family:'DM Serif Display',serif;font-size:36px;fill:#fff;text-anchor:middle;font-weight:400;letter-spacing:-1px}
-    .gauge-denom{font-size:13px;fill:rgba(255,255,255,.4);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:300}
+    .gauge-num{font-family:'DM Serif Display',serif;font-size:52px;fill:#fff;text-anchor:middle;font-weight:700;letter-spacing:-2px}
+    .gauge-denom{font-size:12px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:400}
     .gauge-label{font-size:10px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:600}
 
     /* SCORE HERO */
     .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:0 6px 32px rgba(0,0,0,.28)}
     .score-context{flex:1;min-width:180px}
     .score-context-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
-    .score-context-text{font-size:17px;color:#fff;font-weight:400;line-height:1.4}
+    .score-context-text{font-size:16px;color:#fff;font-weight:600;line-height:1.4;letter-spacing:-.01em}
     .score-context-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:4px}
 
     /* GUIA BUTTON — texto adaptable */
@@ -392,8 +392,8 @@
       .result-section,.export-bar{padding:18px 16px}
       #screen-results{padding:80px 14px 0}
       .score-hero{padding:20px 16px;gap:16px;flex-direction:column}
-      .score-context{order:-1}
-      .gauge-wrap{order:1}
+      .score-context{order:1}
+      .gauge-wrap{order:-1}
       .score-number{font-size:48px}
       .welcome-title{font-size:28px}
       .welcome-meta{gap:14px}
@@ -595,17 +595,17 @@ charset="UTF-8" />
     /* GAUGE */
     .gauge-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
     .gauge-svg{overflow:visible}
-    .gauge-track{fill:none;stroke:rgba(255,255,255,.12);stroke-linecap:round}
+    .gauge-track{fill:none;stroke:rgba(255,255,255,.08);stroke-linecap:round}
     .gauge-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1) .3s,stroke .4s ease}
-    .gauge-num{font-family:'DM Serif Display',serif;font-size:36px;fill:#fff;text-anchor:middle;font-weight:400;letter-spacing:-1px}
-    .gauge-denom{font-size:13px;fill:rgba(255,255,255,.4);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:300}
+    .gauge-num{font-family:'DM Serif Display',serif;font-size:52px;fill:#fff;text-anchor:middle;font-weight:700;letter-spacing:-2px}
+    .gauge-denom{font-size:12px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:400}
     .gauge-label{font-size:10px;fill:rgba(255,255,255,.35);text-anchor:middle;font-family:'DM Sans',sans-serif;font-weight:600}
 
     /* SCORE HERO */
     .score-hero{background:var(--surface-inv);border-radius:var(--radius);padding:28px 32px;margin-bottom:16px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;box-shadow:0 6px 32px rgba(0,0,0,.28)}
     .score-context{flex:1;min-width:180px}
     .score-context-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:6px}
-    .score-context-text{font-size:17px;color:#fff;font-weight:400;line-height:1.4}
+    .score-context-text{font-size:16px;color:#fff;font-weight:600;line-height:1.4;letter-spacing:-.01em}
     .score-context-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:4px}
 
     /* GUIA BUTTON — texto adaptable */
@@ -820,8 +820,8 @@ charset="UTF-8" />
       .result-section,.export-bar{padding:18px 16px}
       #screen-results{padding:80px 14px 0}
       .score-hero{padding:20px 16px;gap:16px;flex-direction:column}
-      .score-context{order:-1}
-      .gauge-wrap{order:1}
+      .score-context{order:1}
+      .gauge-wrap{order:-1}
       .score-number{font-size:48px}
       .welcome-title{font-size:28px}
       .welcome-meta{gap:14px}
@@ -1019,6 +1019,161 @@ charset="UTF-8" />
   }
   .ia-wordmark{ font-size:11px }
   .ia-name{ font-size:8px }
+}
+
+/* ── TARJETA DE ACCESO (código ML-XXXX) ─────────────────────
+   Diseño tipo "llave de acceso" — no técnico, sino valioso.
+   Fondo oscuro, código destacado, sensación de credencial.
+   ──────────────────────────────────────────────────────────── */
+.access-card{
+  background:var(--surface-inv);
+  border-radius:var(--radius);
+  padding:22px 24px;
+  margin-bottom:16px;
+  box-shadow:0 6px 32px rgba(0,0,0,.28);
+  border:1px solid rgba(255,255,255,.06);
+}
+.access-card-top{
+  display:flex;align-items:center;gap:8px;margin-bottom:14px;
+}
+.access-card-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 8px rgba(123,127,255,.6);
+  flex-shrink:0;
+}
+.access-card-label{
+  font-size:10px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:rgba(255,255,255,.4);
+}
+.access-code-wrap{
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:14px;flex-wrap:wrap;
+}
+.access-code{
+  font-family:monospace;font-size:28px;font-weight:700;
+  color:#fff;letter-spacing:.2em;line-height:1;
+  flex:1;
+}
+.access-copy-btn{
+  display:flex;align-items:center;gap:5px;
+  margin:0 auto 14px;
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.7);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:var(--radius-sm);
+  padding:7px 18px;font-size:11px;font-weight:600;
+  cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:var(--t);
+}
+.access-copy-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+.access-copy-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.access-card-desc{
+  font-size:12px;color:rgba(255,255,255,.45);
+  line-height:1.6;margin-bottom:14px;
+}
+.access-wa-btn{
+  width:100%;justify-content:center;
+  padding:11px 20px;font-size:13px;
+}
+
+/* ── PLACA DE ACCESO — inspirada en composición placa colombiana ────
+   Capas: borde metálico exterior → franja → recuadro relieve → fondo
+   Modo oscuro: metálico gris, fondo #1c1c24, relieve blanco sutil
+   Modo claro: metálico plateado, fondo #ebebeb, relieve oscuro sutil
+   ──────────────────────────────────────────────────────────────────── */
+.access-plate{
+  display:inline-block;
+  margin:0 auto 12px;
+  padding:4px;                                    /* franja exterior */
+  background:#2a2a32;                             /* franja oscuro */
+  border-radius:6px;
+  /* Borde metálico exterior — el "corte" de la placa */
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),              /* borde metálico */
+    0 2px 8px rgba(0,0,0,.4),                     /* sombra profundidad */
+    inset 0 1px 0 rgba(255,255,255,.04);          /* brillo top */
+}
+.access-plate-inner{
+  padding:14px 20px;
+  background:#18181f;                             /* fondo interior oscuro */
+  border-radius:4px;
+  /* Recuadro relieve — la línea que encierra el interior */
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255,255,255,.1),       /* recuadro relieve */
+    inset 0 1px 3px rgba(0,0,0,.3);               /* sombra interna */
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.access-plate-code{
+  font-family:monospace;
+  font-size:26px;
+  font-weight:700;
+  color:#fff;
+  letter-spacing:.22em;
+  line-height:1;
+  text-shadow:0 1px 2px rgba(0,0,0,.5);          /* simula relieve troquelado */
+}
+/* Modo claro */
+:root:not([data-theme="dark"]) .access-plate{
+  background:#d0d0d4;                             /* franja plateada claro */
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.12),
+    0 2px 8px rgba(0,0,0,.15),
+    inset 0 1px 0 rgba(255,255,255,.6);
+}
+:root:not([data-theme="dark"]) .access-plate-inner{
+  background:#e8e8ec;                             /* fondo interior claro */
+  box-shadow:
+    inset 0 0 0 1.5px rgba(0,0,0,.12),
+    inset 0 1px 3px rgba(0,0,0,.08);
+}
+:root:not([data-theme="dark"]) .access-plate-code{
+  color:#111118;
+  text-shadow:0 1px 0 rgba(255,255,255,.4);       /* relieve claro */
+}
+
+/* ── PERFIL DETECTADO — jerarquía mejorada ──────────────────
+   El nombre del perfil es el elemento más importante.
+   Colores identifican el tipo, no evalúan el nivel.
+   Todos los perfiles tienen el mismo peso visual.
+   ──────────────────────────────────────────────────────────── */
+.profile-card-value{
+  font-family:'DM Serif Display',serif;
+  font-size:clamp(28px,5vw,38px);
+  font-weight:400;
+  font-style:italic;
+  line-height:1.1;
+  margin-bottom:6px;
+  letter-spacing:-.3px;
+}
+/* Colores por perfil — identifican, no jerarquizan */
+.profile-explorador  { color:#2563a8 }  /* azul — curiosidad, inicio */
+.profile-operativo   { color:#0f766e }  /* verde azulado — acción, proceso */
+.profile-optimizador { color:#7c3aed }  /* morado — refinamiento */
+.profile-estratega   { color:#b45309 }  /* ámbar oscuro — madurez */
+/* Dark mode — versiones más luminosas */
+:root[data-theme="dark"] .profile-explorador  { color:#60a5fa }
+:root[data-theme="dark"] .profile-operativo   { color:#34d399 }
+:root[data-theme="dark"] .profile-optimizador { color:#a78bfa }
+:root[data-theme="dark"] .profile-estratega   { color:#fbbf24 }
+
+/* Animación al tocar la placa (easter egg) */
+@keyframes platePulse{
+  0%  { transform:scale(1) }
+  40% { transform:scale(.96) }
+  70% { transform:scale(1.02) }
+  100%{ transform:scale(1) }
+}
+.access-plate.copied{
+  animation:platePulse .35s cubic-bezier(.22,1,.36,1);
+  box-shadow:
+    0 0 0 1px rgba(123,127,255,.5),
+    0 0 16px rgba(123,127,255,.25),
+    inset 0 1px 0 rgba(255,255,255,.04);
 }
 </style>
 </head>
@@ -1302,36 +1457,44 @@ charset="UTF-8" />
           <div class="score-context-sub" id="score-context-sub"></div>
         </div>
         <div class="gauge-wrap">
-          <svg class="gauge-svg" id="gauge-svg" width="170" height="115" viewBox="0 0 170 115">
-            <path class="gauge-track" d="M17,88 A68,68 0 0,1 153,88" stroke-width="12"/>
-            <path class="gauge-fill" id="gauge-fill" d="M17,88 A68,68 0 0,1 153,88" stroke-width="12" stroke="#5b7ef5" stroke-dasharray="214" stroke-dashoffset="214"/>
-            <text class="gauge-num" id="gauge-num" x="85" y="82">—</text>
-            <text class="gauge-denom" x="85" y="100">/ 50</text>
-            <text class="gauge-label" x="14" y="112">0</text>
-            <text class="gauge-label" x="156" y="112">50</text>
+          <svg class="gauge-svg" id="gauge-svg" width="190" height="130" viewBox="0 0 190 130">
+            <path class="gauge-track" d="M22,100 A73,73 0 0,1 168,100" stroke-width="8"/>
+            <path class="gauge-fill" id="gauge-fill" d="M22,100 A73,73 0 0,1 168,100" stroke-width="8" stroke="#5b7ef5" stroke-dasharray="229" stroke-dashoffset="229"/>
+            <text class="gauge-num" id="gauge-num" x="95" y="90">—</text>
+            <text class="gauge-denom" x="95" y="112">/ 50</text>
+            <text class="gauge-label" x="18" y="126">0</text>
+            <text class="gauge-label" x="172" y="126">50</text>
           </svg>
         </div>
       </div>
 
-      <!-- 2. CÓDIGO DE ACCESO — después del resultado -->
-      <div style="background:var(--surface-inv);border-radius:var(--radius);padding:16px 22px;margin-bottom:16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div style="flex:1;min-width:160px">
-          <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px">Tu código personal</div>
-          <div id="codigo-display" style="font-family:monospace;font-size:22px;font-weight:700;color:#fff;letter-spacing:.12em;line-height:1"></div>
+      <!-- 2. CÓDIGO DE ACCESO — tarjeta de llave/acceso -->
+      <div class="access-card">
+        <!-- Indicador superior -->
+        <div class="access-card-top">
+          <div class="access-card-dot"></div>
+          <span class="access-card-label">Tu llave de acceso personal</span>
         </div>
-        <div style="flex:2;min-width:180px">
-          <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;margin-bottom:10px"><strong style="color:#fff">Guarda este código.</strong> Es tuyo y confidencial — solo compártelo con tu asesor. Con él recuperas estos resultados desde cualquier dispositivo.</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button onclick="copiarCodigo()" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:var(--t)">
-              <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copiar código
-            </button>
-            <button class="wa-btn" onclick="openWhatsApp()" style="padding:7px 14px;font-size:12px">
-              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
-              Compartir con asesor
-            </button>
+        <!-- Placa de acceso — inline-block centrada, toca para copiar -->
+        <div style="text-align:center;margin-bottom:4px">
+        <div class="access-plate" id="access-plate-el" onclick="copiarCodigoPlaca()" title="Toca para copiar" style="cursor:pointer">
+          <div class="access-plate-inner">
+            <div id="codigo-display" class="access-plate-code"></div>
           </div>
-        </div>
+        </div></div>
+        <!-- Botón copiar — fuera de la placa, independiente -->
+        <div style="text-align:center">
+        <button onclick="copiarCodigo()" class="access-copy-btn" id="copy-btn-main">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar código
+        </button></div>
+        <!-- Instrucción -->
+        <p class="access-card-desc">Guárdalo en un lugar seguro. Con este código recuperas tu diagnóstico completo desde cualquier dispositivo — y es lo que compartirás con tu asesor.</p>
+        <!-- CTA WhatsApp -->
+        <button class="wa-btn access-wa-btn" onclick="openWhatsApp()">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
+          Enviar a mi asesor
+        </button>
       </div>
 
       <div class="profile-strip">
@@ -1799,18 +1962,18 @@ function calculateScores(){
 }
 
 function classifyMaturity(total){
-  if(total>=38)return{level:4,label:'Nivel 4 — Uso estratégico',desc:'La IA está integrada en decisiones clave y flujos estratégicos del trabajo.',pct:98,contextText:'Uso estratégico consolidado',contextSub:'Por encima del umbral de adopción avanzada. El siguiente paso es escalar y sistematizar.'};
-  if(total>=25)return{level:3,label:'Nivel 3 — Uso integrado',desc:'La IA es parte habitual del trabajo, con buena apropiación y resultados tangibles.',pct:68,contextText:'Uso integrado con brechas puntuales',contextSub:'Sólido. A '+(38-total)+' puntos del nivel estratégico — las recomendaciones de abajo son tu ruta.'};
-  if(total>=13)return{level:2,label:'Nivel 2 — Uso operativo',desc:'La IA se usa con regularidad para tareas concretas, pero hay fricciones importantes.',pct:38,contextText:'Uso operativo con alto potencial',contextSub:'A '+(25-total)+' puntos del nivel integrado. Las fricciones detectadas son resolubles.'};
-  return{level:1,label:'Nivel 1 — Uso experimental',desc:'El uso de IA es esporádico. Hay una oportunidad grande de adopción estructurada.',pct:14,contextText:'Etapa de exploración activa',contextSub:'El punto de partida ideal para una adopción bien guiada. El potencial es alto.'};
+  if(total>=38)return{level:4,label:'Nivel 4 — Uso estratégico',desc:'La IA es parte de tus decisiones. El siguiente paso es sistematizar y escalar al equipo.',pct:98,contextText:'Uso estratégico',contextSub:'Estás entre el top del equipo. Ahora el foco es escalar lo que ya funciona.'};
+  if(total>=25)return{level:3,label:'Nivel 3 — Uso integrado',desc:'Ya usas IA con regularidad. Hay brechas puntuales que limitan el impacto real.',pct:68,contextText:'Uso integrado',contextSub:'A '+(38-total)+' puntos del nivel estratégico. Las recomendaciones de abajo son tu ruta concreta.'};
+  if(total>=13)return{level:2,label:'Nivel 2 — Uso operativo',desc:'Ya estás usando IA — el siguiente paso es integrarla a tu flujo, no solo usarla cuando recuerdas.',pct:38,contextText:'Uso operativo',contextSub:'A '+(25-total)+' puntos del siguiente nivel. Las fricciones detectadas tienen solución directa.'};
+  return{level:1,label:'Nivel 1 — Exploración',desc:'El uso de IA es esporádico. Con estructura básica, el impacto puede multiplicarse rápido.',pct:14,contextText:'En exploración',contextSub:'Es el mejor momento para arrancar bien. Una sesión de asesoría cambia el punto de partida.'};
 }
 
 function classifyProfile(total){
   var gpts=answers.step7,org=answers.step6,freq=answers.step2,tipos=multiAnswers[3]||[];
-  if(total>=38&&gpts==='Sí, frecuentemente'&&(org==='En GPTs personalizados'||org==='En carpetas compartidas'))return{name:'Estratega',desc:'Usas la IA con visión sistémica y orientación a resultados. Eres un referente potencial dentro de la organización.'};
-  if(total>=25&&(tipos.indexOf('Análisis o toma de decisiones')>-1||tipos.indexOf('Resolver problemas operativos')>-1))return{name:'Optimizador',desc:'Usas la IA con criterio y buscas mejorar procesos activamente. El siguiente paso es sistematizar y escalar lo que ya haces bien.'};
-  if(total>=13&&(freq==='Varias veces al día'||freq==='Todos los días'))return{name:'Operativo',desc:'Usas la IA con regularidad para tareas del día a día. Hay oportunidad clara de ir más allá del uso rutinario hacia mayor impacto.'};
-  return{name:'Explorador',desc:'Estás en las etapas iniciales de adopción. Con orientación adecuada puedes acelerar significativamente el impacto de la IA en tu trabajo.'};
+  if(total>=38&&gpts==='Sí, frecuentemente'&&(org==='En GPTs personalizados'||org==='En carpetas compartidas'))return{name:'Estratega',desc:'La IA ya es parte de cómo piensas y decides. Eres un referente potencial dentro de la organización.'};
+  if(total>=25&&(tipos.indexOf('Análisis o toma de decisiones')>-1||tipos.indexOf('Resolver problemas operativos')>-1))return{name:'Optimizador',desc:'Usas la IA de forma inteligente. El potencial ahora está en sistematizar lo que ya funciona — y llevarlo al equipo. El siguiente paso es sistematizar y escalar lo que ya haces bien.'};
+  if(total>=13&&(freq==='Varias veces al día'||freq==='Todos los días'))return{name:'Operativo',desc:'Ya tienes el hábito — eso es lo más difícil. El siguiente paso es hacer que cada uso cuente más.'};
+  return{name:'Explorador',desc:'Estás arrancando con IA — y ese es el mejor momento para hacerlo bien. Con las bases correctas, el impacto llega rápido.'};
 }
 
 function detectAlerts(){
@@ -1890,7 +2053,7 @@ function renderResults(profile,maturity,alerts,recs,scoring){
   // Paleta progresiva en azul — sin rojo ni ámbar para no activar lectura de alarma
   var GAUGE_COLORS={1:'#93a8f4',2:'#5b7ef5',3:'#1a1aff',4:'#6366f1'};
   var gaugeColor=GAUGE_COLORS[maturity.level]||'#1a1aff';
-  var ARC_LEN=214; // π * radio 68 ≈ 214 — longitud del semicírculo
+  var ARC_LEN=229; // π * radio 73 ≈ 229 — longitud del semicírculo (SVG actualizado)
   var pct=Math.min(scoring.total/50,1);
   var offset=ARC_LEN-(pct*ARC_LEN);
   var gaugeFill=document.getElementById('gauge-fill');
@@ -1906,7 +2069,11 @@ function renderResults(profile,maturity,alerts,recs,scoring){
 
   document.getElementById('score-context-text').textContent=maturity.contextText;
   document.getElementById('score-context-sub').textContent=maturity.contextSub;
-  document.getElementById('result-profile').textContent=profile.name;
+  var profileEl = document.getElementById('result-profile');
+  profileEl.textContent = profile.name;
+  // Clase de color por perfil — identifica el tipo, no evalúa
+  var profileClass = 'profile-' + (profile.name||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  profileEl.className = 'profile-card-value ' + profileClass;
   document.getElementById('result-profile-desc').textContent=profile.desc;
   document.getElementById('result-level').textContent='Nivel '+maturity.level;
   document.getElementById('result-level-desc').textContent=maturity.desc;
@@ -2015,7 +2182,7 @@ function renderCharts(scoring){
   var bf={family:"'DM Sans',sans-serif",size:11};
   var ctx1=document.getElementById('chart-maturity').getContext('2d');
   // Gradiente en doughnut — del acento hacia turquesa, da profundidad visual
-  var grad1=ctx1.createLinearGradient(0,0,200,200);
+  var grad1=ctx1.createLinearGradient(0,0,190,130);
   grad1.addColorStop(0,ACCENT);
   grad1.addColorStop(1,isDark?'#1a6bb5':'#1a5fa8');
   new Chart(ctx1,{type:'doughnut',data:{labels:['Score','Restante'],datasets:[{data:[scoring.total,50-scoring.total],backgroundColor:[grad1,SOFT],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'72%',plugins:{legend:{display:false},tooltip:{enabled:false}}},plugins:[{id:'c',afterDraw:function(chart){var ctx=chart.ctx,cx=chart.chartArea.left+(chart.chartArea.right-chart.chartArea.left)/2,cy=chart.chartArea.top+(chart.chartArea.bottom-chart.chartArea.top)/2;ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';ctx.font='bold 26px DM Sans,sans-serif';ctx.fillStyle=TEXT;ctx.fillText(scoring.total,cx,cy-8);ctx.font='12px DM Sans,sans-serif';ctx.fillStyle=MUTED;ctx.fillText('de 50',cx,cy+14);ctx.restore();}}]});
@@ -2073,6 +2240,19 @@ function restartDiagnostic(){
 function toggleResource(id){
   var card=document.getElementById(id);
   card.classList.toggle('open');
+}
+
+/* copiarCodigoPlaca() — easter egg: toca la placa para copiar.
+   Anima la placa y muestra toast. */
+function copiarCodigoPlaca(){
+  var plate = document.getElementById('access-plate-el');
+  if(plate){
+    plate.classList.remove('copied');
+    void plate.offsetWidth; // reflow para reiniciar animación
+    plate.classList.add('copied');
+    setTimeout(function(){ plate.classList.remove('copied'); }, 400);
+  }
+  copiarCodigo();
 }
 </script>
 
