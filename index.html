@@ -1231,35 +1231,41 @@ charset="UTF-8" />
 .access-copy-btn:hover{background:rgba(255,255,255,.15);color:#fff}
 
 @media(max-width:640px){
-  /* 2x2: placa|texto / copiar|whatsapp */
+  /* Contenedor padre como grid 2x2 */
   .access-card-body{
     display:grid;
     grid-template-columns:auto 1fr;
     grid-template-rows:auto auto;
     gap:8px 12px;
-    align-items:start;
+    align-items:center;
   }
   /* A1: placa */
-  .access-plate{ grid-column:1; grid-row:1; align-self:center; }
-  /* B1: texto */
-  .access-right{ display:contents; }
-  .access-top-row{ display:contents; }
-  .access-card-desc{
-    grid-column:2; grid-row:1;
-    font-size:11px; line-height:1.4;
-    align-self:center;
+  .access-plate{
+    grid-column:1; grid-row:1;
   }
   /* A2: copiar */
-  .access-copy-btn{
-    grid-column:1; grid-row:2;
-    padding:7px 12px; font-size:10px;
-    justify-self:stretch; justify-content:center;
+  .access-left-col{
+    grid-column:1; grid-row:1/3;
+    flex-direction:column;
+    justify-content:space-between;
   }
-  /* B2: whatsapp */
+  .access-copy-btn{
+    padding:7px 12px; font-size:10px;
+    width:100%; justify-content:center;
+  }
+  /* B1+B2: columna derecha — flex column */
+  .access-right{
+    grid-column:2; grid-row:1/3;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .access-top-row{ display:block; }
+  .access-card-desc{ font-size:11px; line-height:1.4; }
   .access-wa-btn{
-    grid-column:2; grid-row:2;
-    padding:7px 12px; font-size:11px;
-    align-self:stretch; justify-content:center;
+    padding:8px 12px; font-size:11px;
+    width:100%; justify-content:center;
   }
   .access-plate-inner{ padding:10px 12px; }
   .access-plate-code{ font-size:15px; letter-spacing:.14em; }
@@ -1574,20 +1580,22 @@ charset="UTF-8" />
           <span class="access-card-label">Tu llave de acceso personal</span>
         </div>
         <div class="access-card-body">
-          <!-- Placa sola a la izquierda -->
-          <div class="access-plate" id="access-plate-el" onclick="copiarCodigoPlaca()" title="Toca para copiar" style="cursor:pointer;flex-shrink:0">
-            <div class="access-plate-inner">
-              <div id="codigo-display" class="access-plate-code"></div>
+          <!-- Columna izquierda: placa + copiar -->
+          <div class="access-left-col">
+            <div class="access-plate" id="access-plate-el" onclick="copiarCodigoPlaca()" title="Toca para copiar" style="cursor:pointer">
+              <div class="access-plate-inner">
+                <div id="codigo-display" class="access-plate-code"></div>
+              </div>
             </div>
+            <button onclick="copiarCodigo()" class="access-copy-btn" id="copy-btn-main">
+              <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copiar
+            </button>
           </div>
-          <!-- Columna derecha: [texto + copiar] arriba, [wa] abajo -->
+          <!-- Columna derecha: texto + wa -->
           <div class="access-right">
             <div class="access-top-row">
               <p class="access-card-desc">Guárdalo en un lugar seguro. Con este código recuperas tu diagnóstico y lo compartes con tu asesor.</p>
-              <button onclick="copiarCodigo()" class="access-copy-btn" id="copy-btn-main">
-                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Copiar
-              </button>
             </div>
             <button class="wa-btn access-wa-btn" onclick="openWhatsApp()">
               <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.944-1.424A9.956 9.956 0 0 0 12 22c5.523 0 10-4.477 10-10S17.522 2 12 2z"/></svg>
