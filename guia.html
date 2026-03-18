@@ -658,37 +658,7 @@ body{
   }
 
   /* Estado flotante — activado por JS cuando scroll supera el lookup */
-  .personal-result.show.sidebar-float .pr-sidebar{
-    position:fixed;
-    top:80px;
-    left:max(24px, calc((100vw - 880px) / 2));
-    width:248px;
-    z-index:80;
-    box-shadow:0 8px 32px rgba(0,0,0,.14);
-  }
-
-  /* Cuando flota, el main necesita margen izquierdo */
-  .personal-result.show.sidebar-float .pr-main{
-    margin-left:272px;
-  }
-
-  /* Contenido principal — aparece con animación al activar sidebar-float */
-  .pr-main{
-    transition:margin-left .45s cubic-bezier(.22,1,.36,1);
-  }
-
-  /* Animación de entrada del plan al aparecer */
-  .personal-result.show.sidebar-float .plan-wrap,
-  .personal-result.show.sidebar-float #insight-wrap,
-  .personal-result.show.sidebar-float #modules-wrap{
-    animation:slideFromRight .4s cubic-bezier(.22,1,.36,1) both;
-  }
-  .personal-result.show.sidebar-float #insight-wrap{
-    animation-delay:.08s;
-  }
-  .personal-result.show.sidebar-float #modules-wrap{
-    animation-delay:.15s;
-  }
+  /* sidebar-float legacy eliminado */
 }
 
 @keyframes slideFromRight{
@@ -829,12 +799,13 @@ body{
   .pr-profile-card.floating{
     position:fixed;
     top:80px;
-    left:max(12px, calc((100vw - 880px) / 2 - 260px));
-    width:240px;
+    /* Margen izquierdo del contenedor centrado de 880px */
+    left:max(8px, calc((100vw - 880px) / 2 - 248px - 16px));
+    width:236px;
     flex-direction:column;
     align-items:flex-start;
     gap:12px;
-    padding:18px;
+    padding:16px;
     animation:slideToLeft .45s cubic-bezier(.22,1,.36,1) both;
     z-index:80;
     box-shadow:0 8px 32px rgba(0,0,0,.18);
@@ -2592,7 +2563,7 @@ function initSidebarScroll(){
         if(spacer) spacer.classList.remove('active');
       }
     });
-  },{rootMargin:'-64px 0px 0px 0px', threshold:0});
+  },{rootMargin:'-64px 0px 0px 0px', threshold:0.1});
 
   observer.observe(lookup);
 }
