@@ -1025,6 +1025,28 @@ body{
   animation:panelIn .15s ease both;
 }
 .fecha-popover.show{ display:block }
+/* En móvil — fixed para que siempre sea visible sin importar el overflow */
+@media(max-width:768px){
+  .fecha-popover{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:calc(100vw - 48px);
+    max-width:320px;
+    z-index:9999;
+    box-shadow:0 16px 48px rgba(0,0,0,.25);
+  }
+  /* Overlay oscuro detrás del popover en móvil */
+  .fecha-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.4);
+    z-index:9998;
+  }
+  .fecha-overlay.show{ display:block }
+}
 .fecha-popover-row{
   display:flex;
   align-items:center;
@@ -1130,7 +1152,8 @@ body{
 </div>
 
 <!-- LOADING -->
-<div class="loading-overlay hidden" id="loading-overlay">
+<div class="fecha-overlay" id="fecha-overlay" onclick="closeFechaPopover()"></div>
+  <div class="loading-overlay hidden" id="loading-overlay">
   <div class="spinner-lg"></div>
   <div class="loading-text" id="loading-text">Cargando datos del grupo...</div>
 </div>
@@ -2427,23 +2450,40 @@ function toggleTableExpand(){
    Abre/cierra el popover de detalle de fecha.
    e.stopPropagation() evita que el document listener lo cierre
    inmediatamente — compatible con iOS Safari y Android Chrome. */
+/* toggleFechaPopover(e, id)
+   Abre/cierra popover de fecha. En móvil muestra overlay oscuro
+   y usa position:fixed para ser siempre visible. */
 function toggleFechaPopover(e, id){
   if(e && e.stopPropagation) e.stopPropagation();
   var pop = document.getElementById(id);
   if(!pop) return;
   var isOpen = pop.classList.contains("show");
+  // Cerrar todos
   document.querySelectorAll(".fecha-popover.show").forEach(function(p){
     p.classList.remove("show");
   });
-  if(!isOpen) pop.classList.add("show");
+  var overlay = document.getElementById("fecha-overlay");
+  if(isOpen){
+    if(overlay) overlay.classList.remove("show");
+  } else {
+    pop.classList.add("show");
+    if(overlay && window.innerWidth <= 768) overlay.classList.add("show");
+  }
+}
+
+/* closeFechaPopover — cierra al tocar el overlay en móvil */
+function closeFechaPopover(){
+  document.querySelectorAll(".fecha-popover.show").forEach(function(p){
+    p.classList.remove("show");
+  });
+  var overlay = document.getElementById("fecha-overlay");
+  if(overlay) overlay.classList.remove("show");
 }
 
 // Cerrar popover de fecha al hacer click fuera
 document.addEventListener("click", function(e){
-  if(!e.target.closest(".fecha-chip")){
-    document.querySelectorAll(".fecha-popover.show").forEach(function(p){
-      p.classList.remove("show");
-    });
+  if(!e.target.closest(".fecha-chip") && !e.target.closest(".fecha-popover")){
+    closeFechaPopover();
   }
 });
 
