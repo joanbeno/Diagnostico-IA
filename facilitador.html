@@ -1021,10 +1021,20 @@ body{
   border-radius:var(--radius-sm);
   box-shadow:0 8px 24px rgba(0,0,0,.14);
   padding:12px 14px;
-  z-index:200;
+  z-index:9999;
   animation:panelIn .15s ease both;
 }
 .fecha-popover.show{ display:block }
+@media(max-width:768px){
+  .fecha-popover.show{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:280px;
+    z-index:9999;
+  }
+}
 /* En móvil — fixed para que siempre sea visible sin importar el overflow */
 @media(max-width:768px){
   .fecha-popover{
