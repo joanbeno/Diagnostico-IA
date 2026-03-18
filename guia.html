@@ -294,7 +294,7 @@ body{
 }
 .with-pattern > * { position:relative;z-index:1 }
 
-.lookup-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:14px;box-shadow:var(--shadow)}
+.lookup-wrap{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:26px;margin-bottom:28px;box-shadow:var(--shadow)}
 .lookup-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
 .lookup-input{flex:1;min-width:130px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:16px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;outline:none;transition:var(--t);color:var(--ink);background:var(--bg)}
 .lookup-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(53,53,204,.08)}
@@ -517,28 +517,8 @@ body{
    En móvil: todo apilado sin sidebar.
    ──────────────────────────────────────────────────────────── */
 @media(min-width:769px){
-  /* Contenedor que divide sidebar + main */
-  .personal-result.show{
-    display:grid !important;
-    grid-template-columns:260px 1fr;
-    gap:24px;
-    align-items:start;
-  }
-  /* Sidebar — sticky */
-  .pr-sidebar{
-    position:sticky;
-    top:72px; /* debajo del topbar */
-    background:var(--bg-card);
-    border:1px solid var(--border);
-    border-radius:var(--radius);
-    padding:20px;
-    box-shadow:var(--shadow);
-  }
-  /* Ocultar el pr-header y pr-data-grid originales en desktop
-     — los reemplaza el sidebar */
-  .pr-header-original{ display:none }
-  .pr-data-grid{ display:none !important }
-  /* Contenido principal */
+  /* sidebar grid eliminado — reemplazado por pr-profile-card flotante */
+  /* pr-sidebar legacy eliminado — reemplazado por pr-profile-card */
   .pr-main{ min-width:0 }
 }
 @media(max-width:768px){
@@ -727,6 +707,182 @@ body{
   margin-top:4px;
   font-style:italic;
   opacity:.8;
+}
+
+/* ── TARJETA DEL PERFIL — scroll-triggered ──────────────────
+   Estado inicial: full width dentro del recuadro blanco.
+   Al hacer scroll: sale a la izquierda, queda fija.
+   El plan ocupa todo el ancho del contenedor.
+   ──────────────────────────────────────────────────────────── */
+
+/* Tarjeta del perfil — estado inicial */
+.pr-profile-card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px 24px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+  transition:
+    transform .5s cubic-bezier(.22,1,.36,1),
+    opacity .4s ease,
+    box-shadow .4s ease;
+  position:relative;
+  z-index:2;
+}
+
+/* Círculo de score con color del perfil */
+.pr-score-ring{
+  width:64px;height:64px;
+  border-radius:50%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  flex-shrink:0;
+  /* Liquid crystal — fondo muy sutil, blur, borde fino */
+  background:rgba(123,127,255,.12);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(123,127,255,.25);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+}
+/* Color del número según perfil — el círculo solo toma el tinte */
+.pr-score-ring.perf-explorador{
+  background:rgba(96,165,250,.13);
+  border-color:rgba(96,165,250,.3);
+}
+.pr-score-ring.perf-operativo{
+  background:rgba(52,211,153,.12);
+  border-color:rgba(52,211,153,.28);
+}
+.pr-score-ring.perf-optimizador{
+  background:rgba(167,139,250,.12);
+  border-color:rgba(167,139,250,.28);
+}
+.pr-score-ring.perf-estratega{
+  background:rgba(251,191,36,.11);
+  border-color:rgba(251,191,36,.26);
+}
+/* Número del score — color del perfil, protagonista */
+.pr-score-ring.perf-explorador .pr-score-ring-num{color:#60a5fa}
+.pr-score-ring.perf-operativo .pr-score-ring-num{color:#34d399}
+.pr-score-ring.perf-optimizador .pr-score-ring-num{color:#a78bfa}
+.pr-score-ring.perf-estratega .pr-score-ring-num{color:#fbbf24}
+
+.pr-score-ring-num{
+  font-family:"DM Serif Display",serif;
+  font-size:20px;color:var(--accent);line-height:1;font-weight:700;
+  text-shadow:0 1px 8px rgba(123,127,255,.3);
+}
+.pr-score-ring-label{
+  font-size:8px;color:var(--ink-muted);
+  font-weight:600;letter-spacing:.05em;margin-top:1px;
+}
+
+/* Info del perfil en la tarjeta inicial */
+.pr-card-header{
+  display:flex;align-items:center;gap:14px;
+}
+.pr-card-info{flex:1;min-width:0}
+.pr-card-nombre{
+  font-family:"DM Serif Display",serif;
+  font-size:26px;line-height:1;
+  margin-bottom:3px;
+  font-style:italic;
+}
+.pr-card-nombre.perf-explorador{color:#2563a8}
+.pr-card-nombre.perf-operativo{color:#0f766e}
+.pr-card-nombre.perf-optimizador{color:#7c3aed}
+.pr-card-nombre.perf-estratega{color:#b45309}
+:root[data-theme="dark"] .pr-card-nombre.perf-explorador{color:#60a5fa}
+:root[data-theme="dark"] .pr-card-nombre.perf-operativo{color:#34d399}
+:root[data-theme="dark"] .pr-card-nombre.perf-optimizador{color:#a78bfa}
+:root[data-theme="dark"] .pr-card-nombre.perf-estratega{color:#fbbf24}
+
+.pr-card-nivel{font-size:12px;color:var(--ink-muted);margin-bottom:12px}
+.pr-card-grid{
+  display:grid;
+  grid-template-columns:1fr 2fr;
+  grid-template-rows:auto auto;
+  gap:10px 14px;
+}
+/* Columna izquierda: área arriba, GPT abajo */
+.pr-card-area{ grid-column:1; grid-row:1; }
+.pr-card-gpt{  grid-column:1; grid-row:2; }
+/* Fricción: columna derecha, ocupa las 2 filas */
+.pr-card-fric{ grid-column:2; grid-row:1/3; }
+/* Automatizar y respuesta abierta: full width */
+.pr-card-wide{ grid-column:1/-1; }
+.pr-card-item-label{
+  font-size:9px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-muted);margin-bottom:3px;
+}
+.pr-card-item-val{
+  font-size:12px;color:var(--ink-soft);line-height:1.4;
+}
+
+/* ── ESTADO FLOTANTE — cuando sale a la izquierda ─────────── */
+@media(min-width:769px){
+  .pr-profile-card.floating{
+    position:fixed;
+    top:80px;
+    left:max(12px, calc((100vw - 880px) / 2 - 260px));
+    width:240px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    padding:18px;
+    animation:slideToLeft .45s cubic-bezier(.22,1,.36,1) both;
+    z-index:80;
+    box-shadow:0 8px 32px rgba(0,0,0,.18);
+  }
+  .pr-profile-card.floating .pr-card-grid{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .pr-profile-card.floating .pr-card-nombre{
+    font-size:20px;
+  }
+  .pr-profile-card.floating .pr-score-ring{
+    width:48px;height:48px;
+  }
+  .pr-profile-card.floating .pr-score-ring-num{
+    font-size:15px;
+  }
+}
+
+@keyframes slideToLeft{
+  from{
+    opacity:.6;
+    transform:translateX(0) scale(1);
+  }
+  to{
+    opacity:1;
+    transform:translateX(0) scale(1);
+  }
+}
+
+/* Spacer para cuando la tarjeta sale — evita salto de layout */
+.pr-card-spacer{
+  display:none;
+  height:0;
+  transition:height .45s cubic-bezier(.22,1,.36,1);
+}
+.pr-card-spacer.active{
+  display:block;
+}
+
+@media(max-width:768px){
+  .pr-profile-card.floating{
+    position:relative !important;
+    top:auto !important;
+    left:auto !important;
+    width:auto !important;
+    animation:none !important;
+  }
 }
 </style>
 </head>
@@ -1016,55 +1172,61 @@ body{
 
     <div class="personal-result" id="personal-result">
 
-      <!-- SIDEBAR (solo desktop) — perfil sticky a la izquierda -->
-      <div class="pr-sidebar" id="pr-sidebar">
-        <!-- Círculo de score -->
-        <div class="pr-score-circle" id="pr-score-circle">
-          <span class="pr-score-circle-num" id="pr-score-num">-</span>
-          <span class="pr-score-circle-label">/ 50</span>
+      <!-- TARJETA DEL PERFIL — full width inicial, flotante al hacer scroll -->
+      <div class="pr-profile-card" id="pr-profile-card">
+        <!-- Fila superior: círculo + título -->
+        <div class="pr-card-header">
+          <div class="pr-score-ring" id="pr-score-ring">
+            <span class="pr-score-ring-num" id="pr-score-num">-</span>
+            <span class="pr-score-ring-label">/ 50</span>
+          </div>
+          <div class="pr-card-info">
+            <div class="pr-card-nombre" id="pr-card-nombre">-</div>
+            <div class="pr-card-nivel" id="pr-card-nivel">-</div>
+          </div>
         </div>
-        <!-- Perfil y nivel -->
-        <div class="pr-sidebar-profile" id="pr-sidebar-profile">-</div>
-        <div class="pr-sidebar-level" id="pr-sidebar-level">-</div>
-        <div class="pr-sidebar-divider"></div>
-        <!-- Datos clave -->
-        <div class="pr-sidebar-row">
-          <div class="pr-sidebar-label">Área</div>
-          <div class="pr-sidebar-value" id="pr-sidebar-area">-</div>
-        </div>
-        <div class="pr-sidebar-row">
-          <div class="pr-sidebar-label">GPT que más usas</div>
-          <div class="pr-sidebar-value" id="pr-sidebar-gpt">-</div>
-        </div>
-        <div class="pr-sidebar-row">
-          <div class="pr-sidebar-label">Fricción principal</div>
-          <div class="pr-sidebar-value" id="pr-sidebar-friccion">-</div>
-        </div>
-        <div class="pr-sidebar-row">
-          <div class="pr-sidebar-label">Quieres automatizar</div>
-          <div class="pr-sidebar-value" id="pr-sidebar-auto">-</div>
-        </div>
-        <div class="pr-sidebar-divider"></div>
-        <div class="pr-sidebar-row">
-          <div class="pr-sidebar-label">Si la IA pudiera ahorrarte tiempo</div>
-          <div class="pr-sidebar-value" id="pr-sidebar-open1">-</div>
+        <!-- Grid de datos -->
+        <div class="pr-card-grid">
+          <div class="pr-card-area">
+            <div class="pr-card-item-label">Área</div>
+            <div class="pr-card-item-val" id="pr-area">-</div>
+          </div>
+          <div class="pr-card-fric">
+            <div class="pr-card-item-label">Fricción principal</div>
+            <div class="pr-card-item-val" id="pr-friccion">-</div>
+          </div>
+          <div class="pr-card-gpt">
+            <div class="pr-card-item-label">GPT que más usas</div>
+            <div class="pr-card-item-val" id="pr-gpt">-</div>
+          </div>
+          <div class="pr-card-wide">
+            <div class="pr-card-item-label">Quieres automatizar</div>
+            <div class="pr-card-item-val" id="pr-auto">-</div>
+          </div>
+          <div class="pr-card-wide">
+            <div class="pr-card-item-label">Si la IA pudiera ahorrarte tiempo</div>
+            <div class="pr-card-item-val" id="pr-open1">-</div>
+          </div>
         </div>
       </div>
+      <!-- Spacer para mantener el layout cuando la tarjeta sale -->
+      <div class="pr-card-spacer" id="pr-card-spacer"></div>
 
-      <!-- MAIN — contenido principal (plan, módulos, etc.) -->
+      <!-- MAIN — contenido principal -->
       <div class="pr-main">
-        <!-- Header original — solo visible en móvil -->
-        <div class="pr-header pr-header-original">
-          <div><div class="pr-profile" id="pr-profile">-</div><div class="pr-level" id="pr-level">-</div><div class="pr-score" id="pr-score">-</div></div>
-        </div>
-        <!-- Datos del diagnóstico — solo visible en móvil -->
-        <div class="pr-data-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-          <div class="pr-section"><div class="pr-section-label">Area</div><div class="pr-section-value" id="pr-area">-</div></div>
-          <div class="pr-section"><div class="pr-section-label">GPT que mas usas</div><div class="pr-section-value" id="pr-gpt">-</div></div>
-          <div class="pr-section"><div class="pr-section-label">Friccion principal</div><div class="pr-section-value" id="pr-friccion">-</div></div>
-          <div class="pr-section"><div class="pr-section-label">Quieres automatizar</div><div class="pr-section-value" id="pr-auto">-</div></div>
-          <div class="pr-section" style="grid-column:1/-1"><div class="pr-section-label">Si la IA pudiera ahorrarte tiempo en una cosa</div><div class="pr-section-value" id="pr-open1">-</div></div>
-        </div>
+        <!-- IDs legacy para compatibilidad con fillPersonalResult -->
+        <span id="pr-profile" style="display:none"></span>
+        <span id="pr-level" style="display:none"></span>
+        <span id="pr-score" style="display:none"></span>
+        <!-- Sidebar legacy IDs -->
+        <span id="pr-sidebar-profile" style="display:none"></span>
+        <span id="pr-sidebar-level" style="display:none"></span>
+        <span id="pr-sidebar-area" style="display:none"></span>
+        <span id="pr-sidebar-gpt" style="display:none"></span>
+        <span id="pr-sidebar-friccion" style="display:none"></span>
+        <span id="pr-sidebar-auto" style="display:none"></span>
+        <span id="pr-sidebar-open1" style="display:none"></span>
+        <span id="pr-score-num-old" style="display:none"></span>
         <!-- Plan personalizado -->
         <div class="plan-wrap with-pattern" id="plan-wrap"></div>
         <!-- Insight personalizado -->
@@ -1347,26 +1509,38 @@ function fillPersonalResult(d){
   var res=document.getElementById("personal-result");
   if(res)res.classList.add("show");
 
-  // 2. Datos básicos — móvil y sidebar desktop
+  // 2. Datos básicos — nueva tarjeta del perfil
   var set=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"-";};
-  // Móvil: header original
-  set("pr-profile",d.perfil_usuario);
-  set("pr-level",d.nivel_madurez_ia);
-  set("pr-score","Score: "+(d.score_total||"-")+" / 50");
+  // Tarjeta del perfil
   set("pr-area",d.area_trabajo);
   set("pr-gpt",d.gpt_preferido||"No especificado");
   set("pr-friccion",d.friccion_principal);
   set("pr-auto",d.automatizacion_deseada);
   set("pr-open1",d.respuesta_abierta_1);
-  // Desktop: sidebar sticky
+  // Score ring
   set("pr-score-num",d.score_total||"-");
-  set("pr-sidebar-profile",d.perfil_usuario);
-  set("pr-sidebar-level",d.nivel_madurez_ia);
-  set("pr-sidebar-area",d.area_trabajo);
-  set("pr-sidebar-gpt",d.gpt_preferido||"No especificado");
-  set("pr-sidebar-friccion",d.friccion_principal);
-  set("pr-sidebar-auto",d.automatizacion_deseada);
-  set("pr-sidebar-open1",d.respuesta_abierta_1);
+  // Nombre y nivel con color del perfil
+  var nombreEl = document.getElementById("pr-card-nombre");
+  if(nombreEl){
+    nombreEl.textContent = d.perfil_usuario||"-";
+    var perfSlug = (d.perfil_usuario||"").toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    nombreEl.className = "pr-card-nombre perf-"+perfSlug;
+  }
+  set("pr-card-nivel", d.nivel_madurez_ia);
+  // Color del score ring
+  var ringEl = document.getElementById("pr-score-ring");
+  if(ringEl){
+    var perfSlug2 = (d.perfil_usuario||"").toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    ringEl.className = "pr-score-ring perf-"+perfSlug2;
+  }
+  // Spacer height — guardar para el scroll trigger
+  var card = document.getElementById("pr-profile-card");
+  var spacer = document.getElementById("pr-card-spacer");
+  if(card && spacer){
+    spacer.style.height = card.offsetHeight + "px";
+  }
 
   // 3. Cada seccion independiente — si una falla no bloquea las demas
   try{ renderPlan(d); }catch(e){ console.error("renderPlan:",e); }
@@ -2388,23 +2562,45 @@ window.addEventListener("DOMContentLoaded",function(){
 });
 
 /* initSidebarScroll() — IntersectionObserver para sidebar flotante en desktop */
+/* initSidebarScroll()
+   Observa el lookup-wrap. Cuando sale del viewport al hacer scroll,
+   la tarjeta del perfil pasa a floating — sale del recuadro y
+   queda fija a la izquierda. El spacer mantiene el layout.
+   Solo en desktop (min-width 769px). */
 function initSidebarScroll(){
   if(window.innerWidth < 769) return;
-  var lookup = document.querySelector('.lookup-wrap');
-  var result = document.getElementById('personal-result');
-  if(!lookup || !result) return;
+  var lookup  = document.querySelector('.lookup-wrap');
+  var card    = document.getElementById('pr-profile-card');
+  var spacer  = document.getElementById('pr-card-spacer');
+  var result  = document.getElementById('personal-result');
+  if(!lookup || !card || !result) return;
+
+  // Guardar altura de la tarjeta para el spacer
+  var cardH = card.offsetHeight;
+  if(spacer) spacer.style.height = cardH + "px";
+
   var observer = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(!result.classList.contains('show')) return;
-      if(!entry.isIntersecting){ result.classList.add('sidebar-float'); }
-      else { result.classList.remove('sidebar-float'); }
+      if(!entry.isIntersecting){
+        // Tarjeta sale del recuadro → flotante a la izquierda
+        card.classList.add('floating');
+        if(spacer) spacer.classList.add('active');
+      } else {
+        // Lookup visible → tarjeta vuelve al recuadro
+        card.classList.remove('floating');
+        if(spacer) spacer.classList.remove('active');
+      }
     });
-  },{rootMargin:'-72px 0px 0px 0px',threshold:0});
+  },{rootMargin:'-64px 0px 0px 0px', threshold:0});
+
   observer.observe(lookup);
 }
 window.addEventListener('resize',function(){
-  var r=document.getElementById('personal-result');
-  if(r && window.innerWidth<769) r.classList.remove('sidebar-float');
+  var card = document.getElementById('pr-profile-card');
+  if(card && window.innerWidth < 769){
+    card.classList.remove('floating');
+  }
 });
 
 /* toggleOptBook(id)
