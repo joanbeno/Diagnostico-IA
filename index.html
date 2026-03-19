@@ -1199,9 +1199,7 @@ charset="UTF-8" />
   /* Respeta padding derecho de la tarjeta (24px) */
   padding-right:0;
 }
-.access-wa-btn{
-  align-self:stretch;
-}
+/* FIX 4a — wa-btn dead rule removed */
 .access-top-row{
   display:flex;
   align-items:center;
@@ -1215,12 +1213,7 @@ charset="UTF-8" />
   margin:0;
   flex:1;
 }
-.access-wa-btn{
-  align-self:stretch;
-  justify-content:center;
-  padding:8px 20px;
-  font-size:12px;
-}
+/* FIX 4b — wa-btn dead rule removed */
 .access-copy-btn{
   display:inline-flex;
   flex-direction:column;
@@ -1248,18 +1241,9 @@ charset="UTF-8" />
     gap:8px 12px;
     align-items:start;
   }
-  .access-plate{
-    grid-column:1; grid-row:1;
-    align-self:start;
-  }
-  .access-copy-btn{
-    grid-column:1; grid-row:2;
-    flex-direction:row;  /* horizontal en móvil */
-    padding:7px 12px; font-size:10px;
-    width:100%; justify-content:center;
-    align-self:start;
-    gap:5px;
-  }
+  /* FIX 5 — plate grid solo en móvil */
+  .access-plate{ grid-column:1; grid-row:1; align-self:start; }
+  /* FIX 1 — movido a móvil */
   .access-right{
     grid-column:2; grid-row:1/3;
     display:flex;
@@ -1271,12 +1255,23 @@ charset="UTF-8" />
   .access-left-col{ display:contents; }
   .access-top-row{ display:block; }
   .access-card-desc{ font-size:11px; line-height:1.4; margin-top:0; }
-  .access-wa-btn{
-    padding:8px 12px; font-size:11px;
-    width:100%; justify-content:center;
-  }
-  .access-plate-inner{ padding:10px 12px; }
+  /* FIX 3 — plate-code reducido solo en móvil */
   .access-plate-code{ font-size:15px; letter-spacing:.14em; }
+  /* FIX 2 — plate-inner reducido solo en móvil */
+  .access-plate-inner{ padding:10px 12px; }
+  /* FIX 1 — copy-btn horizontal solo en móvil */
+  .access-copy-btn{
+    grid-column:1; grid-row:2;
+    flex-direction:row;
+    padding:7px 12px; font-size:10px;
+    width:100%; justify-content:center;
+    align-self:start;
+    gap:5px;
+  }
+  /* FIX 4c — wa-btn móvil movido aquí */
+  .access-wa-btn{ padding:8px 12px; font-size:11px; width:100%; justify-content:center; }
+  /* FIX 2 — movido a móvil */
+  /* FIX 3 — movido a móvil */
 }
 /* Columna izquierda de la tarjeta — placa + copiar apilados */
 .access-left-col{
