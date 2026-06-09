@@ -1,0 +1,151 @@
+// ============================================================
+//  DIAGNOSTICO IA — ML Studio
+//  Google Apps Script — scoring.gs
+//  Motor de scoring server-side (v4)
+//
+//  INSTRUCCIONES: Pegar en un archivo NUEVO llamado "scoring"
+//  dentro del mismo proyecto GAS. No requiere imports — todos
+//  los .gs del proyecto comparten el mismo scope.
+// ============================================================
+
+function getMaxScore_(arr, map) {
+  if (!arr || !arr.length) return 0;
+  var max = 0;
+  arr.forEach(function(v) { if (map[v] && map[v] > max) max = map[v]; });
+  return max;
+}
+
+// a = { step2, step3:[], step4:[], step5, step6, step7, step8, step9:[] }
+function calculateScores_(a) {
+  var s = { intensity: 0, sophistication: 0, friction: 0, knowledge: 0, automation: 0 };
+
+  var freqMap = {
+    'Varias veces al día': 5, 'Todos los días': 4,
+    'Algunas veces a la semana': 2, 'Solo cuando no tengo otra opción': 1
+  };
+  s.intensity += freqMap[a.step2] || 0;
+
+  var impactMap = { 'Mucho': 5, 'Bastante': 3, 'Poco': 1, 'Casi nada': 0 };
+  s.intensity += impactMap[a.step8] || 0;
+
+  var tipoMap = {
+    'Análisis o toma de decisiones': 5, 'Resolver problemas operativos': 4,
+    'Organización de información': 3, 'Ideas creativas': 2, 'Redacción de textos': 1
+  };
+  s.sophistication += getMaxScore_(a.step3 || [], tipoMap);
+
+  var gptsMap = {
+    'Sí, frecuentemente': 5, 'A veces': 3,
+    'Sé que existen pero no los uso': 1, 'No sabía que existían': 0
+  };
+  s.sophistication += gptsMap[a.step7] || 0;
+
+  var repMap = { 'Casi nunca': 5, 'A veces': 3, 'Muchas veces': 1, 'Siempre': 0 };
+  s.friction += repMap[a.step5] || 0;
+
+  var fricMap = {
+    'Explicar el contexto correctamente': 4, 'Ajustar el prompt varias veces': 3,
+    'Revisar o corregir lo que genera': 2, 'Encontrar conversaciones anteriores': 1,
+    'Organizar la información generada': 1
+  };
+  var step4 = a.step4 || [];
+  if (step4.length) {
+    var minF = 5;
+    step4.forEach(function(v) { if ((fricMap[v] || 5) < minF) minF = fricMap[v] || 5; });
+    s.friction += minF;
+  }
+
+  var orgMap = {
+    'En GPTs personalizados': 5, 'En carpetas compartidas': 4,
+    'En documentos externos': 3, 'En los chats': 1, 'No hay un sistema claro': 0
+  };
+  s.knowledge += orgMap[a.step6] || 0;
+
+  var autoMap = {
+    'Análisis de información': 5, 'Organización de procesos': 4,
+    'Documentos o reportes': 3, 'Atención a clientes': 3, 'Generación de contenido': 2
+  };
+  s.automation += getMaxScore_(a.step9 || [], autoMap);
+
+  return { axes: s, total: s.intensity + s.sophistication + s.friction + s.knowledge + s.automation };
+}
+
+function classifyMaturity_(total) {
+  if (total >= 38) return {
+    level: 4, label: 'Nivel 4 — Uso estratégico', pct: 98,
+    desc: 'La IA es parte de tus decisiones. El siguiente paso es sistematizar y escalar al equipo.',
+    contextText: 'Uso estratégico',
+    contextSub: 'Estás entre el top del equipo. Ahora el foco es escalar lo que ya funciona.'
+  };
+  if (total >= 25) return {
+    level: 3, label: 'Nivel 3 — Uso integrado', pct: 68,
+    desc: 'Ya usas IA con regularidad. Hay brechas puntuales que limitan el impacto real.',
+    contextText: 'Uso integrado',
+    contextSub: 'A ' + (38 - total) + ' puntos del nivel estratégico. Las recomendaciones de abajo son tu ruta concreta.'
+  };
+  if (total >= 13) return {
+    level: 2, label: 'Nivel 2 — Uso operativo', pct: 38,
+    desc: 'Ya estás usando IA — el siguiente paso es integrarla a tu flujo, no solo usarla cuando recuerdas.',
+    contextText: 'Uso operativo',
+    contextSub: 'A ' + (25 - total) + ' puntos del siguiente nivel. Las fricciones detectadas tienen solución directa.'
+  };
+  return {
+    level: 1, label: 'Nivel 1 — Exploración', pct: 14,
+    desc: 'El uso de IA es esporádico. Con estructura básica, el impacto puede multiplicarse rápido.',
+    contextText: 'En exploración',
+    contextSub: 'Es el mejor momento para arrancar bien. Una sesión de asesoría cambia el punto de partida.'
+  };
+}
+
+function classifyProfile_(total, a) {
+  var gpts = a.step7, org = a.step6, freq = a.step2, tipos = a.step3 || [];
+  if (total >= 38 && gpts === 'Sí, frecuentemente' && (org === 'En GPTs personalizados' || org === 'En carpetas compartidas'))
+    return { name: 'Estratega', desc: 'La IA ya es parte de cómo piensas y decides. Eres un referente potencial dentro de la organización.' };
+  if (total >= 25 && (tipos.indexOf('Análisis o toma de decisiones') > -1 || tipos.indexOf('Resolver problemas operativos') > -1))
+    return { name: 'Optimizador', desc: 'Usas la IA de forma inteligente. El potencial ahora está en sistematizar lo que ya funciona — y llevarlo al equipo.' };
+  if (total >= 13 && (freq === 'Varias veces al día' || freq === 'Todos los días'))
+    return { name: 'Operativo', desc: 'Ya tienes el hábito — eso es lo más difícil. El siguiente paso es hacer que cada uso cuente más.' };
+  return { name: 'Explorador', desc: 'Estás arrancando con IA — y ese es el mejor momento para hacerlo bien. Con las bases correctas, el impacto llega rápido.' };
+}
+
+function detectAlerts_(a) {
+  var alerts = [], org = a.step6, rep = a.step5, gpts = a.step7,
+      freq = a.step2, impact = a.step8, fricc = a.step4 || [];
+  if (org === 'En los chats' || org === 'No hay un sistema claro')
+    alerts.push({ type: 'critical', title: 'Conocimiento generado sin sistema de archivo', desc: 'Los outputs valiosos quedan atrapados en conversaciones. Se pierde continuidad y capacidad de reutilización.' });
+  if (rep === 'Siempre' || rep === 'Muchas veces')
+    alerts.push({ type: 'critical', title: 'Repetición constante de contexto', desc: 'Cada sesión comienza desde cero. Esto genera fricción operativa y desperdicia tiempo en cada interacción.' });
+  if (gpts === 'No sabía que existían')
+    alerts.push({ type: 'critical', title: 'GPTs internos desconocidos', desc: 'La empresa tiene GPTs configurados para tu área y no los estás usando. Representan una ventaja inmediata sin explotar.' });
+  else if (gpts === 'Sé que existen pero no los uso' || gpts === 'A veces')
+    alerts.push({ type: 'warning', title: 'GPTs internos subutilizados', desc: 'Conoces los GPTs del área pero no los integras al trabajo habitual. Una sesión de adopción podría cambiar esto rápidamente.' });
+  if ((freq === 'Varias veces al día' || freq === 'Todos los días') && (impact === 'Poco' || impact === 'Casi nada'))
+    alerts.push({ type: 'warning', title: 'Alta frecuencia, bajo impacto percibido', desc: 'Usas la IA con frecuencia pero no sientes que transforme los resultados. Esto indica un problema de calidad del uso, no de frecuencia.' });
+  if (fricc.indexOf('Ajustar el prompt varias veces') > -1 || fricc.indexOf('Revisar o corregir lo que genera') > -1)
+    alerts.push({ type: 'warning', title: 'Prompts débiles', desc: 'Revisas y ajustas con frecuencia lo que genera. Especificar rol, tarea, formato y restricción desde el inicio reduce este ciclo notablemente.' });
+  if (fricc.indexOf('Encontrar conversaciones anteriores') > -1)
+    alerts.push({ type: 'warning', title: 'Pérdida de trabajo realizado con IA', desc: 'Recuperar conversaciones anteriores es una fricción evitable con un sistema mínimo de archivo y etiquetado.' });
+  return alerts;
+}
+
+function generateRecommendations_(profile, a) {
+  var recs = [], org = a.step6, rep = a.step5, gpts = a.step7,
+      fricc = a.step4 || [], tipos = a.step3 || [], autos = a.step9 || [];
+  if (rep === 'Siempre' || rep === 'Muchas veces')
+    recs.push({ title: 'Activa ChatGPT Projects para tu área', desc: 'Los Projects mantienen el contexto de forma persistente entre sesiones. Elimina la necesidad de repetir instrucciones en cada conversación nueva.' });
+  if (org === 'En los chats' || org === 'No hay un sistema claro')
+    recs.push({ title: 'Centraliza el conocimiento generado con IA', desc: 'Crea una carpeta compartida del área con nomenclatura clara. Los outputs importantes deben vivir fuera de los chats, accesibles para todo el equipo.' });
+  if (gpts === 'No sabía que existían' || gpts === 'Sé que existen pero no los uso' || gpts === 'A veces')
+    recs.push({ title: 'Adopta los GPTs internos de tu área', desc: 'La empresa tiene GPTs configurados con contexto específico del negocio. Son más efectivos que ChatGPT general para tareas del área.' });
+  if (fricc.indexOf('Ajustar el prompt varias veces') > -1 || fricc.indexOf('Revisar o corregir lo que genera') > -1)
+    recs.push({ title: 'Mejora la estructura de tus prompts', desc: 'Incluir rol, tarea, formato y restricción desde el primer mensaje reduce los ciclos de revisión y mejora notablemente la calidad del resultado.' });
+  if (fricc.indexOf('Ajustar el prompt varias veces') > -1 || fricc.indexOf('Explicar el contexto correctamente') > -1)
+    recs.push({ title: 'Documenta y reutiliza tus prompts que funcionan', desc: 'Guarda los prompts efectivos en un documento compartido del equipo. Reduce el tiempo de calibración y acelera la adopción de los compañeros.' });
+  if (autos.indexOf('Documentos o reportes') > -1 || autos.indexOf('Organización de procesos') > -1)
+    recs.push({ title: 'Identifica una tarea repetitiva para automatizar esta semana', desc: 'Elige el reporte o proceso que más veces repites. Con un template de prompt bien construido puedes reducir ese tiempo hasta en un 70%.' });
+  if (tipos.length === 1 && tipos[0] === 'Redacción de textos' && (profile.name === 'Explorador' || profile.name === 'Operativo'))
+    recs.push({ title: 'Expande el uso de IA más allá de la redacción', desc: 'La IA es mucho más potente para análisis, síntesis de información y toma de decisiones. Prueba delegarle la próxima tarea analítica que tengas.' });
+  if (recs.length < 3)
+    recs.push({ title: 'Comparte tus aprendizajes con el equipo', desc: 'Tu nivel de adopción puede servir de referencia. Documentar qué funciona y qué no acelera la curva de aprendizaje de todo el área.' });
+  return recs;
+}

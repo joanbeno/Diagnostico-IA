@@ -1,0 +1,422 @@
+// ============================================================
+//  DIAGNOSTICO IA — ML Studio
+//  Google Apps Script — code.gs (Endpoint v4)
+// ============================================================
+//
+//  ESTRUCTURA DEL PROYECTO GAS:
+//    code.gs   — este archivo: HTTP handlers (doPost, doGet)
+//    scoring.gs — motor de scoring (pegar appscript scoring.gs.txt)
+//
+//  ACTUALIZAR SIN CAMBIAR URL:
+//  1. Extensiones → Apps Script
+//  2. Crea un archivo "scoring" y pega appscript scoring.gs.txt
+//  3. En este archivo (code.gs) pega appscript actual.txt
+//  4. Ctrl+S → Implementar → Gestionar → Lapiz → Nueva version
+//
+//  CAMBIOS v4:
+//  + Scoring server-side — doPost() llama funciones de scoring.gs
+//  + doPost() retorna scoring completo al cliente
+//  + FACILITATOR_KEY solo usado en doGet()
+// ============================================================
+
+var SHEET_NAME      = "Respuestas";
+var SHEET_META      = "Metadatos";
+var SHEET_LOG       = "Log_Errores";
+var FACILITATOR_KEY = "ConfeIA-Jancob-2025";
+
+
+// ─── POST — recibe diagnosticos, calcula scoring ──────────
+function doPost(e) {
+  try {
+    var raw = e.postData ? e.postData.contents : null;
+    if (!raw) return buildResponse({ status: "error", message: "No se recibio contenido." });
+
+    var payload = JSON.parse(raw);
+    if (!payload.id_respuesta || !payload.timestamp) {
+      return buildResponse({ status: "error", message: "Faltan campos requeridos." });
+    }
+
+    // Detect v4 payload (raw answers present) vs legacy
+    var isV4 = payload.step2 !== undefined;
+    var scoring, maturity, profile, alerts, recs;
+
+    if (isV4) {
+      var rawAnswers = {
+        step2: payload.step2, step3: payload.step3 || [], step4: payload.step4 || [],
+        step5: payload.step5, step6: payload.step6, step7: payload.step7,
+        step8: payload.step8, step9: payload.step9 || []
+      };
+      scoring  = calculateScores_(rawAnswers);
+      maturity = classifyMaturity_(scoring.total);
+      profile  = classifyProfile_(scoring.total, rawAnswers);
+      alerts   = detectAlerts_(rawAnswers);
+      recs     = generateRecommendations_(profile, rawAnswers);
+
+      // Enrich payload with computed values for sheet storage
+      payload.area_trabajo              = payload.step1 || '';
+      payload.frecuencia_uso_ia         = payload.step2 || '';
+      payload.tipo_uso                  = (payload.step3 || []).join(', ');
+      payload.friccion_principal        = (payload.step4 || []).join(', ');
+      payload.repeticion_contexto       = payload.step5 || '';
+      payload.organizacion_conocimiento = payload.step6 || '';
+      payload.uso_gpts                  = payload.step7 || '';
+      payload.impacto_productividad     = payload.step8 || '';
+      payload.automatizacion_deseada    = (payload.step9 || []).join(', ');
+      payload.respuesta_abierta_1       = payload.step10 || '';
+      payload.respuesta_abierta_2       = payload.step11 || '';
+      payload.gpt_preferido             = (payload.step12 || []).join(', ');
+      payload.perfil_usuario            = profile.name;
+      payload.nivel_madurez_ia          = maturity.label;
+      payload.score_total               = scoring.total;
+      payload.alertas_detectadas        = alerts.map(function(a) { return a.title; });
+    }
+
+    var ss        = SpreadsheetApp.getActiveSpreadsheet();
+    var sheetResp = getOrCreateSheet(ss, SHEET_NAME);
+    writeHeaders(sheetResp, HEADERS_RESPUESTAS);
+    upsertRow(sheetResp, payload.codigo_acceso, buildRowRespuestas(payload));
+
+    var sheetMeta = getOrCreateSheet(ss, SHEET_META);
+    writeHeaders(sheetMeta, HEADERS_META);
+    upsertRowMeta(sheetMeta, payload.id_respuesta, buildRowMeta(payload));
+
+    var response = {
+      status:  "ok",
+      id:      payload.id_respuesta,
+      codigo:  payload.codigo_acceso || "",
+      message: "Diagnostico registrado correctamente."
+    };
+
+    if (isV4) {
+      response.scoring  = scoring;
+      response.maturity = maturity;
+      response.profile  = profile;
+      response.alerts   = alerts;
+      response.recs     = recs;
+    }
+
+    return buildResponse(response);
+
+  } catch (err) {
+    logError(err, e);
+    return buildResponse({ status: "error", message: err.toString() });
+  }
+}
+
+
+// ─── GET — dashboard, lookup, toggle_test ─────────────────
+function doGet(e) {
+  var params = e ? e.parameter : {};
+  var action = params.action || "ping";
+
+  if (action === "ping") {
+    return buildResponse({
+      status:    "ok",
+      message:   "Diagnostico IA — ML Studio. Endpoint activo. v4",
+      timestamp: new Date().toISOString()
+    });
+  }
+
+  if (action === "data") {
+    if ((params.key || "") !== FACILITATOR_KEY) {
+      return buildResponse({ status: "error", message: "Acceso no autorizado." });
+    }
+    try {
+      var data = getAllRows();
+      return buildResponse({
+        status:       "ok",
+        total:        data.length,
+        data:         data,
+        generated_at: new Date().toISOString()
+      });
+    } catch (err) {
+      return buildResponse({ status: "error", message: err.toString() });
+    }
+  }
+
+  if (action === "toggle_test") {
+    if ((params.key || "") !== FACILITATOR_KEY) {
+      return buildResponse({ status: "error", message: "Acceso no autorizado." });
+    }
+    var id    = (params.id    || "").toString().trim();
+    var value = (params.value || "0").toString().trim();
+    if (!id) return buildResponse({ status: "error", message: "id requerido." });
+
+    try {
+      var ss    = SpreadsheetApp.getActiveSpreadsheet();
+      var sheet = ss.getSheetByName(SHEET_NAME);
+      if (!sheet || sheet.getLastRow() < 2) {
+        return buildResponse({ status: "error", message: "Hoja vacia." });
+      }
+      var headers    = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+      var idCol      = headers.indexOf("id_respuesta");
+      var testCol    = headers.indexOf("es_prueba");
+      if (testCol === -1) {
+        testCol = headers.length;
+        sheet.getRange(1, testCol + 1).setValue("es_prueba");
+        sheet.getRange(1, testCol + 1).setFontWeight("bold")
+             .setBackground("#1a1a2e").setFontColor("#ffffff");
+      }
+      var lastRow  = sheet.getLastRow();
+      var idValues = sheet.getRange(2, idCol + 1, lastRow - 1, 1).getValues();
+      var foundRow = -1;
+      for (var i = 0; i < idValues.length; i++) {
+        if ((idValues[i][0] || "").toString().trim() === id) { foundRow = i + 2; break; }
+      }
+      if (foundRow === -1) return buildResponse({ status: "not_found", message: "ID no encontrado." });
+      var cell = sheet.getRange(foundRow, testCol + 1);
+      cell.setValue(value === "1" ? "1" : "");
+      var rowRange = sheet.getRange(foundRow, 1, 1, sheet.getLastColumn());
+      if (value === "1") {
+        rowRange.setBackground("#fff3e0");
+      } else {
+        rowRange.setBackground(foundRow % 2 === 0 ? "#f8f8fc" : "#ffffff");
+      }
+      return buildResponse({ status: "ok", id: id, es_prueba: value === "1" ? "1" : "0", message: "Fila actualizada." });
+    } catch (err) {
+      return buildResponse({ status: "error", message: err.toString() });
+    }
+  }
+
+  if (action === "lookup") {
+    var codigo = (params.codigo || "").toString().trim().toUpperCase();
+    if (!codigo) return buildResponse({ status: "error", message: "Codigo no proporcionado." });
+    try {
+      var rows  = getAllRows();
+      var match = null;
+      for (var i = 0; i < rows.length; i++) {
+        if ((rows[i].codigo_acceso || "").toString().trim().toUpperCase() === codigo) { match = rows[i]; break; }
+      }
+      if (!match) return buildResponse({ status: "not_found", message: "Codigo no encontrado." });
+      return buildResponse({
+        status: "ok", codigo: codigo,
+        data: {
+          area_trabajo: match.area_trabajo || "", frecuencia_uso_ia: match.frecuencia_uso_ia || "",
+          tipo_uso: match.tipo_uso || "", friccion_principal: match.friccion_principal || "",
+          repeticion_contexto: match.repeticion_contexto || "", organizacion_conocimiento: match.organizacion_conocimiento || "",
+          uso_gpts: match.uso_gpts || "", impacto_productividad: match.impacto_productividad || "",
+          automatizacion_deseada: match.automatizacion_deseada || "", gpt_preferido: match.gpt_preferido || "",
+          respuesta_abierta_1: match.respuesta_abierta_1 || "", respuesta_abierta_2: match.respuesta_abierta_2 || "",
+          perfil_usuario: match.perfil_usuario || "", nivel_madurez_ia: match.nivel_madurez_ia || "",
+          score_total: match.score_total || "", alertas_detectadas: match.alertas_detectadas || "",
+          es_prueba: match.es_prueba || "", timestamp: match.timestamp || ""
+        }
+      });
+    } catch (err) {
+      return buildResponse({ status: "error", message: err.toString() });
+    }
+  }
+
+  return buildResponse({ status: "error", message: "Accion no reconocida." });
+}
+
+
+// ─── COLUMNAS ─────────────────────────────────────────────
+var HEADERS_RESPUESTAS = [
+  "timestamp", "id_respuesta", "codigo_acceso",
+  "fecha_inicio", "fecha_fin", "duracion_segundos",
+  "area_trabajo", "frecuencia_uso_ia", "tipo_uso",
+  "friccion_principal", "repeticion_contexto",
+  "organizacion_conocimiento", "uso_gpts", "gpt_preferido",
+  "impacto_productividad", "automatizacion_deseada",
+  "respuesta_abierta_1", "respuesta_abierta_2",
+  "perfil_usuario", "nivel_madurez_ia", "score_total",
+  "alertas_detectadas", "utm_source", "utm_medium",
+  "utm_campaign", "empresa", "es_prueba"
+];
+
+var HEADERS_META = [
+  "timestamp", "id_respuesta", "codigo_acceso",
+  "navegador", "dispositivo", "idioma_navegador",
+  "zona_horaria", "pasos_retrocedidos",
+  "duracion_segundos", "user_agent_raw"
+];
+
+
+// ─── CONSTRUCTORES ────────────────────────────────────────
+function buildRowRespuestas(p) {
+  return [
+    p.timestamp                 || "",
+    p.id_respuesta              || "",
+    p.codigo_acceso             || "",
+    p.fecha_inicio              || "",
+    p.fecha_fin                 || "",
+    p.duracion_segundos         || "",
+    p.area_trabajo              || "",
+    p.frecuencia_uso_ia         || "",
+    p.tipo_uso                  || "",
+    p.friccion_principal        || "",
+    p.repeticion_contexto       || "",
+    p.organizacion_conocimiento || "",
+    p.uso_gpts                  || "",
+    p.gpt_preferido             || "",
+    p.impacto_productividad     || "",
+    p.automatizacion_deseada    || "",
+    p.respuesta_abierta_1       || "",
+    p.respuesta_abierta_2       || "",
+    p.perfil_usuario            || "",
+    p.nivel_madurez_ia          || "",
+    p.score_total               || "",
+    (p.alertas_detectadas || []).join(", "),
+    p.utm_source                || "",
+    p.utm_medium                || "",
+    p.utm_campaign              || "",
+    p.empresa                   || "",
+    ""
+  ];
+}
+
+function buildRowMeta(p) {
+  var meta = p.metadata || {};
+  return [
+    p.timestamp             || "",
+    p.id_respuesta          || "",
+    p.codigo_acceso         || "",
+    meta.navegador          || "",
+    meta.dispositivo        || "",
+    meta.idioma             || "",
+    meta.zona_horaria       || "",
+    meta.pasos_retrocedidos || 0,
+    p.duracion_segundos     || "",
+    meta.user_agent_raw     || ""
+  ];
+}
+
+
+// ─── UPSERT ───────────────────────────────────────────────
+function upsertRow(sheet, codigo, rowData) {
+  if (!codigo) { appendStyledRow(sheet, rowData); return; }
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) { appendStyledRow(sheet, rowData); return; }
+
+  var codigoCol = sheet.getRange(2, 3, lastRow - 1, 1).getValues();
+  var foundRow  = -1;
+  for (var i = 0; i < codigoCol.length; i++) {
+    if ((codigoCol[i][0] || "").toString().trim().toUpperCase() === codigo.trim().toUpperCase()) {
+      foundRow = i + 2; break;
+    }
+  }
+  if (foundRow > 0) {
+    var headers  = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    var testCol  = headers.indexOf("es_prueba");
+    var currentTest = testCol > -1 ? sheet.getRange(foundRow, testCol + 1).getValue() : "";
+    while (rowData.length < headers.length) rowData.push("");
+    if (testCol > -1) rowData[testCol] = currentTest;
+    sheet.getRange(foundRow, 1, 1, rowData.length).setValues([rowData]);
+  } else {
+    appendStyledRow(sheet, rowData);
+  }
+}
+
+function upsertRowMeta(sheet, idRespuesta, rowData) {
+  if (!idRespuesta) { appendStyledRow(sheet, rowData); return; }
+  var lastRow = sheet.getLastRow();
+  if (lastRow < 2) { appendStyledRow(sheet, rowData); return; }
+
+  var idCol    = sheet.getRange(2, 2, lastRow - 1, 1).getValues();
+  var foundRow = -1;
+  for (var i = 0; i < idCol.length; i++) {
+    if ((idCol[i][0] || "").toString() === idRespuesta.toString()) { foundRow = i + 2; break; }
+  }
+  if (foundRow > 0) {
+    sheet.getRange(foundRow, 1, 1, rowData.length).setValues([rowData]);
+  } else {
+    appendStyledRow(sheet, rowData);
+  }
+}
+
+function appendStyledRow(sheet, rowData) {
+  var newRow = sheet.getLastRow() + 1;
+  var range  = sheet.getRange(newRow, 1, 1, rowData.length);
+  range.setValues([rowData]);
+  if (newRow % 2 === 0) range.setBackground("#f8f8fc");
+}
+
+
+// ─── UTILIDADES ───────────────────────────────────────────
+function getOrCreateSheet(ss, name) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) sheet = ss.insertSheet(name);
+  return sheet;
+}
+
+function writeHeaders(sheet, headers) {
+  var firstRow = sheet.getRange(1, 1, 1, headers.length).getValues()[0];
+  var isEmpty  = firstRow.every(function(c) { return c === ""; });
+  if (!isEmpty) return;
+  var range = sheet.getRange(1, 1, 1, headers.length);
+  range.setValues([headers]);
+  range.setFontWeight("bold").setBackground("#1a1a2e").setFontColor("#ffffff")
+       .setHorizontalAlignment("center");
+  sheet.setFrozenRows(1);
+  sheet.autoResizeColumns(1, headers.length);
+}
+
+function getAllRows() {
+  var ss      = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet   = ss.getSheetByName(SHEET_NAME);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var rows    = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).getValues();
+  return rows.map(function(row) {
+    var obj = {};
+    headers.forEach(function(h, i) { obj[h] = row[i]; });
+    return obj;
+  }).filter(function(r) { return r.timestamp !== "" && r.id_respuesta !== ""; });
+}
+
+function logError(err, event) {
+  try {
+    var ss       = SpreadsheetApp.getActiveSpreadsheet();
+    var logSheet = getOrCreateSheet(ss, SHEET_LOG);
+    writeHeaders(logSheet, ["timestamp", "error", "payload_raw"]);
+    var raw = event && event.postData ? event.postData.contents : "N/A";
+    appendStyledRow(logSheet, [new Date().toISOString(), err.toString(), raw]);
+  } catch(e) {}
+}
+
+function buildResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+
+// ─── TEST MANUAL ──────────────────────────────────────────
+function testManual() {
+  var payload = {
+    timestamp: new Date().toISOString(),
+    id_respuesta: "TEST-" + Date.now(),
+    codigo_acceso: "ML-TEST",
+    fecha_inicio:  new Date(Date.now() - 300000).toISOString(),
+    fecha_fin:     new Date().toISOString(),
+    duracion_segundos: 300,
+    step1: "Dirección / Gerencia",
+    step2: "Varias veces al día",
+    step3: ["Análisis o toma de decisiones", "Redacción de textos"],
+    step4: ["Encontrar conversaciones anteriores"],
+    step5: "A veces",
+    step6: "En los chats",
+    step7: "Sí, frecuentemente",
+    step8: "Mucho",
+    step9: ["Documentos o reportes"],
+    step10: "Gestión financiera automatizada",
+    step11: "La efectividad del equipo",
+    step12: ["GPT Administrativo"],
+    utm_source: "test", utm_medium: "", utm_campaign: "", empresa: "MLStudio",
+    metadata: {
+      navegador: "Chrome", dispositivo: "desktop",
+      idioma: "es-CO", zona_horaria: "America/Bogota",
+      pasos_retrocedidos: 0, user_agent_raw: "Mozilla/5.0 (Test)"
+    }
+  };
+
+  var ss        = SpreadsheetApp.getActiveSpreadsheet();
+  var sheetResp = getOrCreateSheet(ss, SHEET_NAME);
+  writeHeaders(sheetResp, HEADERS_RESPUESTAS);
+
+  var rawA = { step2: payload.step2, step3: payload.step3, step4: payload.step4, step5: payload.step5, step6: payload.step6, step7: payload.step7, step8: payload.step8, step9: payload.step9 };
+  var scoring = calculateScores_(rawA);
+  Logger.log("Score: " + scoring.total + " | Maturity: " + classifyMaturity_(scoring.total).label);
+  Logger.log("testManual v4 completado.");
+}
