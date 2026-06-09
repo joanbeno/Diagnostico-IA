@@ -42,6 +42,10 @@ Formulario (12 pasos) → proxy seguro Vercel → scoring server-side en Apps Sc
 
 > El dashboard del facilitador requiere credenciales de acceso.
 
+## Dashboard del facilitador
+
+![Dashboard facilitador](assets/facilitador-screenshot.png)
+
 ---
 
 ## Stack
